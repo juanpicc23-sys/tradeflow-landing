@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="google-site-verification" content="u_bOBlmqGubJFRmZLtDyOr_PEW2RwpPsIJmctAilQuI" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="X-Frame-Options" content="DENY">
@@ -1591,6 +1592,81 @@ body {
   box-shadow: 0 12px 36px rgba(0,0,0,0.25);
 }
 
+/* ─── Contact Modal ─── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.35s, visibility 0.35s;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-card {
+  width: 90%; max-width: 520px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px; padding: 48px 40px 40px;
+  position: relative;
+  transform: translateY(30px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
+.modal-close {
+  position: absolute; top: 16px; right: 20px;
+  background: none; border: none; color: var(--text-secondary);
+  font-size: 28px; cursor: pointer; line-height: 1;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: #fff; }
+.modal-title {
+  font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px;
+}
+.modal-subtitle {
+  font-size: 14px; color: var(--text-secondary); margin-bottom: 32px;
+}
+.modal-form { display: flex; flex-direction: column; gap: 16px; }
+.modal-field {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.modal-field label {
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.modal-field input, .modal-field textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 14px 16px;
+  color: #fff; font-size: 15px; font-family: inherit;
+  outline: none; transition: border-color 0.2s;
+}
+.modal-field input::placeholder, .modal-field textarea::placeholder {
+  color: rgba(255,255,255,0.25);
+}
+.modal-field input:focus, .modal-field textarea:focus {
+  border-color: rgba(168,85,247,0.5);
+}
+.modal-field textarea { resize: vertical; min-height: 80px; }
+.modal-submit {
+  margin-top: 8px; padding: 16px;
+  border-radius: 60px; border: none; cursor: pointer;
+  font-size: 16px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, #7B5EE8, #A855F7);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.modal-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(168,85,247,0.3);
+}
+.modal-submit.investor-submit {
+  background: linear-gradient(135deg, #64748b, #94a3b8);
+}
+.modal-submit.investor-submit:hover {
+  box-shadow: 0 12px 36px rgba(148,163,184,0.3);
+}
+@media (max-width: 600px) {
+  .modal-card { padding: 36px 24px 28px; }
+}
+
 @media (max-width: 600px) {
   .cta { padding: 100px 20px; }
   .cta-stats { gap: 24px; }
@@ -2410,11 +2486,11 @@ body {
     </div>
 
     <div class="cta-buttons reveal" style="transition-delay:0.22s">
-      <a href="#" onclick="window.location='mail'+'to:'+'jp'+'@'+'tradeflow.mx';return false;" class="btn-cta-primary" data-i18n="cta.btn1" data-i18n-html="1">
+      <a href="#" onclick="openContactModal('demo');return false;" class="btn-cta-primary" data-i18n="cta.btn1" data-i18n-html="1">
         Agendar Demo
         <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
-      <a href="#" onclick="window.location='mail'+'to:'+'jp'+'@'+'tradeflow.mx'+'?subject=TradeFlow%20-%20Inversionistas';return false;" class="btn-cta-secondary" data-i18n="cta.btn2">Para Inversionistas</a>
+      <a href="#" onclick="openContactModal('investor');return false;" class="btn-cta-secondary" data-i18n="cta.btn2">Para Inversionistas</a>
     </div>
   </div>
 </section>
@@ -3913,6 +3989,85 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     if(img.decode) img.decode().catch(function(){});
   });
 });
+// ─── Contact Modal ───
+function openContactModal(type) {
+  var m = document.getElementById('contactModal');
+  var title = document.getElementById('modalTitle');
+  var sub = document.getElementById('modalSubtitle');
+  var btn = document.getElementById('modalSubmit');
+  var msgField = document.getElementById('modalMsgField');
+  m.setAttribute('data-type', type);
+  if (type === 'investor') {
+    title.textContent = _currentLang === 'en' ? 'For Investors' : 'Para Inversionistas';
+    sub.textContent = _currentLang === 'en' ? 'Tell us about your interest in TradeFlow' : 'Cuéntanos sobre tu interés en TradeFlow';
+    btn.textContent = _currentLang === 'en' ? 'Send' : 'Enviar';
+    btn.className = 'modal-submit investor-submit';
+    msgField.style.display = 'flex';
+    document.getElementById('modalMsg').setAttribute('placeholder', _currentLang === 'en' ? 'Investment thesis, questions...' : 'Tesis de inversión, preguntas...');
+  } else {
+    title.textContent = _currentLang === 'en' ? 'Book a Demo' : 'Agendar Demo';
+    sub.textContent = _currentLang === 'en' ? 'We\'ll reach out to schedule a personalized demo' : 'Te contactaremos para agendar una demo personalizada';
+    btn.textContent = _currentLang === 'en' ? 'Request Demo' : 'Solicitar Demo';
+    btn.className = 'modal-submit';
+    msgField.style.display = 'flex';
+    document.getElementById('modalMsg').setAttribute('placeholder', _currentLang === 'en' ? 'What interests you about TradeFlow?' : '¿Qué te interesa de TradeFlow?');
+  }
+  m.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  var m = document.getElementById('contactModal');
+  m.classList.remove('active');
+  document.body.style.overflow = '';
+}
+function submitContactForm(e) {
+  e.preventDefault();
+  var type = document.getElementById('contactModal').getAttribute('data-type');
+  var name = document.getElementById('modalName').value.trim();
+  var email = document.getElementById('modalEmail').value.trim();
+  var company = document.getElementById('modalCompany').value.trim();
+  var msg = document.getElementById('modalMsg').value.trim();
+  var subject = type === 'investor' ? 'TradeFlow - Inversionista: ' + name : 'TradeFlow - Demo: ' + name;
+  var body = 'Nombre: ' + name + '\nEmail: ' + email + '\nEmpresa: ' + company + (msg ? '\n\nMensaje:\n' + msg : '');
+  window.location = 'mailto:tradeflowia@outlook.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  closeContactModal();
+  document.getElementById('contactForm').reset();
+}
+document.getElementById('contactModal').addEventListener('click', function(e) {
+  if (e.target === this) closeContactModal();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('contactModal').classList.contains('active')) closeContactModal();
+});
 </script>
+
+<!-- ═══ CONTACT MODAL ═══ -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeContactModal()">&times;</button>
+    <div class="modal-title" id="modalTitle">Agendar Demo</div>
+    <div class="modal-subtitle" id="modalSubtitle">Te contactaremos para agendar una demo personalizada</div>
+    <form class="modal-form" id="contactForm" onsubmit="submitContactForm(event)">
+      <div class="modal-field">
+        <label>Nombre</label>
+        <input type="text" id="modalName" required placeholder="Tu nombre">
+      </div>
+      <div class="modal-field">
+        <label>Email</label>
+        <input type="email" id="modalEmail" required placeholder="tu@empresa.com">
+      </div>
+      <div class="modal-field">
+        <label>Empresa</label>
+        <input type="text" id="modalCompany" required placeholder="Nombre de tu empresa">
+      </div>
+      <div class="modal-field" id="modalMsgField">
+        <label>Mensaje <span style="font-weight:400;text-transform:none;opacity:0.6">(opcional)</span></label>
+        <textarea id="modalMsg" placeholder="¿Qué te interesa de TradeFlow?"></textarea>
+      </div>
+      <button type="submit" class="modal-submit" id="modalSubmit">Solicitar Demo</button>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
