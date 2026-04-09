@@ -1975,6 +1975,144 @@ body {
 .problem, .metrics, .agents-intro, .process, .regulatory, .cta {
   contain: layout style;
 }
+
+/* ═══ MOBILE PORTRAIT (≤480px) ═══ */
+@media (max-width: 480px) {
+  /* Nav */
+  .nav { padding: 12px 16px; }
+  .nav-logo-text { font-size: 15px; letter-spacing: 1px; }
+  .nav-logo-img { height: 20px; }
+
+  /* Hero */
+  .hero { padding: 100px 16px 32px; min-height: auto; }
+  .hero-headline { font-size: 32px; letter-spacing: -0.5px; max-width: 100%; }
+  .hero-top { margin-bottom: 48px; }
+  .hero-right { max-width: 100%; }
+  .hero-right-text { font-size: 13px; }
+  .btn-demo { padding: 14px 28px; font-size: 14px; }
+  .btn-demo-arrow { width: 30px; height: 30px; }
+
+  /* Hero card */
+  .hero-mockup-wrapper { margin: 0 -16px; max-width: calc(100% + 32px); }
+  .home-card { padding: 32px 20px 24px; border-radius: 16px; }
+  .home-greeting-title { font-size: 22px; }
+  .home-greeting-sub { font-size: 16px; }
+  .home-pills { gap: 8px; flex-wrap: wrap; }
+  .home-pill { padding: 10px 16px; font-size: 11px; }
+  .home-input-wrapper { padding: 14px 16px 12px; border-radius: 14px; }
+  .home-input-placeholder { font-size: 13px; margin-bottom: 12px; }
+
+  /* Scroll indicator */
+  .scroll-down { margin-top: 32px; }
+
+  /* Trust bar */
+  .trust { padding: 32px 16px; }
+  .trust-item { padding: 10px 16px; font-size: 10px; }
+
+  /* Metrics */
+  .metrics { padding: 60px 16px; }
+  .metrics-grid { grid-template-columns: 1fr; gap: 12px; }
+  .metric-item { padding: 24px 20px; }
+  .metrics-headline { font-size: 24px; margin-bottom: 40px; }
+
+  /* Agents intro */
+  .agents-intro { padding: 60px 16px 40px; }
+  .agents-title { font-size: 28px; }
+  .agents-intro-right { font-size: 13px; }
+  .agents-preview-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 32px; }
+  .agent-preview-card { padding: 24px 20px; }
+
+  /* Agent hero sections */
+  .agent-hero-inner { padding: 60px 16px; }
+  .agent-hero-name { font-size: 36px; letter-spacing: -1px; }
+  .agent-hero-desc { font-size: 15px; }
+  .agent-hero-badge { padding: 8px 16px; font-size: 10px; }
+
+  /* Problem */
+  .problem { padding: 60px 0 40px; }
+  .problem-inner { padding: 0 16px; }
+  .problem-title { font-size: 24px; }
+  .pain-marquee-track { margin: 0 -16px; }
+  .pain-card { width: 260px; height: 300px; }
+
+  /* Process / Timeline */
+  .process { padding: 60px 16px 60px; }
+  .process-title { font-size: 28px; }
+  .process-header { margin-bottom: 48px; }
+  .timeline { padding-left: 44px; }
+  .timeline::before, .timeline-line-fill { left: 11px; }
+  .timeline-num { left: -44px; width: 28px; height: 28px; font-size: 9px; }
+  .timeline-step { padding: 16px 16px 16px 14px; margin-bottom: 16px; }
+  .timeline-step-title { font-size: 16px; }
+  .timeline-step-desc { font-size: 13px; }
+
+  /* Regulatory */
+  .regulatory { padding: 60px 16px 60px; }
+  .compliance-sphere { width: 200px; height: 200px; }
+  .cr-value { font-size: 40px; }
+  .reg-title { font-size: 28px; }
+  .reg-desc { font-size: 14px; }
+  .reg-stats { gap: 12px; }
+  .reg-stat { padding: 20px; }
+  .reg-stat-value { font-size: 28px; }
+  .reg-tags { gap: 8px; }
+  .reg-tag { padding: 10px 16px; font-size: 11px; }
+
+  /* CTA */
+  .cta { padding: 60px 16px 100px; }
+  .cta-title { font-size: 28px; letter-spacing: -1px; }
+  .cta-sub { font-size: 15px; margin-bottom: 36px; }
+  .cta-stats { gap: 12px; }
+  .cta-stat { padding: 16px 20px; }
+  .cta-stat-value { font-size: 22px; }
+  .cta-stat-label { font-size: 11px; }
+  .btn-cta-primary { padding: 18px 36px; font-size: 15px; }
+  .btn-cta-secondary { padding: 18px 32px; font-size: 15px; }
+
+  /* Modal */
+  .modal-card { padding: 28px 20px 24px; border-radius: 20px; }
+  .modal-title { font-size: 22px; }
+
+  /* Footer */
+  .footer { padding: 32px 16px; }
+  .footer-links { gap: 16px; }
+}
+
+/* ═══ SMALL MOBILE (≤375px — iPhone SE) ═══ */
+@media (max-width: 375px) {
+  .hero-headline { font-size: 28px; }
+  .home-card { padding: 24px 16px 20px; }
+  .home-greeting-title { font-size: 19px; }
+  .home-greeting-sub { font-size: 14px; }
+  .home-pill { padding: 8px 12px; font-size: 10px; }
+  .home-pill-dot { width: 7px; height: 7px; }
+  .metrics-headline { font-size: 22px; }
+  .agents-title { font-size: 24px; }
+  .agent-hero-name { font-size: 30px; }
+  .compliance-sphere { width: 170px; height: 170px; }
+  .cr-value { font-size: 34px; }
+  .cta-title { font-size: 24px; }
+  .pain-card { width: 230px; height: 280px; }
+}
+
+/* ═══ MOBILE LANDSCAPE ═══ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero { min-height: auto; padding: 80px 32px 24px; }
+  .hero-headline { font-size: 28px; }
+  .hero-top { margin-bottom: 24px; }
+  .home-card { padding: 24px 28px 20px; }
+  .home-greeting { margin-bottom: 16px; }
+  .home-greeting-title { font-size: 20px; }
+  .home-greeting-sub { font-size: 16px; }
+  .home-pills { margin-bottom: 16px; }
+  .scroll-down { margin-top: 16px; }
+  .hero-blob { opacity: 0.5; }
+  .agent-hero { min-height: auto; }
+  .agent-hero-inner { padding: 40px 32px; }
+  .compliance-sphere { width: 160px; height: 160px; }
+  .cr-value { font-size: 32px; }
+  .cta { padding: 40px 32px 60px; }
+}
   </style>
 </head>
 <body>
