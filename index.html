@@ -39,7 +39,7 @@ body {
 }
 
 /* ═══ GRAIN NOISE OVERLAY ═══ */
-.noise{position:fixed;inset:0;z-index:1;opacity:0.28;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='1' stitchTiles='stitch' seed='5'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 1'/%3E%3CfeFuncG type='discrete' tableValues='0 1'/%3E%3CfeFuncB type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px 256px;}
+.noise{position:fixed;inset:0;z-index:1;opacity:0.75;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch' seed='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3CfeFuncG type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3CfeFuncB type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px 256px;}
 
 /* ═══ NAVIGATION ═══ */
 .nav {
@@ -526,12 +526,13 @@ body {
 .metric-item {
   padding: 32px 28px;
   border-radius: 20px;
-  background: rgba(0,0,0,0.02);
-  border: 1px solid rgba(0,0,0,0.04);
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-top-color: rgba(255,255,255,0.5);
   box-shadow:
-    0 8px 32px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(0,0,0,0.08),
-    inset 1px 0 0 rgba(0,0,0,0.05);
+    0 4px 20px rgba(0,0,0,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.6);
   transition: transform 0.7s cubic-bezier(0.22,1,0.36,1),
               box-shadow 0.4s, border-color 0.4s, background 0.4s;
 
@@ -541,9 +542,8 @@ body {
   content: '';
   position: absolute; inset: 0;
   background: linear-gradient(145deg,
-    rgba(0,0,0,0.05) 0%,
-    transparent 50%,
-    rgba(0,0,0,0.04) 100%);
+    rgba(255,255,255,0.3) 0%,
+    transparent 50%);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -558,13 +558,12 @@ body {
 }
 .metric-item:hover::after { opacity: 0.6; }
 .metric-item.visible:hover {
-  background: rgba(0,0,0,0.05);
-  border-color: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.7);
   transform: translateY(-8px) scale(1.04);
   box-shadow:
-    0 24px 48px rgba(0,0,0,0.45),
-    0 0 1px rgba(0,0,0,0.08),
-    0 0 30px rgba(139,34,214,0.08);
+    0 16px 40px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.8);
 }
 .metric-item.visible:hover::after { opacity: 0.6; }
 .metric-value {
@@ -584,14 +583,14 @@ body {
 }
 .metric-desc {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: rgba(26,26,46,0.75);
   line-height: 1.6;
   position: relative; z-index: 1;
 }
 .metric-source {
   font-family: var(--mono);
   font-size: 9px;
-  color: var(--text-muted);
+  color: rgba(26,26,46,0.85);
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-top: 12px;
@@ -652,7 +651,7 @@ body {
   50% { background-position: 100% 50%; }
 }
 .agents-intro-right {
-  font-size: 15px; color: var(--text-muted); max-width: 300px;
+  font-size: 15px; color: rgba(26,26,46,0.75); max-width: 300px;
   text-align: right; line-height: 1.7;
 }
 
@@ -688,8 +687,8 @@ body {
 }
 /* Per-agent gradient backgrounds — same as v8 */
 .ap-tf::before { background: linear-gradient(135deg, #000000 0%, #1b49a5 40%, #3fcfe6 80%, #7ae4f2 100%); }
-.ap-atlas::before { background: linear-gradient(135deg, #000000 0%, #6b0020 40%, #dc2850 80%, #ff8060 100%); }
-.ap-sentinel::before { background: linear-gradient(135deg, #000000 0%, #553000 40%, #f5a623 80%, #ffd700 100%); }
+.ap-atlas::before { background: linear-gradient(135deg, #8b1030 0%, #dc2850 30%, #ff8060 60%, #ffaa88 100%); opacity: 0.55; }
+.ap-sentinel::before { background: linear-gradient(135deg, #7a4400 0%, #f5a623 30%, #ffd700 60%, #ffe566 100%); opacity: 0.55; }
 .ap-apex::before { background: linear-gradient(135deg, #000000 0%, #2a2a38 40%, #7a7a8a 80%, #c0c0d0 100%); }
 
 .ap-number {
@@ -757,13 +756,13 @@ body {
   animation: agentBandWander1 5s ease-in-out infinite;
 }
 .agent-hero.atlas .agent-hero-blob-1 {
-  background: radial-gradient(ellipse at center, #000000 0%, #6b0020 18%, #dc2850 40%, #ff8060 58%, transparent 80%);
-  filter: blur(80px); opacity: 0.85;
+  background: radial-gradient(ellipse at center, #8b1030 0%, #dc2850 22%, #ff8060 45%, #ffaa88 62%, transparent 82%);
+  filter: blur(80px); opacity: 0.9;
   animation: agentBandWander2 5.5s ease-in-out infinite;
 }
 .agent-hero.sentinel .agent-hero-blob-1 {
-  background: radial-gradient(ellipse at center, #000000 0%, #553000 18%, #f5a623 40%, #ffd700 58%, transparent 80%);
-  filter: blur(80px); opacity: 0.85;
+  background: radial-gradient(ellipse at center, #7a4400 0%, #f5a623 22%, #ffd700 45%, #ffe566 62%, transparent 82%);
+  filter: blur(80px); opacity: 0.9;
   animation: agentBandWander3 5s ease-in-out infinite;
 }
 .agent-hero.apex .agent-hero-blob-1 {
@@ -1020,7 +1019,7 @@ body {
   font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; color: #1a1a2e;
 }
 .problem-subtitle {
-  font-size: 15px; color: var(--text-secondary);
+  font-size: 15px; color: rgba(26,26,46,0.75); font-weight: 500;
   line-height: 1.8; max-width: 380px; align-self: end;
 }
 .problem-subtitle em {
@@ -1166,7 +1165,7 @@ body {
   margin-bottom: 20px;
 }
 .process-subtitle {
-  font-size: 16px; color: var(--text-secondary); line-height: 1.75;
+  font-size: 16px; color: rgba(26,26,46,0.75); line-height: 1.75;
   max-width: 500px;
 }
 
@@ -1441,7 +1440,7 @@ body {
   animation: gradientShift 6s ease-in-out infinite;
 }
 .reg-desc {
-  font-size: 16px; color: var(--text-secondary); line-height: 1.75;
+  font-size: 16px; color: rgba(26,26,46,0.75); line-height: 1.75;
 }
 
 /* Compliance ring */
@@ -1519,7 +1518,7 @@ body {
 }
 .cr-value {
   font-family: var(--mono); font-size: 60px; font-weight: 700;
-  color: #1a1a2e;
+  color: #ffffff;
   text-shadow: 0 2px 10px rgba(0,0,0,0.6);
 }
 .cr-label {
@@ -1620,14 +1619,14 @@ body {
 }
 .cta-blob-2 {
   top: 5%; right: -8%;
-  background: radial-gradient(ellipse at center, #000000 0%, #6b0020 22%, #dc2850 50%, #ff8060 68%, transparent 85%);
-  filter: blur(60px); opacity: 0.8;
+  background: radial-gradient(ellipse at center, #8b1030 0%, #dc2850 22%, #ff8060 45%, #ffaa88 62%, transparent 82%);
+  filter: blur(60px); opacity: 0.85;
   animation: heroBlobMorph2 8s ease-in-out infinite;
 }
 .cta-blob-3 {
   bottom: 5%; right: -8%;
-  background: radial-gradient(ellipse at center, #000000 0%, #553000 22%, #f5a623 50%, #ffd700 68%, transparent 85%);
-  filter: blur(60px); opacity: 0.8;
+  background: radial-gradient(ellipse at center, #7a4400 0%, #f5a623 22%, #ffd700 45%, #ffe566 62%, transparent 82%);
+  filter: blur(60px); opacity: 0.85;
   animation: heroBlobMorph1 7.5s ease-in-out infinite;
 }
 .cta-blob-4 {
@@ -1685,7 +1684,7 @@ body {
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
 .cta-sub {
-  font-size: 18px; color: var(--text-secondary); line-height: 1.75;
+  font-size: 18px; color: rgba(26,26,46,0.75); line-height: 1.75;
   max-width: 780px; margin: 0 auto 56px;
 }
 .cta-agent {
@@ -2574,13 +2573,13 @@ body {
       <div class="metric-item reveal stagger-1">
         <div class="metric-value">&lt;60<span class="metric-suffix">s</span></div>
         <p class="metric-desc" data-i18n="metrics.1.desc">Análisis completo de un pedimento con todas sus partidas</p>
-        <div class="metric-source" data-i18n="metrics.1.source">Sistema · TradeFlow</div>
+        <div class="metric-source" data-i18n="metrics.1.source">Sistema · InTake</div>
       </div>
 
       <div class="metric-item reveal stagger-2">
         <div class="metric-value">18<span class="metric-suffix">x</span></div>
         <p class="metric-desc" data-i18n="metrics.2.desc">Calculadoras fiscales en tiempo real por operación</p>
-        <div class="metric-source" data-i18n="metrics.2.source">Sistema · Sentinel</div>
+        <div class="metric-source" data-i18n="metrics.2.source">Sistema · Audit</div>
       </div>
 
       <div class="metric-item reveal stagger-3">
@@ -2788,7 +2787,7 @@ body {
       <div class="reg-header reveal-left">
         <div class="reg-label" data-i18n="reg.label">Fundamento Legal</div>
         <h2 class="reg-title" data-i18n="reg.title" data-i18n-html="1">Construido sobre <span class="reg-highlight">legislación real</span>,<br>no suposiciones</h2>
-        <p class="reg-desc" data-i18n="reg.desc">Cada validador, cada cálculo y cada hallazgo está fundamentado en legislación vigente mexicana — actualizada a 2026. No es un chatbot genérico: TradeFlow es un motor de cumplimiento aduanero potenciado por modelos de IA frontera.</p>
+        <p class="reg-desc" data-i18n="reg.desc">Cada validador, cada cálculo y cada hallazgo está fundamentado en legislación vigente mexicana — actualizada a 2026. No es un chatbot genérico: InTake es un motor de cumplimiento aduanero potenciado por modelos de IA frontera.</p>
       </div>
       <div class="reveal-right">
         <div class="compliance-sphere" id="complianceRing">
@@ -2836,7 +2835,7 @@ body {
       </h2>
     </div>
     <p class="cta-sub reveal" style="transition-delay:0.12s" data-i18n="cta.sub" data-i18n-html="1">
-      <span class="cta-agent cta-agent--atlas">SCAN</span> analiza. Conversacional, profundo, instantáneo. <span class="cta-agent cta-agent--sentinel">AUDIT</span> valida. Cada campo, cada regla, cada vez. <span class="cta-agent cta-agent--apex">SCOUT</span> optimiza. T-MEC, IMMEX, PROSEC, sin dejar escapar riesgos y ayudándote a estructurar decisiones. Tú <span class="cta-agent cta-agent--tf">decides.</span> Con datos, no con dudas.
+      <span class="cta-agent cta-agent--atlas">SCAN</span> analiza tus documentos con análisis profundo e instantáneo. <span class="cta-agent cta-agent--sentinel">AUDIT</span> valida. Cada campo, cada regla, cada vez. <span class="cta-agent cta-agent--apex">SCOUT</span> optimiza. T-MEC, IMMEX, PROSEC, sin dejar escapar riesgos y ayudándote a estructurar decisiones. Tú <span class="cta-agent cta-agent--tf">decides.</span> Con datos, no con dudas.
     </p>
 
     <div class="cta-stats reveal" style="transition-delay:0.16s">
@@ -3095,7 +3094,7 @@ var _i18n = {
     'process.label': 'Cómo Funciona',
     'reg.label': 'Fundamento Legal',
     'reg.title': 'Construido sobre <span class="reg-highlight">legislación real</span>,<br>no suposiciones',
-    'reg.desc': 'Cada validador, cada cálculo y cada hallazgo está fundamentado en legislación vigente mexicana — actualizada a 2026. No es un chatbot genérico: TradeFlow es un motor de cumplimiento aduanero potenciado por modelos de IA frontera.',
+    'reg.desc': 'Cada validador, cada cálculo y cada hallazgo está fundamentado en legislación vigente mexicana — actualizada a 2026. No es un chatbot genérico: InTake es un motor de cumplimiento aduanero potenciado por modelos de IA frontera.',
     'cta.label': 'Empieza Ahora',
     'cta.title': 'El comercio exterior operaba<br>sin inteligencia. <span class="gradient">Eso se acabó.</span>',
     'cta.btn1': 'Agendar Demo <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
@@ -3115,9 +3114,9 @@ var _i18n = {
     'pain.6.tag': 'COSTO OCULTO', 'pain.6.title': 'Beneficios fiscales que nadie aplica',
     'pain.6.desc': 'Preferencias T-MEC ignoradas, DTA/IVA en exceso, correcciones que nadie solicita. Dinero en la mesa, operación tras operación.',
     'metrics.1.desc': 'Análisis completo de un pedimento con todas sus partidas',
-    'metrics.1.source': 'Sistema · TradeFlow',
+    'metrics.1.source': 'Sistema · InTake',
     'metrics.2.desc': 'Calculadoras fiscales en tiempo real por operación',
-    'metrics.2.source': 'Sistema · Sentinel',
+    'metrics.2.source': 'Sistema · Audit',
     'metrics.3.desc': 'De la revisión aduanal en México sigue siendo manual hoy',
     'metrics.3.source': 'Mercado · Estimado industria',
     'metrics.4.desc': 'Costo recuperable por operación con T-MEC correctamente aplicado',
@@ -3168,7 +3167,7 @@ var _i18n = {
     'reg.tag1': 'Ley Aduanera 2026', 'reg.tag2': 'RGCE 2026', 'reg.tag3': 'CFF',
     'reg.tag4': 'T-MEC Cap. 5', 'reg.tag5': 'Decreto IMMEX', 'reg.tag6': 'TIGIE',
     'reg.tag7': 'NOM-050', 'reg.tag8': 'LFD Art. 49', 'reg.tag9': 'SAT Anexo 22',
-    'cta.sub': '<span class="cta-agent cta-agent--atlas">SCAN</span> analiza. Conversacional, profundo, instantáneo. <span class="cta-agent cta-agent--sentinel">AUDIT</span> valida. Cada campo, cada regla, cada vez. <span class="cta-agent cta-agent--apex">SCOUT</span> optimiza. T-MEC, IMMEX, PROSEC, sin dejar escapar riesgos y ayudándote a estructurar decisiones. Tú <span class="cta-agent cta-agent--tf">decides.</span> Con datos, no con dudas.',
+    'cta.sub': '<span class="cta-agent cta-agent--atlas">SCAN</span> analiza tus documentos con análisis profundo e instantáneo. <span class="cta-agent cta-agent--sentinel">AUDIT</span> valida. Cada campo, cada regla, cada vez. <span class="cta-agent cta-agent--apex">SCOUT</span> optimiza. T-MEC, IMMEX, PROSEC, sin dejar escapar riesgos y ayudándote a estructurar decisiones. Tú <span class="cta-agent cta-agent--tf">decides.</span> Con datos, no con dudas.',
     'cta.stat1.label': 'Tiempo de análisis',
     'cta.stat2.label': 'Basado en legislación',
     'cta.stat3.label': 'Captura manual'
@@ -3191,7 +3190,7 @@ var _i18n = {
     'process.label': 'How It Works',
     'reg.label': 'Legal Foundation',
     'reg.title': 'Built on <span class="reg-highlight">real legislation</span>,<br>not assumptions',
-    'reg.desc': 'Every validator, every calculation, and every finding is grounded in current Mexican legislation — updated to 2026. This is not a generic chatbot: TradeFlow is a customs compliance engine powered by frontier AI models.',
+    'reg.desc': 'Every validator, every calculation, and every finding is grounded in current Mexican legislation — updated to 2026. This is not a generic chatbot: InTake is a customs compliance engine powered by frontier AI models.',
     'cta.label': 'Get Started',
     'cta.title': 'Foreign trade used to run<br>without intelligence. <span class="gradient">Not anymore.</span>',
     'cta.btn1': 'Book a Demo <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
@@ -3211,9 +3210,9 @@ var _i18n = {
     'pain.6.tag': 'HIDDEN COST', 'pain.6.title': 'Tax benefits nobody applies',
     'pain.6.desc': 'Ignored T-MEC preferences, excess DTA/IVA, corrections nobody requests. Money on the table, operation after operation.',
     'metrics.1.desc': 'Full analysis of a pedimento with all line items',
-    'metrics.1.source': 'System · TradeFlow',
+    'metrics.1.source': 'System · InTake',
     'metrics.2.desc': 'Real-time fiscal calculators per operation',
-    'metrics.2.source': 'System · Sentinel',
+    'metrics.2.source': 'System · Audit',
     'metrics.3.desc': 'Of Mexican customs review is still manual today',
     'metrics.3.source': 'Market · Industry estimate',
     'metrics.4.desc': 'Recoverable cost per operation with T-MEC properly applied',
@@ -3264,7 +3263,7 @@ var _i18n = {
     'reg.tag1': 'Customs Law 2026', 'reg.tag2': 'RGCE 2026', 'reg.tag3': 'CFF',
     'reg.tag4': 'USMCA Ch. 5', 'reg.tag5': 'IMMEX Decree', 'reg.tag6': 'TIGIE',
     'reg.tag7': 'NOM-050', 'reg.tag8': 'LFD Art. 49', 'reg.tag9': 'SAT Annex 22',
-    'cta.sub': '<span class="cta-agent cta-agent--atlas">SCAN</span> analyzes. Conversational, deep, instant. <span class="cta-agent cta-agent--sentinel">AUDIT</span> validates. Every field, every rule, every time. <span class="cta-agent cta-agent--apex">SCOUT</span> optimizes. T-MEC, IMMEX, PROSEC, never letting risks slip and helping you structure decisions. You <span class="cta-agent cta-agent--tf">decide.</span> With data, not doubts.',
+    'cta.sub': '<span class="cta-agent cta-agent--atlas">SCAN</span> analyzes your documents with deep and instant analysis. <span class="cta-agent cta-agent--sentinel">AUDIT</span> validates. Every field, every rule, every time. <span class="cta-agent cta-agent--apex">SCOUT</span> optimizes. T-MEC, IMMEX, PROSEC, never letting risks slip and helping you structure decisions. You <span class="cta-agent cta-agent--tf">decide.</span> With data, not doubts.',
     'cta.stat1.label': 'Analysis time',
     'cta.stat2.label': 'Legislation-based',
     'cta.stat3.label': 'Manual data entry'
