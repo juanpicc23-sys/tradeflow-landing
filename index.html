@@ -152,6 +152,12 @@ body {
   max-width: 700px;
 }
 .hero-headline .line { display: block; }
+.gradient-intake {
+  background: linear-gradient(135deg, #1b49a5 0%, #3fcfe6 45%, #7ae4f2 70%, #1b49a5 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s ease-in-out infinite;
+}
 .hero-right {
   display: flex; flex-direction: column; align-items: flex-end;
   gap: 24px; padding-top: 20px;
@@ -196,7 +202,7 @@ body {
   perspective: 900px;
   perspective-origin: 50% 40%;
 }
-/* Soft diffuse shadow underneath — separate element avoids animating box-shadow */
+/* Soft diffuse shadow underneath — follows card reveal animation */
 .hero-mockup-wrapper::before {
   content: '';
   position: absolute;
@@ -204,6 +210,8 @@ body {
   background: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.10) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
+  opacity: 0;
+  animation: cardSlideReveal 1.8s 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.5s;
 }
 .hero-mockup-wrapper:hover::before {
@@ -444,6 +452,7 @@ body {
   position: relative; z-index: 2;
   padding: 48px 56px;
   perspective: 800px;
+  text-align: center;
 }
 .trust-inner {
   max-width: 1200px; margin: 0 auto;
@@ -475,6 +484,20 @@ body {
   transform: translateY(-6px) translateZ(30px);
 }
 .trust-item strong { color: inherit; font-weight: 700; }
+.trust-title {
+  text-align: center;
+  font-size: clamp(13px, 1.6vw, 16px);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.trust-title.trust-gradient {
+  background: linear-gradient(135deg, #0a3a9e 0%, #1bc8e8 35%, #0a9ed6 60%, #0a3a9e 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s ease-in-out infinite;
+}
 
 /* ═══ METRICS SECTION ═══ */
 .metrics {
@@ -620,7 +643,10 @@ body {
   font-size: clamp(36px, 4.5vw, 60px);
   font-weight: 800; line-height: 1.05; letter-spacing: -1px;
 }
-.agents-title .gradient {
+.agents-title .gradient,
+.process-title .gradient,
+.metrics-headline .gradient,
+.problem-title .gradient {
   background: linear-gradient(135deg, #0055ff 0%, #3fcfe6 25%, #dc2850 40%, #f5a623 60%, #ffd700 75%, #7a7a8a 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
@@ -732,22 +758,22 @@ body {
 .agent-hero.tf .agent-hero-blob-1 {
   background: radial-gradient(ellipse at center, #000000 0%, #1b49a5 18%, #3fcfe6 40%, #7ae4f2 58%, transparent 80%);
   filter: blur(80px); opacity: 0.85;
-  animation: agentBandWander1 8s ease-in-out infinite;
+  animation: agentBandWander1 5s ease-in-out infinite;
 }
 .agent-hero.atlas .agent-hero-blob-1 {
   background: radial-gradient(ellipse at center, #000000 0%, #6b0020 18%, #dc2850 40%, #ff8060 58%, transparent 80%);
   filter: blur(80px); opacity: 0.85;
-  animation: agentBandWander2 9s ease-in-out infinite;
+  animation: agentBandWander2 5.5s ease-in-out infinite;
 }
 .agent-hero.sentinel .agent-hero-blob-1 {
   background: radial-gradient(ellipse at center, #000000 0%, #553000 18%, #f5a623 40%, #ffd700 58%, transparent 80%);
   filter: blur(80px); opacity: 0.85;
-  animation: agentBandWander3 8.5s ease-in-out infinite;
+  animation: agentBandWander3 5s ease-in-out infinite;
 }
 .agent-hero.apex .agent-hero-blob-1 {
   background: radial-gradient(ellipse at center, #000000 0%, #2a2a38 18%, #7a7a8a 40%, #c0c0d0 58%, transparent 80%);
   filter: blur(85px); opacity: 0.8;
-  animation: agentBandWander4 7.5s ease-in-out infinite;
+  animation: agentBandWander4 4.5s ease-in-out infinite;
 }
 
 @keyframes agentBandWander1 {
@@ -913,6 +939,47 @@ body {
 .agent-hero.apex .agent-hero-desc { color: #1a1a2e; }
 .agent-hero.apex .agent-hero-feat { color: rgba(26,26,46,0.7); }
 .agent-hero.apex .agent-hero-feat::before { background: rgba(200,200,220,0.6); }
+/* ─── Agent hero cinematic stagger ─── */
+.agent-hero-content .agent-hero-badge,
+.agent-hero-content .agent-hero-name,
+.agent-hero-content .agent-hero-role,
+.agent-hero-content .agent-hero-desc,
+.agent-hero-content .agent-hero-feats {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Stagger delays — each child enters sequentially */
+.cine-visible .agent-hero-badge  { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.cine-visible .agent-hero-name   { opacity: 1; transform: translateY(0); transition-delay: 0.22s; }
+.cine-visible .agent-hero-role   { opacity: 1; transform: translateY(0); transition-delay: 0.34s; }
+.cine-visible .agent-hero-desc   { opacity: 1; transform: translateY(0); transition-delay: 0.48s; }
+.cine-visible .agent-hero-feats  { opacity: 1; transform: translateY(0); transition-delay: 0.62s; }
+
+/* Individual feat items stagger within feats */
+.agent-hero-feat {
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cine-visible .agent-hero-feat:nth-child(1) { opacity: 1; transform: translateX(0); transition-delay: 0.7s; }
+.cine-visible .agent-hero-feat:nth-child(2) { opacity: 1; transform: translateX(0); transition-delay: 0.82s; }
+.cine-visible .agent-hero-feat:nth-child(3) { opacity: 1; transform: translateX(0); transition-delay: 0.94s; }
+
+/* Blob fade-in with section */
+.agent-hero .agent-hero-blob {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.agent-hero.cine-visible .agent-hero-blob {
+  opacity: 0.85;
+  transform: scale(1);
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 1100px) {
   .agents-intro-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
@@ -1158,29 +1225,29 @@ body {
 .timeline.active .timeline-step:nth-child(6) .timeline-num { animation: orbGlow6 5s 4s ease-in-out infinite; }
 
 @keyframes orbGlow2 {
-  0%, 100% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  0%, 100% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
   20% { background: rgba(63,207,230,0.35); border-color: rgba(63,207,230,0.8); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 18px rgba(63,207,230,0.6), 0 0 36px rgba(27,73,165,0.25); }
-  40% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  40% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
 }
 @keyframes orbGlow3 {
-  0%, 100% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  0%, 100% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
   20% { background: rgba(63,207,230,0.35); border-color: rgba(63,207,230,0.8); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 18px rgba(63,207,230,0.6), 0 0 36px rgba(27,73,165,0.25); }
-  40% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  40% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
 }
 @keyframes orbGlow4 {
-  0%, 100% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  0%, 100% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
   20% { background: rgba(220,40,80,0.3); border-color: rgba(220,40,80,0.8); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 18px rgba(220,40,80,0.6), 0 0 36px rgba(220,40,80,0.25); }
-  40% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  40% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
 }
 @keyframes orbGlow5 {
-  0%, 100% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  0%, 100% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
   20% { background: rgba(245,166,35,0.3); border-color: rgba(245,166,35,0.8); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 18px rgba(245,166,35,0.6), 0 0 36px rgba(245,166,35,0.25); }
-  40% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  40% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
 }
 @keyframes orbGlow6 {
-  0%, 100% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  0%, 100% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
   20% { background: rgba(122,122,138,0.35); border-color: rgba(122,122,138,0.8); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 18px rgba(122,122,138,0.6), 0 0 36px rgba(122,122,138,0.25); }
-  40% { background: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.5); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
+  40% { background: #ffffff; border-color: rgba(255,255,255,0.9); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
 }
 
 /* Step — glass card with depth */
@@ -1237,9 +1304,9 @@ body {
   left: -72px; top: 18px;
   width: 38px; height: 38px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.5);
-  border-top-color: rgba(255,255,255,0.7);
-  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-top-color: rgba(255,255,255,0.9);
+  background: #ffffff;
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--mono); font-size: 12px; font-weight: 700;
@@ -1292,18 +1359,18 @@ body {
 .timeline.active .timeline-step:nth-child(5) .timeline-num { animation-delay: 2.1s; }
 .timeline.active .timeline-step:nth-child(6) .timeline-num { animation-delay: 2.8s; }
 @keyframes numBreathe {
-  0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06); }
-  50%      { box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 18px var(--num-accent, rgba(63,207,230,0.25)), 0 2px 12px rgba(0,0,0,0.06); }
+  0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 2px 12px rgba(0,0,0,0.06); }
+  50%      { box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 0 18px var(--num-accent, rgba(63,207,230,0.25)), 0 2px 12px rgba(0,0,0,0.06); }
 }
 
 /* Hover — orb lifts + ring spins */
 .timeline-step:hover .timeline-num {
   border-color: var(--num-accent, rgba(63,207,230,0.5));
   color: #1a1a2e;
-  background: rgba(255,255,255,0.6);
+  background: #ffffff;
   transform: scale(1.15) translateZ(10px);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.8),
+    inset 0 1px 0 rgba(255,255,255,1),
     0 0 24px var(--num-accent, rgba(63,207,230,0.3)),
     0 4px 16px rgba(0,0,0,0.08);
   animation: none;
@@ -2221,8 +2288,8 @@ body {
   <div class="hero-top">
     <h1 class="hero-headline hero-reveal d1">
       <span class="line" data-i18n="hero.line1">Tu Comercio Exterior.</span>
-      <span class="line" data-i18n="hero.line2">Con IA Nativa.</span>
-      <span class="line" data-i18n="hero.line3"></span>
+      <span class="line" data-i18n="hero.line2" data-i18n-html="1">Con <span class="gradient-intake">IA</span> Nativa.</span>
+      <span class="line" data-i18n="hero.line3" data-i18n-html="1"></span>
     </h1>
     <div class="hero-right hero-reveal d2">
       <p class="hero-right-text" data-i18n="hero.sub">Designed for teams who need visibility, compliance and efficiency</p>
@@ -2277,6 +2344,7 @@ body {
 
 <!-- ═══ TRUST ═══ -->
 <div class="trust">
+  <p class="trust-title trust-gradient reveal" data-i18n="trust.title">Integrado con el marco normativo</p>
   <div class="trust-inner reveal">
     <div class="trust-item"><strong>Ley Aduanera 2026</strong></div>
     <div class="trust-item"><strong>T-MEC / USMCA</strong></div>
@@ -2292,7 +2360,7 @@ body {
     <div class="problem-header reveal">
       <div>
         <div class="section-label-pill" data-i18n="problem.label">EL PROBLEMA</div>
-        <h2 class="problem-title" data-i18n="problem.title" data-i18n-html="1">El error que nadie ve<br>hasta que ya costó.</h2>
+        <h2 class="problem-title" data-i18n="problem.title" data-i18n-html="1">El error que nadie ve<br>hasta que ya <span class="gradient">costó.</span></h2>
       </div>
       <p class="problem-subtitle" data-i18n="problem.sub" data-i18n-html="1">
         El comercio exterior mexicano todavía corre sobre revisión manual,
@@ -2516,7 +2584,7 @@ body {
   <div class="metrics-inner">
     <div class="metrics-label section-label-glass reveal" data-i18n="metrics.label">LO QUE CAMBIA</div>
     <h2 class="metrics-headline reveal" style="transition-delay:0.06s" data-i18n="metrics.title" data-i18n-html="1">
-      Tu operación<br>en cifras
+      Tu operación<br><span class="gradient">en cifras</span>
     </h2>
     <div class="metrics-grid">
 
@@ -2604,7 +2672,7 @@ body {
   <div class="agent-hero-blob agent-hero-blob-1"></div>
   <div class="agent-hero-blob agent-hero-blob-2"></div>
   <div class="agent-hero-inner">
-    <div class="agent-hero-content reveal-left">
+    <div class="agent-hero-content">
       <div class="agent-hero-badge" data-i18n="ah.tf.badge" data-i18n-html="1"><span class="agent-hero-badge-dot"></span> AGENTE 01</div>
       <h2 class="agent-hero-name">INTAKE</h2>
       <span class="agent-hero-role" data-i18n="ah.tf.role">Procesamiento Documental</span>
@@ -2612,7 +2680,7 @@ body {
       <div class="agent-hero-feats">
         <span class="agent-hero-feat" data-i18n="ah.tf.feat1">Extracción semántica con Modelos IA frontera</span>
         <span class="agent-hero-feat" data-i18n="ah.tf.feat2">Pipeline multi-documento unificado</span>
-        <span class="agent-hero-feat" data-i18n="ah.tf.feat3">Modelo semántico universal (JSON)</span>
+        <span class="agent-hero-feat" data-i18n="ah.tf.feat3">Mapeo de operación documental</span>
       </div>
     </div>
   </div>
@@ -2623,7 +2691,7 @@ body {
   <div class="agent-hero-blob agent-hero-blob-1"></div>
   <div class="agent-hero-blob agent-hero-blob-2"></div>
   <div class="agent-hero-inner">
-    <div class="agent-hero-content reveal-right">
+    <div class="agent-hero-content">
       <div class="agent-hero-badge" data-i18n="ah.atlas.badge" data-i18n-html="1"><span class="agent-hero-badge-dot"></span> AGENTE 02</div>
       <h2 class="agent-hero-name">SCAN</h2>
       <span class="agent-hero-role" data-i18n="ah.atlas.role">Data Analyst</span>
@@ -2642,7 +2710,7 @@ body {
   <div class="agent-hero-blob agent-hero-blob-1"></div>
   <div class="agent-hero-blob agent-hero-blob-2"></div>
   <div class="agent-hero-inner">
-    <div class="agent-hero-content reveal-left">
+    <div class="agent-hero-content">
       <div class="agent-hero-badge" data-i18n="ah.sentinel.badge" data-i18n-html="1"><span class="agent-hero-badge-dot"></span> AGENTE 03</div>
       <h2 class="agent-hero-name">AUDIT</h2>
       <span class="agent-hero-role" data-i18n="ah.sentinel.role">Compliance Engine</span>
@@ -2650,7 +2718,7 @@ body {
       <div class="agent-hero-feats">
         <span class="agent-hero-feat" data-i18n="ah.sentinel.feat1">Validación cruzada automática (8 validadores)</span>
         <span class="agent-hero-feat" data-i18n="ah.sentinel.feat2">Cálculo de exposición fiscal (Ley Aduanera, CFF)</span>
-        <span class="agent-hero-feat" data-i18n="ah.sentinel.feat3">Detección de riesgo PAMA y penal</span>
+        <span class="agent-hero-feat" data-i18n="ah.sentinel.feat3">Detección de posibles riesgos auditables</span>
       </div>
     </div>
   </div>
@@ -2661,7 +2729,7 @@ body {
   <div class="agent-hero-blob agent-hero-blob-1"></div>
   <div class="agent-hero-blob agent-hero-blob-2"></div>
   <div class="agent-hero-inner">
-    <div class="agent-hero-content reveal-right">
+    <div class="agent-hero-content">
       <div class="agent-hero-badge" data-i18n="ah.apex.badge" data-i18n-html="1"><span class="agent-hero-badge-dot"></span> AGENTE 04</div>
       <h2 class="agent-hero-name">SCOUT</h2>
       <span class="agent-hero-role" data-i18n="ah.apex.role">Strategic Intelligence</span>
@@ -2681,7 +2749,7 @@ body {
     <div class="process-header">
       <div class="section-label process-label-glass reveal" data-i18n="process.label">Cómo Funciona</div>
       <div class="process-header-right">
-        <h2 class="process-title reveal" style="transition-delay:0.06s" data-i18n="process.title" data-i18n-html="1">De documentos a<br>decisiones en minutos</h2>
+        <h2 class="process-title reveal" style="transition-delay:0.06s" data-i18n="process.title" data-i18n-html="1">De documentos a<br><span class="gradient">decisiones en minutos</span></h2>
         <p class="process-subtitle reveal" style="transition-delay:0.12s" data-i18n="process.sub">Cada operación de comercio exterior pasa por un flujo de inteligencia que extrae, valida y cuantifica — sin intervención manual.</p>
       </div>
     </div>
@@ -2973,8 +3041,8 @@ if (timelineEl) timelineObs.observe(timelineEl);
   var title = document.getElementById('heroGreeting');
   var sub = document.getElementById('heroGreetingSub');
   var lang = localStorage.getItem('tradeflow_lang') || 'es';
-  var titleTexts = { es: 'Evening, partner.', en: 'Evening, partner.' };
-  var subTexts = { es: 'Agentes en standby. Listos cuando tú.', en: 'Agents on standby. Ready when you are.' };
+  var titleTexts = { es: 'Hola, compañero.', en: 'Evening, partner.' };
+  var subTexts = { es: 'Agentes en espera. Listos cuando ordenes.', en: 'Agents on standby. Ready when you are.' };
 
   smoothType(title, titleTexts[lang] || titleTexts.es, 1800, function(){
     smoothType(sub, subTexts[lang] || subTexts.es, 300);
@@ -3030,15 +3098,16 @@ var _currentLang = localStorage.getItem('tradeflow_lang') || 'es';
 var _i18n = {
   es: {
     'nav.agents': 'Agentes', 'nav.process': 'Proceso', 'nav.demo': 'Demo', 'nav.login': 'Iniciar Sesión',
-    'hero.line1': 'Tu Comercio Exterior.', 'hero.line2': 'Con IA Nativa.', 'hero.line3': '',
+    'hero.line1': 'Tu Comercio Exterior.', 'hero.line2': 'Con <span class="gradient-intake">IA</span> Nativa.', 'hero.line3': '',
     'hero.sub': 'Diseñado para equipos que necesitan visibilidad, cumplimiento y eficiencia',
-    'hero.cta': 'Agendar Demo', 'hero.greeting': 'Evening, partner.',
-    'hero.greetingSub': 'Agentes en standby. Listos cuando tú.',
+    'hero.cta': 'Agendar Demo', 'hero.greeting': 'Hola, compañero.',
+    'hero.greetingSub': 'Agentes en espera. Listos cuando ordenes.',
     'hero.input': 'Cruza un pedimento contra una factura...',
+    'trust.title': 'Integrado con el marco normativo',
     'problem.label': 'EL PROBLEMA',
-    'problem.title': 'El error que nadie ve<br>hasta que ya costó.',
+    'problem.title': 'El error que nadie ve<br>hasta que ya <span class="gradient">costó.</span>',
     'problem.sub': 'El comercio exterior mexicano todavía corre sobre revisión manual, hojas de cálculo y esperanza. Los equipos detectan errores <em>después</em> de que se convierten en multas — no antes.',
-    'metrics.label': 'LO QUE CAMBIA', 'metrics.title': 'Tu operación<br>en cifras',
+    'metrics.label': 'LO QUE CAMBIA', 'metrics.title': 'Tu operación<br><span class="gradient">en cifras</span>',
     'agents.label': 'Ecosistema de Agentes',
     'agents.title': 'Cuatro agentes.<br>Una <span class="gradient">misión.</span>',
     'agents.sub': 'Cada agente domina un área específica. Juntos cubren el ciclo completo de operaciones aduaneras.',
@@ -3081,7 +3150,7 @@ var _i18n = {
     'ah.tf.desc': 'Hub central de inteligencia aduanera. Extrae y estructura datos de pedimentos, facturas, packing lists y certificados de origen con IA.',
     'ah.tf.feat1': 'Extracción semántica con Modelos IA frontera',
     'ah.tf.feat2': 'Pipeline multi-documento unificado',
-    'ah.tf.feat3': 'Modelo semántico universal (JSON)',
+    'ah.tf.feat3': 'Mapeo de operación documental',
     'ah.atlas.badge': '<span class="agent-hero-badge-dot"></span> AGENTE 02',
     'ah.atlas.role': 'Analista de Datos',
     'ah.atlas.desc': 'Analista de datos de operaciones. Lee, cruza y explica la información de tus documentos para revelar patrones y oportunidades.',
@@ -3093,14 +3162,14 @@ var _i18n = {
     'ah.sentinel.desc': 'Motor de validación y cumplimiento. 8 validadores especializados que detectan inconsistencias, calculan impacto fiscal y evalúan riesgo PAMA.',
     'ah.sentinel.feat1': 'Validación cruzada automática (8 validadores)',
     'ah.sentinel.feat2': 'Cálculo de exposición fiscal (Ley Aduanera, CFF)',
-    'ah.sentinel.feat3': 'Detección de riesgo PAMA y penal',
+    'ah.sentinel.feat3': 'Detección de posibles riesgos auditables',
     'ah.apex.badge': '<span class="agent-hero-badge-dot"></span> AGENTE 04',
     'ah.apex.role': 'Inteligencia Estratégica',
     'ah.apex.desc': 'Inteligencia estratégica que convierte datos de operación en decisiones de negocio. Optimización de costos, ahorro T-MEC y análisis de proveedores.',
     'ah.apex.feat1': 'Oportunidades de ahorro T-MEC/USMCA',
     'ah.apex.feat2': 'Análisis de costos por pedimento',
     'ah.apex.feat3': 'Detección de anomalías de precio',
-    'process.title': 'De documentos a<br>decisiones en minutos',
+    'process.title': 'De documentos a<br><span class="gradient">decisiones en minutos</span>',
     'process.sub': 'Cada operación de comercio exterior pasa por un flujo de inteligencia que extrae, valida y cuantifica \u2014 sin intervención manual.',
     'process.s1.title': 'Carga de documentos',
     'process.s1.desc': 'Sube pedimentos, facturas comerciales, certificados de origen o packing lists. Se acepta cualquier formato \u2014 la IA se encarga de la extracción.',
@@ -3125,15 +3194,16 @@ var _i18n = {
   },
   en: {
     'nav.agents': 'Agents', 'nav.process': 'Process', 'nav.demo': 'Demo', 'nav.login': 'Sign In',
-    'hero.line1': 'Your Trade', 'hero.line2': 'Operations.', 'hero.line3': 'Powered by AI.',
+    'hero.line1': 'Your Trade', 'hero.line2': 'Operations.', 'hero.line3': 'Powered by <span class="gradient-intake">AI.</span>',
     'hero.sub': 'Designed for teams who need visibility, compliance and efficiency',
     'hero.cta': 'Book a Demo', 'hero.greeting': 'Evening, partner.',
-    'hero.greetingSub': 'Agents on standby. Ready when you are.',
+    'hero.greetingSub': 'Ready when you are.',
     'hero.input': 'Cross-validate a pedimento against an invoice...',
+    'trust.title': 'Built on the regulatory framework',
     'problem.label': 'THE PROBLEM',
-    'problem.title': 'The mistake nobody sees<br>until it already cost you.',
+    'problem.title': 'The <span class="gradient">mistake</span> nobody sees<br>until it already <span class="gradient">cost you.</span>',
     'problem.sub': 'Mexican foreign trade still runs on manual review, spreadsheets, and hope. Teams catch errors <em>after</em> they become fines — not before.',
-    'metrics.label': 'WHAT CHANGES', 'metrics.title': 'Your operation<br>in numbers',
+    'metrics.label': 'WHAT CHANGES', 'metrics.title': 'Your operation<br><span class="gradient">in numbers</span>',
     'agents.label': 'Agent Ecosystem',
     'agents.title': 'Four agents.<br>One <span class="gradient">mission.</span>',
     'agents.sub': 'Each agent masters a specific domain. Together they cover the full cycle of customs operations.',
@@ -3176,7 +3246,7 @@ var _i18n = {
     'ah.tf.desc': 'Central customs intelligence hub. Extracts and structures data from pedimentos, invoices, packing lists and certificates of origin with AI.',
     'ah.tf.feat1': 'Semantic extraction with frontier AI models',
     'ah.tf.feat2': 'Unified multi-document pipeline',
-    'ah.tf.feat3': 'Universal semantic model (JSON)',
+    'ah.tf.feat3': 'Document operation mapping',
     'ah.atlas.badge': '<span class="agent-hero-badge-dot"></span> AGENT 02',
     'ah.atlas.role': 'Data Analyst',
     'ah.atlas.desc': 'Operations data analyst. Reads, cross-references and explains your document data to reveal patterns and opportunities.',
@@ -3188,14 +3258,14 @@ var _i18n = {
     'ah.sentinel.desc': 'Validation and compliance engine. 8 specialized validators that detect inconsistencies, calculate fiscal impact and assess PAMA risk.',
     'ah.sentinel.feat1': 'Automatic cross-validation (8 validators)',
     'ah.sentinel.feat2': 'Fiscal exposure calculation (Customs Law, CFF)',
-    'ah.sentinel.feat3': 'PAMA and criminal risk detection',
+    'ah.sentinel.feat3': 'Detection of potential auditable risks',
     'ah.apex.badge': '<span class="agent-hero-badge-dot"></span> AGENT 04',
     'ah.apex.role': 'Strategic Intelligence',
     'ah.apex.desc': 'Strategic intelligence that turns operation data into business decisions. Cost optimization, T-MEC savings and supplier analysis.',
     'ah.apex.feat1': 'T-MEC/USMCA savings opportunities',
     'ah.apex.feat2': 'Per-pedimento cost analysis',
     'ah.apex.feat3': 'Price anomaly detection',
-    'process.title': 'From documents to<br>decisions in minutes',
+    'process.title': 'From documents to<br><span class="gradient">decisions in minutes</span>',
     'process.sub': 'Every foreign trade operation goes through an intelligence pipeline that extracts, validates and quantifies \u2014 with zero manual intervention.',
     'process.s1.title': 'Document Upload',
     'process.s1.desc': 'Upload pedimentos, commercial invoices, certificates of origin or packing lists. Any format accepted \u2014 AI handles the extraction.',
