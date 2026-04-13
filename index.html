@@ -39,7 +39,7 @@ body {
 }
 
 /* ═══ GRAIN NOISE OVERLAY ═══ */
-.noise{position:fixed;inset:0;z-index:1;opacity:0.75;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch' seed='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3CfeFuncG type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3CfeFuncB type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px 256px;}
+.noise{position:fixed;inset:0;z-index:1;opacity:0.75;pointer-events:none;contain:strict;will-change:transform;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch' seed='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3CfeFuncG type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3CfeFuncB type='discrete' tableValues='0 .15 .3 .5 .7 .85 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px 256px;}
 
 /* ═══ NAVIGATION ═══ */
 .nav {
@@ -110,7 +110,8 @@ body {
 /* Gradient blobs — identical to InTake v8 */
 .hero-blob {
   position: absolute; pointer-events: none; border-radius: 50%;
-  will-change: transform;
+  will-change: transform, filter;
+  backface-visibility: hidden;
 }
 .hero-blob-1 {
   top: -18%; right: -12%; width: 45%; height: 48%;
@@ -739,7 +740,8 @@ body {
 /* Agent hero blobs */
 .agent-hero-blob {
   position: absolute; pointer-events: none; border-radius: 50%; z-index: 0;
-  will-change: transform;
+  will-change: transform, filter;
+  backface-visibility: hidden;
 }
 /* Agent blobs — wide horizontal band across center */
 .agent-hero .agent-hero-blob-1 {
@@ -1073,8 +1075,7 @@ body {
 /* Glass layer over image */
 .pain-card-glass {
   position: absolute; inset: 0;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  background: rgba(255,255,255,0.10);
   border-top: 1px solid rgba(255,255,255,0.15);
   pointer-events: none;
   z-index: 1;
@@ -1618,7 +1619,8 @@ body {
 .cta-blob {
   position: absolute; pointer-events: none; border-radius: 50%; z-index: 0;
   width: 35%; height: 40%;
-  will-change: transform;
+  will-change: transform, filter;
+  backface-visibility: hidden;
 }
 .cta-blob-1 {
   top: 5%; left: -8%;
@@ -2091,6 +2093,9 @@ body {
 .problem, .metrics, .agents-intro, .process, .regulatory, .cta {
   contain: layout style;
 }
+.agent-hero {
+  contain: layout style;
+}
 
 /* ═══ MOBILE PORTRAIT (≤480px) ═══ */
 @media (max-width: 480px) {
@@ -2283,7 +2288,7 @@ body {
       <span class="line" data-i18n="hero.line3" data-i18n-html="1"></span>
     </h1>
     <div class="hero-right hero-reveal d2">
-      <p class="hero-right-text" data-i18n="hero.sub">Designed for teams who need visibility, compliance and efficiency</p>
+      <p class="hero-right-text" data-i18n="hero.sub">La primera plataforma de IA para comercio exterior mexicano. Valida documentos, detecta riesgos legales reales y resuelve hallazgos críticos. Compatible con programas IMMEX (BETA).</p>
       <a href="#cta" class="btn-demo" data-i18n="hero.cta">
         Book a Demo
         <span class="btn-demo-arrow">
@@ -3005,6 +3010,18 @@ if (timelineEl) timelineObs.observe(timelineEl);
 
 // ─── Regulatory cards 3D (no mouse tilt — static centered) ───
 
+// ─── PERFORMANCE: pause blob animations when section is off-screen ───
+(function(){
+  var blobObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var blobs = e.target.querySelectorAll('.hero-blob, .agent-hero-blob, .cta-blob');
+      blobs.forEach(function(b){
+        b.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+      });
+    });
+  }, { rootMargin: '200px 0px' });
+  document.querySelectorAll('.hero, .agent-hero, .cta').forEach(function(s){ blobObs.observe(s); });
+})();
 
 // ─── Typewriter effect for greeting + sub ───
 (function(){
@@ -3100,7 +3117,7 @@ var _i18n = {
   es: {
     'nav.agents': 'Agentes', 'nav.process': 'Proceso', 'nav.demo': 'Demo', 'nav.login': 'Iniciar Sesión',
     'hero.line1': 'Tu Comercio Exterior.', 'hero.line2': 'Con <span class="gradient-intake">IA</span> Nativa.', 'hero.line3': '',
-    'hero.sub': 'Diseñado para equipos que necesitan visibilidad, cumplimiento y eficiencia',
+    'hero.sub': 'La primera plataforma de IA para comercio exterior mexicano. Valida documentos, detecta riesgos legales reales y resuelve hallazgos críticos. Compatible con programas IMMEX (BETA).',
     'hero.cta': 'Agendar Demo', 'hero.greeting': 'Hola, compañero.',
     'hero.greetingSub': 'Agentes en espera. Listos cuando ordenes.',
     'hero.input': 'Cruza un pedimento contra una factura...',
@@ -3196,7 +3213,7 @@ var _i18n = {
   en: {
     'nav.agents': 'Agents', 'nav.process': 'Process', 'nav.demo': 'Demo', 'nav.login': 'Sign In',
     'hero.line1': 'Your Trade', 'hero.line2': 'Operations.', 'hero.line3': 'Powered by <span class="gradient-intake">AI.</span>',
-    'hero.sub': 'Designed for teams who need visibility, compliance and efficiency',
+    'hero.sub': 'The first AI platform for Mexican foreign trade. Validates documents, detects real legal risks and resolves critical findings. Compatible with IMMEX programs (BETA).',
     'hero.cta': 'Book a Demo', 'hero.greeting': 'Evening, partner.',
     'hero.greetingSub': 'Ready when you are.',
     'hero.input': 'Cross-validate a pedimento against an invoice...',
