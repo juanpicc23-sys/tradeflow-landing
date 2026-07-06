@@ -2320,6 +2320,39 @@
     from { background-position: 0 0; }
     to   { background-position: 160px 260px; }
   }
+
+  /* ───── Hero mobile: apilar (nav → contenido → banda aurora), sin el split 50/50 ───── */
+  @media (max-width: 768px) {
+    .hero-stage { height: auto; }
+    .hero {
+      position: relative; top: auto; height: auto; min-height: 100vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    /* Nav: barra full-width, logo izq / (Log in + idioma) der */
+    nav {
+      position: relative; order: 1; width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 16px 20px;
+    }
+    .nav-links { display: none; }
+    .nav-right { gap: 16px; }
+    /* Contenido en blanco, en flujo (no absoluto) */
+    .left-panel {
+      position: relative; order: 2; width: 100%; height: auto; background: #fff;
+    }
+    .lh-copy {
+      position: relative; left: auto; right: auto; bottom: auto;
+      padding: 22px 22px 30px;
+    }
+    .lh-title { font-size: clamp(38px, 11vw, 54px); line-height: 1.0; margin-bottom: 16px; }
+    .lh-desc { max-width: none; font-size: clamp(15px, 4vw, 18px); }
+    .lh-join { margin-top: 24px; }
+    /* Aurora: banda full-width que llena el resto de la pantalla */
+    .right-panel {
+      position: relative; order: 3; width: 100%; height: auto;
+      flex: 1 1 auto; min-height: 300px;
+    }
+  }
 </style>
 </head>
 <body>
