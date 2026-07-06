@@ -2220,6 +2220,19 @@
     letter-spacing: 0.01em;
     white-space: nowrap;
   }
+
+  /* ---- optimización móvil de secciones sin cubrir (2026-07-05) ---- */
+  @media (max-width: 600px) {
+    .s6-title { margin: 12vh 0 0; white-space: normal; font-size: clamp(24px, 7.5vw, 42px); }
+    .marquee { padding: 2.4vh 0; }
+    .marquee-item { font-size: 30px; padding: 0 5vw; }
+    .map-wrap { height: 30vh; }
+    .s9-headline, .sg-headline { font-size: clamp(32px, 9.5vw, 58px); }
+    .s9-logos { gap: 18px 22px; flex-wrap: wrap; margin-top: 3vh; }
+    .s9-logos img { height: 30px; }
+    .cta-headline { font-size: clamp(26px, 8vw, 46px); }
+    .ft-wordmark { font-size: clamp(58px, 26vw, 130px); }
+  }
 </style>
 </head>
 <body>
