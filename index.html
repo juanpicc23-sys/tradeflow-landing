@@ -39,8 +39,8 @@
     position: absolute;
     top: 0; right: 0;
     width: 50%; height: 100%;
-    /* negro con degradado radial para dar profundidad */
-    background: radial-gradient(120% 100% at 72% 42%, #16161c 0%, #0a0a0e 55%, #050506 100%);
+    overflow: hidden; isolation: isolate;
+    background: #05060a;
   }
 
   /* Canvas de dots (campo plasma) en la mitad derecha */
@@ -56,11 +56,12 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 50%;               /* solo del lado izquierdo (panel blanco) */
     display: grid;
-    grid-template-columns: 1fr auto 1fr;  /* centro perfectamente centrado */
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     padding: 22px 40px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;  /* misma letra en todo el nav */
   }
 
   /* izquierda: InTake (mono) + logo de nodos */
@@ -72,9 +73,9 @@
   }
   .nav-brand {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 400;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.01em;
     color: #fff;
     mix-blend-mode: difference;   /* negro sobre blanco, blanco sobre negro */
   }
@@ -94,7 +95,7 @@
   .nav-links a {
     color: rgba(255,255,255,0.8);
     text-decoration: none;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: -0.01em;
     mix-blend-mode: difference;
@@ -112,7 +113,7 @@
   .nav-login {
     color: #fff;
     text-decoration: none;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: -0.01em;
     mix-blend-mode: difference;
@@ -124,7 +125,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 14px;
+    font-size: 12.5px;
     font-weight: 500;
     user-select: none;
     mix-blend-mode: difference;
@@ -257,7 +258,7 @@
   .rc-btn svg { width: 13px; height: 13px; }
 
   /* etapa del hero: alto extra para la secuencia (hero sticky dentro) */
-  .hero-stage { height: 220vh; }
+  .hero-stage { height: 100vh; }
   /* siguiente sección: statement centrado con typewriter */
   .section-2 {
     background: #ffffff;
@@ -2233,17 +2234,109 @@
     .cta-headline { font-size: clamp(26px, 8vw, 46px); }
     .ft-wordmark { font-size: clamp(58px, 26vw, 130px); }
   }
+
+  /* ───────── Hero derecho: aurora del login (imagen + grano + scanlines + tagline + logo) ───────── */
+  .lh-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+  .lh-logo {
+    position: absolute; top: 24px; right: 26px; z-index: 6;
+    width: 36px; height: 36px;
+    background: #ffffff;
+    filter: drop-shadow(0 1px 5px rgba(0,0,0,0.28));
+    -webkit-mask: url('intake_logo_node_mask.png') center/contain no-repeat;
+            mask: url('intake_logo_node_mask.png') center/contain no-repeat;
+  }
+  .lh-tagline {
+    position: absolute; left: 34px; right: 34px; bottom: 34px; z-index: 4; margin: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 44px; font-weight: 600; line-height: 1.15; letter-spacing: -0.6px;
+    color: rgba(15,23,42,0.92);
+    text-shadow: 0 1px 12px rgba(255,255,255,0.4);
+    text-align: left;
+  }
+  .lh-tagline span { display: block; white-space: nowrap; }
+  /* Copy del hero en el panel izquierdo (abajo, alineado a la izquierda) */
+  .lh-copy {
+    position: absolute; left: 56px; right: 44px; bottom: 92px; z-index: 2;
+    text-align: left;
+  }
+  .lh-title {
+    margin: 0 0 20px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(34px, 4.6vw, 64px); font-weight: 500;
+    letter-spacing: -0.02em; line-height: 0.98; color: #0b0b0f;
+  }
+  .lh-desc {
+    margin: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(15px, 1.3vw, 20px); font-weight: 500;
+    letter-spacing: -0.005em; line-height: 1.55; color: rgba(15,23,42,0.62);
+  }
+  /* Pill "Join Now" con glow cyan/blanco */
+  .lh-join {
+    display: inline-flex; margin-top: 32px;
+    animation: lhJoinGlow 2.6s ease-in-out infinite;
+  }
+  @keyframes lhJoinGlow {
+    0%, 100% {
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.55),
+                  0 0 7px 0 rgba(186,242,251,0.62),
+                  0 0 13px 1px rgba(56,189,248,0.48);
+    }
+    50% {
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.78),
+                  0 0 11px 1px rgba(186,242,251,0.88),
+                  0 0 19px 2px rgba(56,189,248,0.62);
+    }
+  }
+  /* grano de película: ruido grayscale que "hierve" + deriva lenta, overlay */
+  .right-panel::before {
+    content: ''; position: absolute; top: -100%; left: -100%;
+    width: 300%; height: 300%; z-index: 2; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Cfilter id='lhg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2.4' intercept='-0.7'/%3E%3CfeFuncG type='linear' slope='2.4' intercept='-0.7'/%3E%3CfeFuncB type='linear' slope='2.4' intercept='-0.7'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23lhg)'/%3E%3C/svg%3E");
+    background-repeat: repeat; background-size: 180px 180px;
+    opacity: 0.55; mix-blend-mode: overlay;
+    animation: lhGrainBoil 0.6s steps(1) infinite, lhGrainDrift 26s linear infinite alternate;
+  }
+  /* scanlines muy tenues */
+  .right-panel::after {
+    content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+      rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 3px);
+  }
+  @keyframes lhGrainBoil {
+    0%   { transform: translate(0, 0); }
+    10%  { transform: translate(-5%, 3%); }
+    20%  { transform: translate(5%, -4%); }
+    30%  { transform: translate(-3%, -5%); }
+    40%  { transform: translate(4%, 4%); }
+    50%  { transform: translate(-6%, 2%); }
+    60%  { transform: translate(3%, -3%); }
+    70%  { transform: translate(-4%, 5%); }
+    80%  { transform: translate(5%, -2%); }
+    90%  { transform: translate(-3%, 4%); }
+    100% { transform: translate(0, 0); }
+  }
+  @keyframes lhGrainDrift {
+    from { background-position: 0 0; }
+    to   { background-position: 160px 260px; }
+  }
 </style>
 </head>
 <body>
   <div class="hero-stage">
   <section class="hero">
-    <div class="left-panel"></div>
-    <div class="right-panel"></div>
-    <canvas id="dots"></canvas>
-
-    <h1 class="giant" data-es="Comercio exterior.<br>Simplificado">Trade Compliance.<br>Simplified</h1>
-    <p class="subtitle" data-es='Presentamos la IA de clase mundial para las operaciones de cumplimiento del comercio exterior en México.<br>Compatible con programas IMMEX ahora.'>Introducing the first-class AI for Mexican Trade Compliance operations.<br>Compatible with IMMEX programs now.</p>
+    <div class="left-panel">
+      <div class="lh-copy">
+        <h1 class="lh-title" data-es="Comercio exterior.<br>Simplificado">Trade Compliance.<br>Simplified</h1>
+        <p class="lh-desc" data-es="Presentamos la IA de clase mundial para las operaciones de cumplimiento del comercio exterior en México.<br>Compatible con programas IMMEX ahora.">Introducing the first-class AI for Mexican Trade Compliance operations.<br>Compatible with IMMEX programs now.</p>
+        <a class="cta-pill lh-join" href="https://web-production-9447ae.up.railway.app/login">
+          <span class="cta-pill-text" data-es="Únete ahora">Join Now</span>
+        </a>
+      </div>
+    </div>
+    <div class="right-panel">
+      <img class="lh-img" src="login_aurora.png" alt="">
+    </div>
 
     <nav>
       <div class="nav-left">
@@ -2256,7 +2349,7 @@
         <a href="#" data-es="Demos">Demos</a>
       </div>
       <div class="nav-right">
-        <a href="#" class="nav-login" data-es="Iniciar sesión">Log in</a>
+        <a href="https://web-production-9447ae.up.railway.app/login" class="nav-login" data-es="Iniciar sesión">Log in</a>
         <div class="nav-lang">
           <button type="button" class="active" data-lang="es">ES</button>
           <span class="sep">/</span>
@@ -2264,26 +2357,6 @@
         </div>
       </div>
     </nav>
-
-    <!-- card que aparece al hacer scroll -->
-    <div class="reveal-card" id="revealCard">
-      <div class="rc-thumb"><img src="intake_card_thumb.jpg" alt=""></div>
-      <div class="rc-body">
-        <h3 class="rc-title" data-es="Ve InTake en acción">See InTake in action</h3>
-        <p class="rc-text" data-es="Mira a nuestros agentes clasificar, auditar y despachar operaciones aduaneras en México, de principio a fin.">Watch our agents classify, audit and clear Mexican customs operations end-to-end.</p>
-        <a class="rc-btn" href="#"><span data-es="Explorar más">Explore more</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- saludo typewriter, abajo a la izquierda -->
-    <div class="explore" id="explore">
-      <p class="explore-text" id="exploreText"></p>
-      <div class="explore-arrow" id="exploreArrow">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
-      </div>
-    </div>
   </section>
   </div>
 
