@@ -148,11 +148,12 @@
     left: 0;
     right: 0;
     top: 36%;                  /* un poco por encima del centro */
-    margin: 0;
+    margin: 0 auto;
+    max-width: 90vw;
     text-align: center;
-    line-height: 0.82;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 16vw;
+    line-height: 0.95;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(34px, 8vw, 140px);
     font-weight: 500;
     letter-spacing: -0.02em;
     /* dos tonos: negro sobre la mitad blanca, blanco sobre la mitad negra */
@@ -160,7 +161,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    white-space: nowrap;
+    white-space: normal;
     transform: translateY(-50%);
   }
 
@@ -2134,10 +2135,90 @@
     nav { padding: 16px 18px; grid-template-columns: auto 1fr; }
     .nav-links { display: none; }
     .nav-brand { font-size: 17px; }
-    .giant { font-size: 24vw; }
+    .giant { font-size: clamp(24px, 7.4vw, 34px); }
     .reveal-card { right: 14px; left: 14px; bottom: 16px; width: auto; }
     .rc-thumb { width: 84px; }
     .explore { left: 18px; bottom: 168px; max-width: 82%; }
+  }
+
+  /* ---------- sección problem (rediseño 2026-07-05): header izq + 4 cards ---------- */
+  .problem { background: #ffffff; padding: 14vh 6vw; }
+  .problem-inner { max-width: none; margin: 0; }
+  .problem-head { max-width: 820px; margin: 0 0 7vh; }
+  .problem-title {
+    margin: 0 0 26px;
+    text-align: left;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(28px, 3.7vw, 54px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #0f0f12;
+  }
+  .problem-desc {
+    margin: 0;
+    max-width: 730px;
+    text-align: left;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(16px, 1.35vw, 21px);
+    line-height: 1.62;
+    color: #5b5b63;
+  }
+  .problem-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px 40px;
+  }
+  .p-card { text-align: left; }
+  .p-card-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    background: #e9e9ee;
+    background-size: cover;
+    background-position: center;
+  }
+  .p-card-desc {
+    margin: 16px 2px 0;
+    text-align: left;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(14px, 1.05vw, 16px);
+    line-height: 1.42;
+    color: #6b6b73;
+  }
+  @media (max-width: 900px) {
+    .problem-cards { grid-template-columns: repeat(2, 1fr); gap: 34px 24px; }
+    .problem-head { margin-bottom: 5vh; }
+  }
+  @media (max-width: 540px) {
+    .problem { padding: 10vh 7vw; }
+    .problem-cards { grid-template-columns: 1fr; }
+  }
+
+  /* hint "Try Me" -> pill Mode del demo (2026-07-05) */
+  .try-me {
+    position: absolute;
+    top: calc(100% + 24px);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+    color: #12121a;
+    opacity: 0.15;
+    transition: opacity .45s ease;
+  }
+  .try-me.gone { opacity: 0; }
+  .try-arrow { width: 44px; height: 58px; flex: none; }
+  .try-text {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
   }
 </style>
 </head>
@@ -2148,7 +2229,7 @@
     <div class="right-panel"></div>
     <canvas id="dots"></canvas>
 
-    <h1 class="giant">InTake</h1>
+    <h1 class="giant" data-es="Comercio exterior.<br>Simplificado">Trade Compliance.<br>Simplified</h1>
     <p class="subtitle" data-es='Presentamos la IA de clase mundial para las operaciones de cumplimiento del comercio exterior en México.<br>Compatible con programas IMMEX ahora.'>Introducing the first-class AI for Mexican Trade Compliance operations.<br>Compatible with IMMEX programs now.</p>
 
     <nav>
@@ -2193,45 +2274,33 @@
   </section>
   </div>
 
-  <section class="section-2">
-    <div class="s2-inner" id="s2Inner">
-      <h2 class="s2-title" id="s2Title"></h2>
-      <p class="s2-sub" id="s2Sub"></p>
+  <section class="problem">
+    <div class="problem-inner">
+      <div class="problem-head reveal">
+        <h2 class="problem-title" data-es="El comercio exterior de México corre sobre tecnología obsoleta y una mentalidad anticuada.">Mexico's foreign trade is running on legacy tech and outdated thinking.</h2>
+        <p class="problem-desc" data-es="Detrás de cada embarque hay un equipo de comercio exterior ahogado en trabajo manual: recaptura los mismos datos a mano, persigue un solo número entre una docena de pestañas y arma la verdad a pedazos entre correo, Excel y WhatsApp. No existe una vista clara y en tiempo real de la operación, así que se decide medio a ciegas. Y cuando las reglas cambian, la mayoría se entera de la peor forma: solo después de que ya les costó.">Behind every shipment is a trade team drowning in manual work: re-keying the same data by hand, chasing a single number across a dozen open tabs, and piecing the truth together from email, Excel and WhatsApp. There's no clear, real-time view of the operation, so decisions get made half-blind. And when the rules change, most teams find out the hard way: only after it has already cost them.</p>
+      </div>
+      <div class="problem-cards">
+        <div class="p-card reveal">
+          <div class="p-card-img" style="background-image:url('card_1.jpg')"></div>
+          <p class="p-card-desc" data-es="Pantallas de SAP diseñadas hace décadas siguen corriendo tu operación diaria.">SAP screens designed decades ago still run your daily operation.</p>
+        </div>
+        <div class="p-card reveal d1">
+          <div class="p-card-img" style="background-image:url('card_3.jpg')"></div>
+          <p class="p-card-desc" data-es="Cuadrículas infinitas y códigos crípticos donde tus datos se pierden.">Endless grids and cryptic codes where your data disappears.</p>
+        </div>
+        <div class="p-card reveal d2">
+          <div class="p-card-img" style="background-image:url('card_5.jpg')"></div>
+          <p class="p-card-desc" data-es="Una ventana dentro de otra dentro de otra — solo para un cambio.">A window inside a window inside a window — just for one update.</p>
+        </div>
+        <div class="p-card reveal d3">
+          <div class="p-card-img" style="background-image:url('card_6.jpg')"></div>
+          <p class="p-card-desc" data-es="Terminales de pantalla verde de los 80, aún haciendo trabajo crítico.">Green-screen terminals from the 80s, still doing critical work.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="section-3">
-    <div class="cards-stage">
-    <div class="cards-sticky">
-    <div class="cards-grid">
-      <div class="pain-card">
-        <div class="pc-img pc-1"></div>
-        <p class="pc-desc" data-es="Horas que se esfuman recapturando los mismos datos a mano, día tras día.">Hours vanish re-typing the same data by hand, day after day.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pc-img pc-2"></div>
-        <p class="pc-desc" data-es="Una docena de pestañas abiertas — y el único dato que necesitas no está en ninguna.">A dozen tabs open — and the one number you need is in none.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pc-img pc-3"></div>
-        <p class="pc-desc" data-es="Sin una vista clara de tu operación. Decides medio a ciegas.">No clear view of your operation. You're deciding half-blind.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pc-img pc-4"></div>
-        <p class="pc-desc" data-es="Tu información está dispersa entre correo, Excel y WhatsApp.">Your truth is scattered across email, Excel and WhatsApp.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pc-img pc-5"></div>
-        <p class="pc-desc" data-es="Todo vive en la cabeza de una sola persona — y hoy no vino.">It all lives in one person's head — and today they're out.</p>
-      </div>
-      <div class="pain-card">
-        <div class="pc-img pc-6"></div>
-        <p class="pc-desc" data-es="Te enteras de que la regla cambió solo después de que ya te costó.">You learn the rule changed only after it costs you.</p>
-      </div>
-    </div>
-    </div>
-    </div>
-  </section>
 
   <section class="section-4">
     <div class="keep-inner">
@@ -2414,6 +2483,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
           </button>
         </div>
+      </div>
+      <div class="try-me" aria-hidden="true">
+        <svg class="try-arrow" viewBox="0 0 44 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 58 C 18 42, 26 24, 22 6"/>
+          <path d="M12 17 L 22 4 L 32 17"/>
+        </svg>
+        <span class="try-text" data-es="Pruébame">Try Me</span>
       </div>
     </div>
       <div class="rv"><div class="rv-i">
@@ -3671,5 +3747,15 @@
     els.forEach(function (el) { io.observe(el); });
   })();
   </script>
+<script>
+(function(){
+  var hint=document.querySelector(".try-me"); if(!hint) return;
+  var beam=document.querySelector(".prompt-beam");
+  var q=document.querySelector(".demo-query");
+  function hide(){ hint.classList.add("gone"); }
+  if(beam) beam.addEventListener("click", hide, {once:true});
+  if(q){ var mo=new MutationObserver(function(){ if(q.textContent.trim()){ hide(); mo.disconnect(); } }); mo.observe(q,{childList:true,characterData:true,subtree:true}); }
+})();
+</script>
 </body>
 </html>
