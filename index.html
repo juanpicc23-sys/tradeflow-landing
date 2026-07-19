@@ -188,6 +188,10 @@
   }
   .nav-login:hover { opacity: 0.6; }
 
+  /* Acceso a la app bloqueado temporalmente (2026-07-19) — para reactivar,
+     quitar .login-locked y restaurar href a la URL de Railway /login */
+  .login-locked { pointer-events: none; cursor: default; }
+
   .nav-lang {
     display: inline-flex;
     align-items: center;
@@ -1709,7 +1713,7 @@
       <div class="lh-copy">
         <h1 class="lh-title" data-es="Comercio exterior.<br>Simplificado">Trade Compliance.<br>Simplified</h1>
         <p class="lh-desc" data-es="Presentamos la IA de clase mundial para las operaciones de cumplimiento del comercio exterior en México.<br>Compatible con programas IMMEX ahora.">Introducing the first-class AI for Mexican Trade Compliance operations.<br>Compatible with IMMEX programs now.</p>
-        <a class="cta-pill lh-join" href="https://web-production-9447ae.up.railway.app/login">
+        <a class="cta-pill lh-join login-locked" href="#" aria-disabled="true">
           <span class="cta-pill-text" data-es="Únete ahora">Join Now</span>
         </a>
 
@@ -1797,7 +1801,7 @@
         <a href="#" data-es="Demos">Demos</a>
       </div>
       <div class="nav-right">
-        <a href="https://web-production-9447ae.up.railway.app/login" class="nav-login" data-es="Iniciar sesión">Log in</a>
+        <a href="#" class="nav-login login-locked" aria-disabled="true" data-es="Iniciar sesión">Log in</a>
         <div class="nav-lang">
           <button type="button" class="active" data-lang="es">ES</button>
           <span class="sep">/</span>
