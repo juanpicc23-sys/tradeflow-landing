@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- el hero gana la carrera de descarga contra las imágenes de las secciones de abajo -->
+<link rel="preload" as="image" href="hero_dunes.png" fetchpriority="high">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -43,7 +45,10 @@
     width: auto; height: auto;
     border-radius: 0;
     overflow: hidden; isolation: isolate;
-    background: #05060a;
+    /* placeholder aurora mientras baja hero_dunes.png — evita el bloque negro en el primer paint */
+    background: #05060a linear-gradient(180deg,
+      #46c4cd 0%, #2a97a8 22%, #123a4c 40%, #0a0d18 52%,
+      #5c1626 64%, #c44a5e 78%, #e88a92 86%, #2a070d 100%);
   }
   /* línea divisoria entre la columna de copy y la card: nace en la línea del nav (forma una T) */
   .hero-split {
@@ -1609,7 +1614,6 @@
     font-size: clamp(15px, 1.15vw, 19px); font-weight: 500;
     letter-spacing: -0.01em; color: #0b0b0f;
   }
-  .lh-item-ico { width: 17px; height: 17px; flex: 0 0 auto; color: #0b0b0f; }
   .lh-item-desc {
     margin: 10px 0 0; max-width: 560px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -1617,17 +1621,49 @@
     line-height: 1.55; color: rgba(15,23,42,0.55);
   }
 
-  /* ───── Dashboard flotante sobre la aurora: anclado a la esquina, se sale de la card ───── */
-  .hero-dash {
+  /* ───── Prompt bar flotante sobre la aurora: card blanca + pills de agentes ───── */
+  .hero-composer {
     position: absolute; z-index: 9;   /* arriba de todas las capas de movimiento */
-    left: 7%; top: 23%;
-    width: 148%;                      /* más ancho que la card: sangra por la derecha y por abajo */
-    height: auto;
-    display: block;
-    border-radius: 14px;
-    box-shadow: 0 26px 70px rgba(0,0,0,0.30), 0 4px 14px rgba(0,0,0,0.18);
+    left: 7%; top: 36%; right: -24px; /* sangra por la derecha, la recorta el overflow del panel */
+    display: flex; flex-direction: column; align-items: flex-start; gap: 26px;
     pointer-events: none;
   }
+  .hero-composer .hui-card { align-self: stretch; }
+  .hui-suggest {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 16px;
+    white-space: nowrap; overflow: hidden;
+  }
+  /* íconos de agentes de la prompt bar: PNG (icons8) como máscara, teñidos con currentColor */
+  .ha-ico {
+    display: inline-block; width: 17px; height: 17px; flex: 0 0 auto;
+    background: currentColor;
+    -webkit-mask: var(--m) center/contain no-repeat;
+            mask: var(--m) center/contain no-repeat;
+  }
+  .hui-suggest .ha-ico { width: 18px; height: 18px; }
+  .ha-ico.is-scan  { color: #0b0b0f; --m: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAdklEQVR4nM3UOw7AIAwDUB+v5VSMPWdzEHfpgBhaJwofS2yQJ4wEMDkFgAGgc8mJDKc+PnDAm+lAEWurUcAc71AjAIXKWuQaDfAPyQD4hWQBzAT67A1QqGRvQMlaoA+zK1oOKNkLMMd33a5bBc53s3f44bx1PA/BLMcWIzVyVgAAAABJRU5ErkJggg=='); }
+  .ha-ico.is-audit { color: #0b0b0f; --m: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABKElEQVR4nN2WXWoCQQzHf097Cn32DF313dZ7+XEURfAQpRepXZ9UqheYshAlDON8uVNL/xAImUx+bBKGhXRVwBLYAw0wl1hxLQBj2ew3wI3AamAofhvrRJVqp7ljQwV2WdYYFp6CqTbLaeeLiu0iIJ8qv84ZgxHTeg3AW+gkoo5XyRe6qmP+MvgCbIFBaXAf2AhQ55zkrAi4DxytuF6sdSnwxgLZ4HMp8MUBLiITAGv7LgneesAryZkCXxGv2w54iwUPZHvtIgegl/CkGsfT6gVfN3sti3SWL+0F7sTWvilnif4X+MMzL/tOrDllH74/Cxyjp4NrYBTwTcyfZCq4LT52+Fd5wfOMlqXmOVUJvMkoeK+9j4zxoVaPlN8puJO3Okeh318NnfwAiUZOCQ3uHgEAAAAASUVORK5CYII='); }
+  .ha-ico.is-scout { color: #0b0b0f; --m: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACIUlEQVR4nO2ZzU4UQRDHf84BoyzPoF68sA8BvAXPQTioJMYNeuRjN3BbX8CQEPFiokfCiZPsSV7CXUjUsGnSSW1S6axO93TP9JLMP6nLbH/Ur7uorm6gVatWPnoK9IBr4A4wgfYHOAQKMjl/UcHpeTbMAdFL5Hw2iGs1+StgKbB/dog7NXGo8yzCThhlsf2HOSBMQoBHwLHz7WPdECkByAFhEgM0DmFqAGgUwtQEYNUIRCxAWRou6s5OsQD6IHydA8JEAryLKDv6iwDwBDivCPB7EQBmEG+BnxXK8WglHSzHnKYFCJdpATIDfAL+NgXwQS7tvlnlK/DCY95nwFkTAJMA57dUvy5wAFwBN2JX8s3+lkxlAO89d8Dep5FS4giY/qetPSsGFa+wwQAhsg59D9ixbykgUgIcOeN9BtaAZbF1ifuk9VAqgK5TRsxCap7eOOG0uggAB87Kl0nvxF7ONPpS2o3UNxs2ZdpQ7X/kTKMr0m6svnU85l1R7cc50+jjBAC3dQL4SoeQzTZl0iFk+2YH2Ffj+JQIX1R7e6hlB1h10qhNlf/Sjmo3jS0tUh5kA2e8MwmVjtiGs/LWLmNfJ2Kf17WWpDwwgTaMgfB51wmF6Jdc7qey8kkgYt51XKe2nb+JPTmkJpIqRxJm3ZSPXTHvOvPsFHjuOXeREqLqu848swffCbCpSo0QCPsv2welwoH4xQNUIStvr567uZ1phegeYekig28gczcAAAAASUVORK5CYII='); }
+  .hui-suggest-name {
+    flex: 0 0 auto;
+    font-size: clamp(14px, 1.05vw, 17px); font-weight: 500; color: #0b0b0f;
+  }
+  .hui-suggest-desc {
+    font-size: clamp(14px, 1.05vw, 17px); color: rgba(11,11,15,0.38);
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .hero-agents { display: flex; gap: 12px; }
+  .hero-agent {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 11px 18px;
+    background: #ffffff; border-radius: 12px;
+    font-size: 15px; font-weight: 500; color: #0b0b0f;
+    white-space: nowrap;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.20);
+  }
+  .hero-agent svg { width: 17px; height: 17px; flex: 0 0 auto; }
+
   .hui-card {
     background: #ffffff;
     border-radius: 20px;
@@ -1698,7 +1734,7 @@
       flex: 1 1 auto; min-height: 300px;
     }
     /* La prompt bar flotante no cabe en la banda de 300px */
-    .hero-dash { display: none; }
+    .hero-composer { display: none; }
     .hero-split { display: none; }   /* en móvil no hay split de dos columnas */
     /* Capas caras en móvil: se queda el Ken Burns + sol + viñeta */
     .lh-mirage, .lh-dust { display: none; }
@@ -1720,30 +1756,24 @@
         <div class="lh-list">
           <div class="lh-item">
             <div class="lh-item-head">
-              <span class="lh-item-title" data-es="Clasifica cada documento">Classify every document</span>
-              <svg class="lh-item-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg>
-            </div>
+              <span class="lh-item-title" data-es="Clasifica cada documento">Classify every document</span>            </div>
             <p class="lh-item-desc" data-es="SCAN lee tus pedimentos, facturas, listas de empaque y certificados — extrae cada campo y los cruza entre sí. Sin recapturar nada a mano.">SCAN reads your pedimentos, invoices, packing lists and certificates — it pulls every field and cross-checks them against each other. No re-keying by hand.</p>
           </div>
           <div class="lh-item">
             <div class="lh-item-head">
-              <span class="lh-item-title" data-es="Detecta los errores antes que la aduana">Catch the errors before customs does</span>
-              <svg class="lh-item-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg>
-            </div>
+              <span class="lh-item-title" data-es="Detecta los errores antes que la aduana">Catch the errors before customs does</span>            </div>
             <p class="lh-item-desc" data-es="AUDIT valida cada operación contra la ley aduanera y los catálogos oficiales, marca lo que puede costarte una multa y te dice cuánto — en pesos.">AUDIT validates every operation against customs law and the official catalogs, flags what could get you fined, and tells you how much — in pesos.</p>
           </div>
           <div class="lh-item">
             <div class="lh-item-head">
-              <span class="lh-item-title" data-es="Monitorea las reglas en tiempo real">Monitor the rules in real time</span>
-              <svg class="lh-item-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg>
-            </div>
+              <span class="lh-item-title" data-es="Monitorea las reglas en tiempo real">Monitor the rules in real time</span>            </div>
             <p class="lh-item-desc" data-es="InTake vigila el DOF, el SAT y Banxico todo el día, y te avisa cuando un cambio toca tus fracciones — antes de que te cueste.">InTake watches the DOF, the SAT and Banxico around the clock, and tells you when a change hits your tariff codes — before it costs you.</p>
           </div>
         </div>
       </div>
     </div>
     <div class="right-panel">
-      <img class="lh-img" src="hero_dunes.png" alt="">
+      <img class="lh-img" src="hero_dunes.png" alt="" fetchpriority="high" decoding="async">
 
       <!-- 2. espejismo de calor: duplicado con displacement, solo la mitad baja -->
       <img class="lh-img lh-mirage" src="hero_dunes.png" alt="" aria-hidden="true">
@@ -1787,7 +1817,40 @@
         </filter>
       </svg>
 
-      <img class="hero-dash" src="hero_dash.jpg" alt="" aria-hidden="true">
+      <div class="hero-composer" aria-hidden="true">
+        <div class="hui-card">
+          <p class="hui-line" data-es="Estamos preparando el embarque IMMEX del próximo mes.">We're preparing next month's IMMEX shipment.</p>
+          <div class="hui-suggest">
+            <span class="ha-ico is-scan"></span>
+            <span class="hui-suggest-name">SCAN Agent</span>
+            <span class="hui-suggest-desc" data-es="Clasifica cada documento y marca las inconsistencias antes del embarque">Classify every document and flag the inconsistencies before it ships</span>
+          </div>
+          <div class="hui-actions">
+            <button class="hui-plus" type="button" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <span class="hui-model">
+              <img class="hui-model-logo" src="intake_logo_nav.png" alt="">
+              <span>InTake Intelligence 1.0</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="hero-agents">
+          <span class="hero-agent">
+            <span class="ha-ico is-scan"></span>
+            <span>SCAN Agent</span>
+          </span>
+          <span class="hero-agent">
+            <span class="ha-ico is-audit"></span>
+            <span>AUDIT Agent</span>
+          </span>
+          <span class="hero-agent">
+            <span class="ha-ico is-scout"></span>
+            <span>SCOUT Agent</span>
+          </span>
+        </div>
+      </div>
     </div>
 
     <nav>
@@ -1885,14 +1948,14 @@
             <div class="pm-panel pm-chat" aria-hidden="true">
               <div class="pm-chat-head"><span class="pm-hash">#</span>operación-4471</div>
               <div class="pm-msg">
-                <span class="pm-av"><img src="pm_av_1.jpg" alt=""></span>
+                <span class="pm-av"><img src="pm_av_1.jpg" alt="" loading="lazy" decoding="async"></span>
                 <div class="pm-msg-body">
                   <div class="pm-msg-head"><b>Laura M.</b><span>9:14</span></div>
                   <p>¿Alguien tiene la versión final del pedimento 4471? El de ayer no cuadra con la factura.</p>
                 </div>
               </div>
               <div class="pm-msg">
-                <span class="pm-av"><img src="pm_av_2.jpg" alt=""></span>
+                <span class="pm-av"><img src="pm_av_2.jpg" alt="" loading="lazy" decoding="async"></span>
                 <div class="pm-msg-body">
                   <div class="pm-msg-head"><b>Jorge R.</b><span>9:32</span></div>
                   <p>Te lo reenvío por correo, creo que el bueno lo tiene el agente…</p>
@@ -1913,7 +1976,7 @@
               <div class="pm-sheet-row"><span class="pm-sheet-l">US-2210</span><span class="pm-sheet-d">04/26</span></div>
               <div class="pm-sheet-row"><span class="pm-sheet-l">MX-3907</span><span class="pm-sheet-d">03/28</span></div>
             </div>
-            <img class="pm-legacy-shot" src="pm_legacy.jpg" alt="" aria-hidden="true">
+            <img class="pm-legacy-shot" src="pm_legacy.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async">
           </div>
           <h3 class="p-card-title" data-es="El SAP viejo sigue mandando">Legacy SAP still runs the show</h3>
           <p class="p-card-desc" data-es="Portales de agentes aduanales y pantallas de SAP diseñadas hace décadas: un muro de módulos, códigos crípticos y cuadrículas infinitas cargan el trabajo crítico.">Broker portals and SAP screens designed decades ago: a wall of modules, cryptic codes and endless grids still carry the critical work.</p>
@@ -1927,8 +1990,8 @@
     <p class="s6-desc" data-es="La primera plataforma nativa de IA construida para los equipos de comercio exterior: quita el ruido y la fricción de cada operación — la recaptura, las pestañas abiertas, los correos persiguiendo un dato — para que tu equipo dedique su tiempo a decidir, no a capturar.">The first AI native platform built for trade operators — one that strips the noise and the friction out of every operation: the re-keying, the dozen open tabs, the emails chasing a single number. Your team gets its time back to decide, not to type.</p>
     <!-- misma pila de animación que el hero: Ken Burns + espejismo + sol + polvo + viñeta (+ grano/scanlines por ::before/::after) -->
     <div class="s6-card reveal">
-      <img class="lh-img" src="s6_card_bg_mono.png" alt="">
-      <img class="lh-img lh-mirage" src="s6_card_bg_mono.png" alt="" aria-hidden="true">
+      <img class="lh-img" src="s6_card_bg_mono.png" alt="" loading="lazy" decoding="async">
+      <img class="lh-img lh-mirage" src="s6_card_bg_mono.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
       <div class="lh-sun" aria-hidden="true"></div>
       <div class="lh-dust" aria-hidden="true">
         <span style="--y:6%;  --s:2px;   --c:rgba(255,255,255,1);   --o:.55; --dur:7.5s; --dl:-1.2s"></span>
@@ -1955,7 +2018,7 @@
         <span style="--y:96%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.64; --dur:9.2s; --dl:-4.6s"></span>
       </div>
       <div class="lh-vignette" aria-hidden="true"></div>
-      <img class="s6-shot" src="s6_dash.png" alt="InTake dashboard">
+      <img class="s6-shot" src="s6_dash.png" alt="InTake dashboard" loading="lazy" decoding="async">
     </div>
   </section>
 
@@ -2166,7 +2229,7 @@
               <span data-es="Búsqueda web">Web Search</span>
             </span>
             <span class="hui-model is-outlook">
-              <img class="hui-mode-ico" src="icon_outlook_t.png" alt="">
+              <img class="hui-mode-ico" src="icon_outlook_t.png" alt="" loading="lazy" decoding="async">
               <span>Outlook</span>
             </span>
             <span class="hui-model is-scan">
@@ -2294,13 +2357,13 @@
 
     <div class="plug-media reveal d1" aria-hidden="true">
       <div class="plug-cluster">
-        <span class="plug-tile"><img src="int_outlook_t.png" alt=""></span>
+        <span class="plug-tile"><img src="int_outlook_t.png" alt="" loading="lazy" decoding="async"></span>
         <span class="plug-tile"><span>SAT</span></span>
-        <span class="plug-tile"><img src="int_gmail_t.png" alt=""></span>
+        <span class="plug-tile"><img src="int_gmail_t.png" alt="" loading="lazy" decoding="async"></span>
 
-        <span class="plug-tile"><img src="int_docs_t.png" alt=""></span>
-        <span class="plug-tile is-core"><img src="intake_logo_white.png" alt=""></span>
-        <span class="plug-tile"><img src="int_excel_t.png" alt=""></span>
+        <span class="plug-tile"><img src="int_docs_t.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="plug-tile is-core"><img src="intake_logo_white.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="plug-tile"><img src="int_excel_t.png" alt="" loading="lazy" decoding="async"></span>
 
         <span class="plug-tile"><span>DOF</span></span>
         <span class="plug-tile"><span>BMX</span></span>
