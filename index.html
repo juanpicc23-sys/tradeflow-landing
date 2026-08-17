@@ -7,17 +7,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="hero_band_spectral.jpg?v=1" fetchpriority="high">
 <!-- el hero gana la carrera de descarga contra las imágenes de las secciones de abajo -->
-<link rel="preload" as="image" href="hero_dunes.png" fetchpriority="high">
+<link rel="preload" as="image" href="hero_home.png?v=8" fetchpriority="high">
 <style>
+  /* ritmo vertical unico para todas las secciones.
+     Antes convivian 8vh (depende del ALTO de ventana, colapsa en pantallas bajas)
+     con varios clamp por vw: los huecos iban de 112 a 176 px. */
+  :root {
+    --sec-pad: clamp(48px, 5vw, 88px);
+    /* paleta extraida del degradado del hero (cuantizacion a 8 colores) */
+    --tone-sage:  #82a7a2;   /* teal claro, esquina superior izquierda */
+    --tone-mist:  #d3dcda;   /* gris verdoso del centro */
+    --tone-slate: #273c42;   /* azul petroleo del borde de la curva */
+    --tone-ink:   #111b1c;   /* casi negro de la derecha */
+    --tone-pitch: #0a1213;   /* el negro mas profundo */
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html, body {
-    background: #ffffff;
+    background: #FAFAFA;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  body { overflow-x: hidden; }
+  /* 'clip' y no 'hidden': hidden convierte al body en contenedor de scroll
+     y anula el position:sticky del nav */
+  body { overflow-x: clip; }
 
   /* ---------- HERO ---------- */
   .hero {
@@ -62,57 +79,6 @@
     pointer-events: none;
   }
 
-  /* ---------- marquesina de marcos normativos, justo debajo del hero ---------- */
-  .ticker {
-    position: relative;
-    background: #ffffff;
-    border-top: 1px solid rgba(0,0,0,0.10);      /* cierra la vertical del hero */
-    border-bottom: 1px solid rgba(0,0,0,0.10);
-    overflow: hidden;
-    padding: 26px 0;
-  }
-  .ticker-track {
-    display: flex;
-    align-items: center;
-    width: max-content;
-    animation: tickerScroll 34s linear infinite;
-  }
-  .ticker:hover .ticker-track { animation-play-state: paused; }
-  .ticker-item {
-    flex: none;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: clamp(15px, 1.4vw, 20px);
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: #0f0f12;
-    white-space: nowrap;
-    padding: 0 34px;
-  }
-  .ticker-sep {
-    flex: none;
-    width: 14px; height: 14px;
-    color: rgba(15,15,18,0.35);
-  }
-  .ticker-sep svg { width: 100%; height: 100%; display: block; }
-  /* difuminado en los extremos para que las palabras entren y salgan */
-  .ticker::before,
-  .ticker::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 12vw;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .ticker::before { left: 0;  background: linear-gradient(to right, #fff 12%, rgba(255,255,255,0)); }
-  .ticker::after  { right: 0; background: linear-gradient(to left,  #fff 12%, rgba(255,255,255,0)); }
-  @keyframes tickerScroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }   /* la pista lleva la lista duplicada */
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .ticker-track { animation: none; }
-  }
 
   /* Canvas de dots (campo plasma) en la mitad derecha */
   #dots {
@@ -193,8 +159,8 @@
   }
   .nav-login:hover { opacity: 0.6; }
 
-  /* Acceso a la app bloqueado temporalmente (2026-07-19) — para reactivar,
-     quitar .login-locked y restaurar href a la URL de Railway /login */
+  /* Acceso reactivado: los CTAs apuntan al /login de Railway.
+     Para volver a bloquear: agregar .login-locked + aria-disabled y href="#" */
   .login-locked { pointer-events: none; cursor: default; }
 
   .nav-lang {
@@ -345,7 +311,7 @@
   .char.on { opacity: 1; }
 
   
-  .section-3 { background: #ffffff; }
+  .section-3 { background: #FAFAFA; }
   
   
   
@@ -363,7 +329,7 @@
   /* sección 6: titular "Meet InTake…" */
   .section-6 {
     min-height: auto;
-    background: #ffffff;
+    background: #FAFAFA;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -415,7 +381,7 @@
 
   /* sección 8: dos columnas estáticas — copy a la izquierda, mock del agente a la derecha */
   .section-8 {
-    background: #ffffff;
+    background: #FAFAFA;
     padding: 8vh 6vw;
     display: grid;
     grid-template-columns: 1fr 1.12fr;
@@ -664,6 +630,17 @@
   }
   .s8-chev { width: 1.3em; height: 1.3em; margin-top: 0.7em; color: rgba(15,23,42,0.35); }
 
+  /* reveal sutil a nivel de seccion: mismo easing que .reveal pero
+     con un desplazamiento de 14px en vez de 34, para que apenas se note */
+  .sec-reveal {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .sec-reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .sec-reveal { opacity: 1; transform: none; transition: none; }
+  }
+
   /* reveal genérico al scroll (secciones finales) */
   .reveal, .reveal-fade {
     opacity: 0;
@@ -686,7 +663,7 @@
   /* ---------- sección integraciones: card ancha (copy izq + cluster de logos der) ---------- */
   /* mismo patrón que la sección 8: copy suelto a la izquierda, card visual a la derecha */
   .plug {
-    background: #ffffff;
+    background: #FAFAFA;
     padding: 8vh 6vw;
     display: grid;
     grid-template-columns: 1fr 1.12fr;
@@ -802,7 +779,7 @@
 
   .section-faq {
     background: #f4f4f2;
-    padding: 8vh 6vw;
+    padding: var(--sec-pad) 6vw;
   }
   .faq-inner { max-width: 860px; margin: 0 auto; }
   .faq-title {
@@ -861,8 +838,8 @@
     color: #55555e;
   }
   .section-cta {
-    background: #ffffff;
-    padding: 8vh 6vw;
+    background: #FAFAFA;
+    padding: var(--sec-pad) 6vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -881,40 +858,22 @@
   }
   /* beam animado del botón CTA */
   @property --beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-  .prompt-beam {
-    position: relative;
-    width: 100%;
-    border-radius: 26px;
-    padding: 1.4px;
-    background: conic-gradient(from var(--beam-angle),
-      #1466d8, #2bb1c9, #7fd6e0, #ffd24a, #ff9a4c, #ff5a1f, #1466d8);
-    animation: beamSpin 6s linear infinite, beamGlow 3.6s ease-in-out infinite;
-  }
-  @keyframes beamSpin { to { --beam-angle: 360deg; } }
-  @keyframes beamGlow {
-    0%, 100% { box-shadow: 0 0 24px rgba(90,150,255,0.22), 0 0 52px rgba(255,140,70,0.16); }
-    50%      { box-shadow: 0 0 44px rgba(90,150,255,0.38), 0 0 90px rgba(255,140,70,0.28); }
-  }
-  .prompt-beam.cta-beam {
-    width: fit-content;
-    border-radius: 999px;
-    order: 0;
-    margin-top: 0;
-  }
+  .prompt-beam { position: relative; width: 100%; }
+  .prompt-beam.cta-beam { width: fit-content; order: 0; margin-top: 0; }
   .cta-pill {
     display: flex;
     align-items: center;
     justify-content: center;
     background: #0f0f12;
-    border-radius: 999px;
-    padding: 10px 26px;
+    border-radius: 6px;          /* misma forma que .h7-btn-start del nav */
+    padding: 12px 24px;
     text-decoration: none;
     transition: background .2s ease;
   }
   .cta-pill:hover { background: #000000; }
   .cta-pill-text {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 500;
     color: #ffffff;
     letter-spacing: -0.01em;
@@ -936,7 +895,7 @@
   .footer-blank {
     position: relative;
     background: #f4f4f2;
-    padding: 8vh 6vw 0;
+    padding: var(--sec-pad) 6vw 0;
     overflow: hidden;
   }
   .ft-inner { max-width: 1360px; margin: 0 auto; position: relative; z-index: 1; }
@@ -1188,8 +1147,11 @@
   }
 
   /* ---------- sección capacidades: header + retícula de 6 celdas con líneas ---------- */
-  .caps { background: #ffffff; padding: 8vh 6vw; }
-  .caps-head { margin: 0 0 6vh; }
+  /* mismo contenedor que el resto de la pagina: el texto y la reticula
+     arrancan en el mismo borde izquierdo que el hero y How it works */
+  .caps { background: #FAFAFA; padding: var(--sec-pad) 0; }
+  .caps-head, .caps-grid { max-width: 1560px; margin-left: auto; margin-right: auto; }
+  .caps-head { margin-bottom: 6vh; padding: 0 44px; }
   .caps-eyebrow {
     display: block;
     margin: 0 0 20px;
@@ -1218,6 +1180,9 @@
   }
   /* retícula: un borde exterior + hairlines internas dibujadas por celda */
   .caps-grid {
+    /* el borde de la reticula va por fuera, asi que en vez de padding se
+       recorta el ancho: 1560 del contenedor - 88 de los dos margenes */
+    width: calc(100% - 88px); max-width: 1472px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     border: 1px solid rgba(0,0,0,0.10);
@@ -1270,7 +1235,7 @@
   }
 
   /* ---------- sección problem (rediseño 2026-07-05): header izq + 4 cards ---------- */
-  .problem { background: #ffffff; padding: 8vh 6vw; }
+  .problem { background: #FAFAFA; padding: 8vh 6vw; }
   .problem-inner { max-width: none; margin: 0; }
   /* head en dos columnas: título izq / descripción der (top-aligned) */
   .problem-head {
@@ -1739,293 +1704,607 @@
     /* Capas caras en móvil: se queda el Ken Burns + sol + viñeta */
     .lh-mirage, .lh-dust { display: none; }
   }
+
+
+  /* ═════════ Manifiesto con reveal por scroll ═════════ */
+  .rv { padding: var(--sec-pad) 0; background: #FAFAFA; }
+  .rv-inner {
+    max-width: 900px; margin: 0 auto; padding: 0 44px;
+    text-align: left;            /* bloque centrado, texto a la izquierda */
+  }
+  .rv-p {
+    margin: 0 0 1.15em;
+    font-size: clamp(18px, 1.55vw, 26px);
+    line-height: 1.62; letter-spacing: -0.01em;
+    color: #101013;
+  }
+  .rv-p:last-child { margin-bottom: 0; }
+  /* el atenuado solo se aplica si el JS armo el efecto: sin JS el texto se lee negro */
+  .rv.is-armed .rv-w { color: rgba(16,16,19,.20); transition: color .5s cubic-bezier(.22,.7,.25,1); }
+  .rv.is-armed .rv-w.on { color: #101013; }
+  @media (prefers-reduced-motion: reduce) {
+    .rv.is-armed .rv-w { color: #101013; transition: none; }
+  }
+  @media (max-width: 768px) {
+    .rv-inner { padding: 0 20px; }
+  }
+
+  /* ═════════ Que resolvemos — lista conmutable + panel ═════════ */
+  .solve { padding: clamp(56px, 7vw, 120px) 0; background: #FAFAFA; }
+  .solve-inner {
+    max-width: 1560px; margin: 0 auto; padding: 0 44px;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    column-gap: clamp(40px, 5vw, 96px); align-items: start;
+  }
+  .solve-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(16,16,19,.40);
+  }
+  .solve-eyebrow::before {
+    content: ''; width: 3px; height: 12px; border-radius: 2px; background: #3ecf5d;
+  }
+  .solve-title {
+    margin: 20px 0 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: clamp(30px, 3.2vw, 50px);
+    line-height: 1.08; letter-spacing: -0.02em; color: #101013;
+  }
+  .solve-sub {
+    margin: 20px 0 0; max-width: 46ch;
+    font-size: clamp(15px, 1.15vw, 18px); line-height: 1.55;
+    color: rgba(16,16,19,.52);
+  }
+  .solve-list { list-style: none; margin: clamp(38px, 5vw, 76px) 0 0; padding: 0; }
+  .solve-item {
+    display: flex; align-items: center; gap: 13px;
+    padding: 11px 0; cursor: pointer;
+    font-size: clamp(15px, 1.15vw, 17px); font-weight: 500; letter-spacing: -0.01em;
+    color: rgba(16,16,19,.38);
+    transition: color .25s ease;
+    background: none; border: 0; text-align: left; width: 100%;
+    font-family: inherit;
+  }
+  .solve-item::before {
+    content: ''; width: 8px; height: 8px; border-radius: 2px; flex: none;
+    background: rgba(16,16,19,.22);
+    transition: background .25s ease, transform .25s ease;
+  }
+  .solve-item:hover { color: rgba(16,16,19,.62); }
+  .solve-item.is-on { color: #101013; }
+  .solve-item.is-on::before { background: #3ecf5d; transform: scale(1.15); }
+
+  /* panel derecho */
+  .solve-panel {
+    background: #F2F2F0; border-radius: clamp(16px, 1.6vw, 24px);
+    padding: clamp(22px, 2.4vw, 40px);
+  }
+  .solve-view { display: none; }
+  .solve-view.is-on { display: block; animation: solveIn .35s cubic-bezier(.22,.7,.25,1); }
+  @keyframes solveIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .solve-shot {
+    display: block; width: 100%; height: auto;
+    border-radius: 12px; background: #fff;
+    box-shadow: 0 18px 40px rgba(16,16,19,.13), 0 3px 10px rgba(16,16,19,.07);
+  }
+  .solve-view h3 {
+    margin: clamp(22px, 2.2vw, 34px) 0 0;
+    font-size: clamp(17px, 1.3vw, 20px); font-weight: 500;
+    letter-spacing: -0.01em; color: #101013;
+  }
+  .solve-view p {
+    margin: 9px 0 0; max-width: 52ch;
+    font-size: clamp(14px, 1.05vw, 16px); line-height: 1.56;
+    color: rgba(16,16,19,.52);
+  }
+  @media (prefers-reduced-motion: reduce) { .solve-view.is-on { animation: none; } }
+  @media (max-width: 900px) {
+    .solve-inner { grid-template-columns: 1fr; row-gap: 40px; padding: 0 20px; }
+    .solve-list { margin-top: 30px; }
+  }
+
+  /* ═════════ Filas visual + copy (3) ═════════ */
+  .duo { background: #FAFAFA; padding: var(--sec-pad) 0; }
+  .duo-row {
+    max-width: 1560px; margin: 0 auto; padding: clamp(18px, 2vw, 34px) 44px;
+    display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+    column-gap: clamp(40px, 5vw, 100px); align-items: center;
+  }
+  .duo-media {
+    /* alto explicito (no aspect-ratio): asi el max-height de la captura
+       resuelve y la imagen encaja sin recortarse */
+    /* sin alto fijo: el panel se ajusta a la captura (antes sobraban ~128px
+       de fondo arriba y abajo) */
+    border-radius: clamp(16px, 1.8vw, 26px);
+    display: flex; align-items: center; justify-content: center;
+    padding: clamp(10px, 1.1vw, 16px);
+    background: #232223 url('hero_band_spectral.jpg?v=1') center / cover no-repeat;
+    overflow: hidden;
+  }
+  /* mismo degradado que el hero y las cards de How it works */
+  .duo-shot {
+    /* la caja ocupa el area completa y object-fit encuadra dentro: asi el
+       aspect-ratio del panel manda y la captura nunca lo estira.
+       drop-shadow (no box-shadow) para que la sombra siga el borde real
+       de la imagen y no la caja con letterbox */
+    display: block; width: auto; height: auto;
+    max-width: 100%; max-height: 100%;
+    filter: drop-shadow(0 20px 42px rgba(0,0,0,.50)) drop-shadow(0 4px 11px rgba(0,0,0,.32));
+  }
+  .duo-title {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: clamp(27px, 2.9vw, 44px);
+    line-height: 1.1; letter-spacing: -0.02em; color: #101013;
+  }
+  .duo-text {
+    margin: 20px 0 0; max-width: 48ch;
+    font-size: clamp(15px, 1.1vw, 17px); line-height: 1.6;
+    color: rgba(16,16,19,.52);
+  }
+  .duo-cta {
+    display: inline-flex; align-items: center; gap: 9px;
+    margin-top: 28px; padding: 13px 22px;
+    background: #fff; border: 1px solid rgba(16,16,19,.12); border-radius: 9px;
+    font-size: 14.5px; font-weight: 500; color: #17171a; text-decoration: none;
+    transition: border-color .2s ease, transform .15s ease;
+  }
+  .duo-cta:hover { border-color: rgba(16,16,19,.28); transform: translateY(-1px); }
+  .duo-cta svg { width: 15px; height: 15px; }
+  .duo-points { list-style: none; margin: 28px 0 0; padding: 0; }
+  .duo-points li {
+    display: flex; align-items: flex-start; gap: 12px; padding: 9px 0;
+    font-size: clamp(14px, 1.05vw, 16px); line-height: 1.5; color: rgba(16,16,19,.62);
+  }
+  .duo-points svg { width: 17px; height: 17px; flex: none; margin-top: 2px; color: #17171a; }
+  @media (max-width: 900px) {
+    .duo-row { grid-template-columns: 1fr; row-gap: 30px; padding: 24px 20px; }
+    .duo-media { aspect-ratio: 4 / 3; }
+  }
+
+  /* ═════════ Como funciona ═════════ */
+  .how { padding: var(--sec-pad) 0; background: #FAFAFA; }
+  .how-inner { max-width: 1560px; margin: 0 auto; padding: 0 44px; }
+  .how-title {
+    margin: 0; text-align: center;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(30px, 3.4vw, 54px);
+    line-height: 1.06; letter-spacing: -0.02em; color: #101013;
+  }
+  .how-sub {
+    margin: 20px auto 0; max-width: 1000px; text-align: center;
+    font-size: clamp(16px, 1.25vw, 20px); line-height: 1.58;
+    color: rgba(16,16,19,.52);
+  }
+  .how-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 1.6vw, 26px);
+    margin-top: clamp(36px, 4vw, 64px);
+  }
+  .how-card {
+    background: #fff;
+    border: 1px solid rgba(16,16,19,.10);
+    border-radius: 16px;
+    padding: clamp(22px, 2vw, 32px);
+    min-height: clamp(340px, 26vw, 410px);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  /* card de captura: fondo transparente, la imagen centrada con sombra */
+  .how-card.is-shot {
+    background: #232223 url('hero_band_spectral.jpg?v=1') center / cover no-repeat;
+    /* padding chico y sin alto minimo: la card se ajusta a la captura,
+       asi la imagen manda y la reticula queda como marco */
+    padding: clamp(8px, 0.9vw, 13px);
+    min-height: 0;
+    align-items: center; justify-content: center;
+  }
+  .how-shot {
+    display: block; width: 100%; height: auto;
+    max-height: 100%; object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 18px 42px rgba(0,0,0,.50), 0 4px 12px rgba(0,0,0,.32);
+  }
+  .how-step {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 13px; font-weight: 500; letter-spacing: .04em;
+    color: rgba(16,16,19,.40);
+  }
+  .how-step::before {
+    content: ''; width: 3px; height: 13px; border-radius: 2px;
+    background: #3ecf5d; flex: none;
+  }
+  .how-ico {
+    width: 42px; height: 42px;
+    display: grid; place-items: center;
+    border: 1px solid rgba(16,16,19,.08); border-radius: 11px;
+    background: #FAFAFA; color: #17171a;
+  }
+  .how-ico svg { width: 20px; height: 20px; }
+  .how-card h3 {
+    margin: 0;
+    font-size: clamp(17px, 1.3vw, 20px); font-weight: 500;
+    letter-spacing: -0.01em; color: #101013;
+  }
+  .how-card p {
+    margin: 0; font-size: clamp(14px, 1.05vw, 16px); line-height: 1.55;
+    color: rgba(16,16,19,.52);
+  }
+  /* cada columna: card + su descripcion debajo, fuera de la imagen */
+  .how-col { display: flex; flex-direction: column; }
+  .how-name {
+    margin: 18px 0 0;
+    font-size: clamp(17px, 1.3vw, 20px); font-weight: 500;
+    letter-spacing: -0.01em; color: #101013;
+  }
+  .how-desc {
+    margin: 9px 0 0;
+    font-size: clamp(14px, 1.05vw, 16px); line-height: 1.56;
+    color: rgba(16,16,19,.52);
+  }
+  @media (max-width: 900px) {
+    .how-cards { grid-template-columns: 1fr; }
+    .how-desc br { display: none; }
+  }
+  @media (max-width: 768px) {
+    .how-inner { padding: 0 20px; }
+    /* en movil el texto fluye solo, sin los cortes de linea forzados */
+    .how-sub br { display: none; }
+  }
+
+  /* ═════════ Seccion FEATURES — card blanca sobre el fondo de pagina ═════════ */
+  .feat { padding: clamp(40px, 5vw, 84px) 0; background: #FAFAFA; }
+  /* sin card: mismo contenedor que .h7-head para que el texto alinee con el hero */
+  .feat-card {
+    max-width: 1560px; margin: 0 auto;
+    padding: 0 44px;
+  }
+  .feat-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 1fr);
+    column-gap: clamp(32px, 5vw, 96px); row-gap: 34px;
+    align-items: start;
+  }
+  /* pill "Features ->" con la barrita verde */
+  .feat-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 14px 7px 10px;
+    border: 1px solid rgba(16,16,19,.10); border-radius: 10px;
+    background: #fff;
+    font-size: 14px; font-weight: 500; color: #17171a;
+    text-decoration: none;
+  }
+  .feat-badge::before {
+    content: ''; width: 3px; height: 15px; border-radius: 2px;
+    background: #3ecf5d; flex: none;
+  }
+  .feat-badge svg { width: 14px; height: 14px; opacity: .55; }
+  .feat-title {
+    margin: 22px 0 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(30px, 3.4vw, 54px);
+    line-height: 1.06; letter-spacing: -0.02em; color: #101013;
+  }
+  .feat-sub {
+    margin: 20px 0 0; max-width: 44ch;
+    font-size: clamp(15px, 1.15vw, 18px); line-height: 1.55;
+    color: rgba(16,16,19,.52);
+  }
+  /* columna derecha: items con icono en cuadro redondeado */
+  .feat-list { display: flex; flex-direction: column; gap: clamp(24px, 2.4vw, 38px); }
+  .feat-item { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start; }
+  .feat-ico {
+    width: 46px; height: 46px; flex: none;
+    display: grid; place-items: center;
+    border: 1px solid rgba(16,16,19,.08); border-radius: 12px;
+    background: #FAFAFA; color: #17171a;
+  }
+  .feat-ico svg { width: 21px; height: 21px; }
+  .feat-item h3 {
+    margin: 0 0 8px;
+    font-size: clamp(17px, 1.35vw, 21px); font-weight: 500;
+    letter-spacing: -0.01em; color: #101013;
+  }
+  .feat-item p {
+    margin: 0; font-size: clamp(14px, 1.05vw, 16.5px); line-height: 1.5;
+    color: rgba(16,16,19,.52);
+  }
+  /* lienzo visual con las dos cards flotando */
+  .feat-canvas {
+    margin-top: clamp(30px, 3.4vw, 58px);
+    border-radius: clamp(14px, 1.4vw, 22px);
+    overflow: hidden;
+    background: #101c1a url('hero_band.jpg?v=2') center / cover no-repeat;
+    padding: clamp(24px, 3.6vw, 66px) clamp(18px, 3vw, 56px);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2vw, 34px);
+    align-items: start;
+  }
+  /* las capturas ya son cards completas (blanco + esquinas), solo van sobre el lienzo */
+  .feat-shot {
+    display: block; width: 100%; height: auto;
+    max-width: 560px; margin: 0 auto;
+    filter: drop-shadow(0 20px 46px rgba(6,14,13,.24));
+  }
+  @media (max-width: 900px) {
+    .feat-card { padding: 0 20px; }
+    .feat-head { grid-template-columns: 1fr; }
+    .feat-canvas { grid-template-columns: 1fr; }
+  }
+
+  /* ═════════ HERO v7 — editorial (titular serif + banda cálida) ═════════ */
+  /* nav sin marco, pero acompana el scroll */
+  .h7-top {
+    position: sticky; top: 0; z-index: 60;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 18px 44px;
+    background: #FAFAFA;
+  }
+  .h7-top-left { justify-self: start; display: flex; align-items: center; gap: 10px; }
+  .h7-logo { height: 20px; width: auto; display: block; }
+  .h7-brand {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 15px; letter-spacing: -0.01em; color: #0f0f12;
+  }
+  .h7-top-links { justify-self: center; display: flex; gap: 38px; }
+  .h7-top-links a {
+    color: #17171a; text-decoration: none;
+    font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+    transition: opacity .2s ease;
+  }
+  .h7-top-links a:hover { opacity: .55; }
+  .h7-top-right { justify-self: end; display: flex; align-items: center; gap: 12px; }
+  /* toggle de idioma reutiliza .nav-lang (el JS lo escucha); aquí sin blend */
+  .h7-lang { mix-blend-mode: normal; margin-right: 8px; }
+  .h7-lang button { color: rgba(15,15,18,.4); }
+  .h7-lang button:hover { color: rgba(15,15,18,.75); }
+  .h7-lang button.active { color: #0f0f12; }
+  .h7-lang .sep { color: rgba(15,15,18,.3); }
+  .h7-btn-login, .h7-btn-start {
+    font-size: 14.5px; font-weight: 500; letter-spacing: -0.01em;
+    text-decoration: none; padding: 12px 24px; border-radius: 6px;
+  }
+  .h7-btn-login { color: #17171a; background: #fafafa; border: 1px solid rgba(0,0,0,.12); }
+  .h7-btn-start { color: #ffffff; background: #111114; border: 1px solid #111114; }
+
+  /* fila editorial: titular gigante izq / copy + CTAs der */
+  .h7-hero { background: #FAFAFA; }
+  .h7-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr);
+    column-gap: clamp(40px, 6vw, 110px);
+    row-gap: 0;                     /* el aire titulo->marquesina lo da .h7-marq */
+    align-items: stretch;
+    max-width: 1560px; margin: 0 auto;
+    padding: clamp(44px, 7vh, 84px) 44px clamp(44px, 6vh, 76px);
+  }
+  .h7-title {
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(30px, 3.5vw, 56px);
+    line-height: 1.0;
+    letter-spacing: -0.015em;
+    color: #101013;
+    text-wrap: balance;
+    grid-column: 1; grid-row: 1;
+  }
+  /* marquesina bajo el titular — confinada al ancho de la columna del titulo */
+  .h7-marq {
+    grid-column: 1; grid-row: 2; align-self: start;
+    position: relative; overflow: hidden;
+    margin-top: 28px;
+  }
+  .h7-marq-track {
+    display: flex; align-items: center;
+    width: max-content;
+    animation: h7MarqScroll 26s linear infinite;
+  }
+  .h7-marq:hover .h7-marq-track { animation-play-state: paused; }
+  .h7-marq-item {
+    flex: none;
+    font-size: clamp(13px, 1.05vw, 16px);
+    font-weight: 500; letter-spacing: 0.02em;
+    color: rgba(16, 16, 19, .38);
+    white-space: nowrap;
+    padding: 0 20px;
+  }
+  .h7-marq-sep {
+    flex: none; width: 4px; height: 4px;
+    border-radius: 999px; background: rgba(16, 16, 19, .18);
+  }
+  /* difuminado en los extremos, del mismo color que el fondo del hero */
+  .h7-marq::before, .h7-marq::after {
+    content: ''; position: absolute; top: 0; bottom: 0;
+    width: 56px; z-index: 2; pointer-events: none;
+  }
+  .h7-marq::before { left: 0;  background: linear-gradient(to right, #FAFAFA, rgba(250,250,250,0)); }
+  .h7-marq::after  { right: 0; background: linear-gradient(to left,  #FAFAFA, rgba(250,250,250,0)); }
+  @keyframes h7MarqScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }   /* la pista lleva la lista duplicada */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .h7-marq-track { animation: none; }
+  }
+
+  .h7-side {
+    grid-column: 2; grid-row: 1 / 3;   /* abarca titulo + marquesina */
+    display: flex; flex-direction: column;
+    justify-content: flex-start; gap: 34px;
+    padding-top: 0;   /* arranca a la altura del titulo */
+  }
+  .h7-desc {
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(16px, 1.45vw, 21px);
+    line-height: 1.5; letter-spacing: -0.005em;
+    color: #232327; max-width: 46ch;
+  }
+  .h7-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .h7-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 15.5px; font-weight: 500; letter-spacing: -0.01em;
+    text-decoration: none; padding: 17px 30px; border-radius: 6px;
+    transition: transform .15s ease, opacity .2s ease;
+  }
+  .h7-cta svg { width: 15px; height: 15px; }
+  .h7-cta:hover { transform: translateY(-1px); opacity: .9; }
+  .h7-cta-dark { background: #111114; color: #ffffff; }
+  .h7-cta-light { background: #f2f2f0; color: #17171a; }
+
+  /* reveal de entrada: título → descripción → pills, una sola coreografía al load */
+  @keyframes h7Rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .h7-title, .h7-desc, .h7-ctas .h7-cta {
+    opacity: 0;
+    animation: h7Rise .7s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .h7-title { animation-delay: .05s; }
+  .h7-desc  { animation-delay: .2s; }
+  .h7-ctas .h7-cta:nth-child(1) { animation-delay: .34s; }
+  .h7-ctas .h7-cta:nth-child(2) { animation-delay: .44s; }
+  @media (prefers-reduced-motion: reduce) {
+    .h7-title, .h7-desc, .h7-ctas .h7-cta { animation: none; opacity: 1; }
+  }
+
+  /* banda del hero a sangre completa, sin bordes */
+  .h7-band {
+    width: 100%;
+    border-radius: clamp(10px, 1vw, 16px);
+    overflow: hidden;
+    padding: clamp(44px, 6.5vw, 92px) clamp(18px, 6vw, 90px) clamp(36px, 5vw, 68px);
+    /* alternas: la reticula CSS (ver .how-card/.duo-media) · hero_band.jpg ·
+       _halftone · _sky · _warm · _ascii · _grain */
+    background: #232223 url('hero_band_spectral.jpg?v=1') center / cover no-repeat;
+  }
+  .h7-frame {
+    max-width: 1340px; margin: 0 auto;
+    border-radius: clamp(8px, 1vw, 14px);
+    box-shadow: 0 30px 80px rgba(6,14,13,.45), 0 6px 22px rgba(6,14,13,.3);
+  }
+  .h7-frame img {
+    display: block; width: 100%; height: auto;
+    border-radius: clamp(8px, 1vw, 14px);
+  }
+
+  @media (max-width: 768px) {
+    .h7-top { grid-template-columns: auto 1fr; gap: 10px; padding: 14px 20px; }
+    .h7-top-links { display: none; }
+    .h7-btn-login { display: none; }
+    .h7-btn-start { padding: 10px 18px; font-size: 13.5px; }
+    .h7-head { grid-template-columns: 1fr; gap: 26px; padding: 34px 20px 40px; }
+    /* en movil vuelve al flujo natural: kicker, titulo, marquesina, copy */
+    .h7-title, .h7-marq, .h7-side { grid-column: 1; grid-row: auto; }
+    .h7-title { font-size: clamp(36px, 10vw, 52px); }
+    .h7-side { gap: 24px; padding-top: 0; }
+    .h7-band { padding: 32px 14px 28px; }
+  }
+
 </style>
 </head>
 <body>
-  <div class="hero-stage">
-  <section class="hero">
-    <div class="hero-split" aria-hidden="true"></div>
-    <div class="left-panel">
-      <div class="lh-copy">
-        <h1 class="lh-title" data-es="Comercio exterior.<br>Simplificado">Trade Compliance.<br>Simplified</h1>
-        <p class="lh-desc" data-es="Presentamos la IA de clase mundial para las operaciones de cumplimiento del comercio exterior en México.<br>Compatible con programas IMMEX ahora.">Introducing the first-class AI for Mexican Trade Compliance operations.<br>Compatible with IMMEX programs now.</p>
-        <a class="cta-pill lh-join login-locked" href="#" aria-disabled="true">
-          <span class="cta-pill-text" data-es="Únete ahora">Join Now</span>
-        </a>
+  <!-- hero v7: nav blanco + titular editorial + banda cálida con el dashboard -->
+  <header class="h7-top">
+    <div class="h7-top-left">
+      <img class="h7-logo" src="intake_logo_nav.png" alt="InTake">
+      <span class="h7-brand">InTake</span>
+    </div>
+    <div class="h7-top-links">
+      <a href="#" data-es="Agentes">Agents</a>
+      <a href="#" data-es="Proceso">Process</a>
+      <a href="#" data-es="Demos">Demos</a>
+    </div>
+    <div class="h7-top-right">
+      <div class="nav-lang h7-lang">
+        <button type="button" class="active" data-lang="es">ES</button>
+        <span class="sep">/</span>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="https://web-production-9447ae.up.railway.app/login" class="h7-btn-login" data-es="Iniciar sesión">Log In</a>
+      <a href="https://web-production-9447ae.up.railway.app/login?mode=register" class="h7-btn-start" data-es="Comenzar">Get Started</a>
+    </div>
+  </header>
 
-        <div class="lh-list">
-          <div class="lh-item">
-            <div class="lh-item-head">
-              <span class="lh-item-title" data-es="Clasifica cada documento">Classify every document</span>            </div>
-            <p class="lh-item-desc" data-es="SCAN lee tus pedimentos, facturas, listas de empaque y certificados — extrae cada campo y los cruza entre sí. Sin recapturar nada a mano.">SCAN reads your pedimentos, invoices, packing lists and certificates — it pulls every field and cross-checks them against each other. No re-keying by hand.</p>
-          </div>
-          <div class="lh-item">
-            <div class="lh-item-head">
-              <span class="lh-item-title" data-es="Detecta los errores antes que la aduana">Catch the errors before customs does</span>            </div>
-            <p class="lh-item-desc" data-es="AUDIT valida cada operación contra la ley aduanera y los catálogos oficiales, marca lo que puede costarte una multa y te dice cuánto — en pesos.">AUDIT validates every operation against customs law and the official catalogs, flags what could get you fined, and tells you how much — in pesos.</p>
-          </div>
-          <div class="lh-item">
-            <div class="lh-item-head">
-              <span class="lh-item-title" data-es="Monitorea las reglas en tiempo real">Monitor the rules in real time</span>            </div>
-            <p class="lh-item-desc" data-es="InTake vigila el DOF, el SAT y Banxico todo el día, y te avisa cuando un cambio toca tus fracciones — antes de que te cueste.">InTake watches the DOF, the SAT and Banxico around the clock, and tells you when a change hits your tariff codes — before it costs you.</p>
-          </div>
+  <section class="h7-hero">
+    <div class="h7-head">
+      <h1 class="h7-title" data-es="Comercio exterior con IA<br>Back office sin fricción">AI-Powered Trade Compliance<br>Backoffice Without Friction</h1>
+      <div class="h7-marq" aria-hidden="true">
+        <div class="h7-marq-track"><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span></div>
+      </div>
+      <div class="h7-side">
+        <p class="h7-desc" data-es="Extrae, analiza, audita y clasifica<br>tus operaciones de comercio exterior, todo en un solo lugar">Extract, analyse, audit and scout<br>your trade operations, all in one single place</p>
+        <div class="h7-ctas">
+          <a class="h7-cta h7-cta-dark" href="https://web-production-9447ae.up.railway.app/login?mode=register">
+            <span data-es="Comenzar">Get Started</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+          <a class="h7-cta h7-cta-light" href="#">
+            <span data-es="Ver demo">View Demo</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
         </div>
       </div>
     </div>
-    <div class="right-panel">
-      <img class="lh-img" src="hero_dunes.png" alt="" fetchpriority="high" decoding="async">
-
-      <!-- 2. espejismo de calor: duplicado con displacement, solo la mitad baja -->
-      <img class="lh-img lh-mirage" src="hero_dunes.png" alt="" aria-hidden="true">
-      <!-- 3. sol pulsante -->
-      <div class="lh-sun" aria-hidden="true"></div>
-      <!-- 5. polvo en suspensión (52% inferior) -->
-      <div class="lh-dust" aria-hidden="true">
-        <span style="--y:6%;  --s:2px;   --c:rgba(255,255,255,1);   --o:.55; --dur:7.5s; --dl:-1.2s"></span>
-        <span style="--y:13%; --s:3px;   --c:rgba(255,214,220,1);   --o:.40; --dur:9.4s; --dl:-5.8s"></span>
-        <span style="--y:19%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.70; --dur:5.2s; --dl:-3.1s"></span>
-        <span style="--y:24%; --s:2.5px; --c:rgba(255,255,255,1);   --o:.30; --dur:8.8s; --dl:-7.4s"></span>
-        <span style="--y:29%; --s:4px;   --c:rgba(255,198,206,1);   --o:.28; --dur:10s;  --dl:-2.6s"></span>
-        <span style="--y:33%; --s:2px;   --c:rgba(255,255,255,1);   --o:.62; --dur:6.1s; --dl:-4.9s"></span>
-        <span style="--y:37%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.45; --dur:4.4s; --dl:-0.7s"></span>
-        <span style="--y:41%; --s:3px;   --c:rgba(255,224,228,1);   --o:.35; --dur:9.1s; --dl:-6.3s"></span>
-        <span style="--y:45%; --s:2px;   --c:rgba(255,255,255,1);   --o:.52; --dur:7.2s; --dl:-2.1s"></span>
-        <span style="--y:49%; --s:2.5px; --c:rgba(255,255,255,1);   --o:.25; --dur:5.7s; --dl:-5.2s"></span>
-        <span style="--y:53%; --s:1.5px; --c:rgba(255,205,214,1);   --o:.66; --dur:8.3s; --dl:-3.8s"></span>
-        <span style="--y:57%; --s:3.5px; --c:rgba(255,255,255,1);   --o:.30; --dur:6.6s; --dl:-1.9s"></span>
-        <span style="--y:61%; --s:2px;   --c:rgba(255,255,255,1);   --o:.48; --dur:9.8s; --dl:-8.1s"></span>
-        <span style="--y:64%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.58; --dur:4.9s; --dl:-4.2s"></span>
-        <span style="--y:68%; --s:2.5px; --c:rgba(255,216,222,1);   --o:.38; --dur:7.9s; --dl:-6.9s"></span>
-        <span style="--y:72%; --s:2px;   --c:rgba(255,255,255,1);   --o:.68; --dur:5.5s; --dl:-0.4s"></span>
-        <span style="--y:76%; --s:4px;   --c:rgba(255,255,255,1);   --o:.26; --dur:9.6s; --dl:-3.4s"></span>
-        <span style="--y:80%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.60; --dur:6.9s; --dl:-5.6s"></span>
-        <span style="--y:84%; --s:3px;   --c:rgba(255,200,210,1);   --o:.33; --dur:4.7s; --dl:-2.9s"></span>
-        <span style="--y:88%; --s:2px;   --c:rgba(255,255,255,1);   --o:.50; --dur:8.6s; --dl:-7.7s"></span>
-        <span style="--y:92%; --s:2.5px; --c:rgba(255,255,255,1);   --o:.42; --dur:6.3s; --dl:-1.5s"></span>
-        <span style="--y:96%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.64; --dur:9.2s; --dl:-4.6s"></span>
+    <div class="h7-band">
+      <div class="h7-frame">
+        <img src="hero_home.png?v=8" alt="InTake — workspace" fetchpriority="high" decoding="async">
       </div>
-      <!-- 6. viñeta -->
-      <div class="lh-vignette" aria-hidden="true"></div>
-
-      <svg class="lh-filter" width="0" height="0" aria-hidden="true" focusable="false">
-        <filter id="heatHaze" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.05" numOctaves="2" seed="7" result="haze">
-            <animate attributeName="baseFrequency" dur="9s" repeatCount="indefinite"
-                     values="0.012 0.05; 0.015 0.058; 0.012 0.05"/>
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="haze" scale="9" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </svg>
-
-      <div class="hero-composer" aria-hidden="true">
-        <div class="hui-card">
-          <p class="hui-line" data-es="Estamos preparando el embarque IMMEX del próximo mes.">We're preparing next month's IMMEX shipment.</p>
-          <div class="hui-suggest">
-            <span class="ha-ico is-scan"></span>
-            <span class="hui-suggest-name">SCAN Agent</span>
-            <span class="hui-suggest-desc" data-es="Clasifica cada documento y marca las inconsistencias antes del embarque">Classify every document and flag the inconsistencies before it ships</span>
-          </div>
-          <div class="hui-actions">
-            <button class="hui-plus" type="button" tabindex="-1">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-            <span class="hui-model">
-              <img class="hui-model-logo" src="intake_logo_nav.png" alt="">
-              <span>InTake Intelligence 1.0</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </span>
-          </div>
-        </div>
-        <div class="hero-agents">
-          <span class="hero-agent">
-            <span class="ha-ico is-scan"></span>
-            <span>SCAN Agent</span>
-          </span>
-          <span class="hero-agent">
-            <span class="ha-ico is-audit"></span>
-            <span>AUDIT Agent</span>
-          </span>
-          <span class="hero-agent">
-            <span class="ha-ico is-scout"></span>
-            <span>SCOUT Agent</span>
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <nav>
-      <div class="nav-left">
-        <img class="nav-logo" src="intake_logo_nav.png" alt="InTake">
-        <span class="nav-brand">InTake</span>
-      </div>
-      <div class="nav-links">
-        <a href="#" data-es="Agentes">Agents</a>
-        <a href="#" data-es="Proceso">Process</a>
-        <a href="#" data-es="Demos">Demos</a>
-      </div>
-      <div class="nav-right">
-        <a href="#" class="nav-login login-locked" aria-disabled="true" data-es="Iniciar sesión">Log in</a>
-        <div class="nav-lang">
-          <button type="button" class="active" data-lang="es">ES</button>
-          <span class="sep">/</span>
-          <button type="button" data-lang="en">EN</button>
-        </div>
-      </div>
-    </nav>
-  </section>
-  </div>
-
-  <section class="ticker" aria-hidden="true">
-    <div class="ticker-track">
-      <span class="ticker-item">Ley Aduanera</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">T-MEC / USMCA</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">SAT Anexo 22</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">Régimen IMMEX</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">RGCE 2026</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-
-      <span class="ticker-item">Ley Aduanera</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">T-MEC / USMCA</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">SAT Anexo 22</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">Régimen IMMEX</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
-      <span class="ticker-item">RGCE 2026</span>
-      <span class="ticker-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.6 5.2 4 8.8 9.4 9.4-5.4.6-8.8 4.2-9.4 9.4-.6-5.2-4-8.8-9.4-9.4 5.4-.6 8.8-4.2 9.4-9.4z"/></svg></span>
     </div>
   </section>
 
-  <section class="problem">
-    <div class="problem-inner">
-      <div class="problem-head reveal">
-        <div class="problem-head-l">
-          <span class="problem-eyebrow" data-es="¿Por qué InTake?">Why InTake?</span>
-          <h2 class="problem-title" data-es="Los equipos de comercio exterior trabajan en contra de sus propias herramientas">Trade teams are working against their own tools</h2>
-        </div>
-        <p class="problem-desc" data-es="Detrás de cada embarque hay un equipo de comercio exterior ahogado en trabajo manual: recaptura los mismos datos a mano, persigue un solo número entre una docena de pestañas y arma la verdad a pedazos entre correo, Excel y WhatsApp.">Behind every shipment is a trade team drowning in manual work: re-keying the same data by hand, chasing a single number across a dozen open tabs, and piecing the truth together from email, Excel and WhatsApp.</p>
-      </div>
-      <div class="problem-cards">
-        <!-- 1. bandeja infinita: rejilla de apps con badges -->
-        <div class="p-card reveal">
-          <div class="p-card-media">
-            <div class="pm-tiles" aria-hidden="true">
-              <div class="pm-tile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3 7l9 6 9-6"/></svg>
-                <span class="pm-badge">128</span>
-              </div>
-              <div class="pm-tile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5l-8 8a5 5 0 0 1-7-7l8.5-8.5a3.4 3.4 0 0 1 4.8 4.8L9.7 17.4a1.8 1.8 0 0 1-2.5-2.5l7.8-7.8"/></svg>
-              </div>
-              <div class="pm-tile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2 7.5-2 7.5h16s-2-1.5-2-7.5z"/><path d="M10.4 20a2 2 0 0 0 3.2 0"/></svg>
-                <span class="pm-badge">47</span>
-              </div>
-              <div class="pm-tile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a7.5 7.5 0 0 1-10.9 6.7L4 20l1.4-5.2A7.5 7.5 0 1 1 20.5 12z"/></svg>
-                <span class="pm-badge">12</span>
-              </div>
-              <div class="pm-tile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5a2 2 0 0 1 2-2h3.6l2 2.4H19a2 2 0 0 1 2 2v7.6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-              </div>
-              <div class="pm-tile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a2.6 2.6 0 0 0 5 0v-1a9 9 0 1 0-3.6 7.2"/></svg>
-              </div>
-            </div>
-          </div>
-          <h3 class="p-card-title" data-es="Una bandeja que nunca acaba">An inbox that never ends</h3>
-          <p class="p-card-desc" data-es="Pedimentos, facturas y certificados llegan como adjuntos en hilos de correo interminables. Nadie sabe cuál es la versión final — así que todo se recaptura a mano.">Pedimentos, invoices and certificates arrive as attachments in endless email threads. Nobody knows which version is final — so everything gets re-keyed by hand.</p>
-        </div>
 
-        <!-- 2. comunicación sin sistema: hilo de chat -->
-        <div class="p-card reveal d1">
-          <div class="p-card-media">
-            <div class="pm-panel pm-chat" aria-hidden="true">
-              <div class="pm-chat-head"><span class="pm-hash">#</span>operación-4471</div>
-              <div class="pm-msg">
-                <span class="pm-av"><img src="pm_av_1.jpg" alt="" loading="lazy" decoding="async"></span>
-                <div class="pm-msg-body">
-                  <div class="pm-msg-head"><b>Laura M.</b><span>9:14</span></div>
-                  <p>¿Alguien tiene la versión final del pedimento 4471? El de ayer no cuadra con la factura.</p>
-                </div>
-              </div>
-              <div class="pm-msg">
-                <span class="pm-av"><img src="pm_av_2.jpg" alt="" loading="lazy" decoding="async"></span>
-                <div class="pm-msg-body">
-                  <div class="pm-msg-head"><b>Jorge R.</b><span>9:32</span></div>
-                  <p>Te lo reenvío por correo, creo que el bueno lo tiene el agente…</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h3 class="p-card-title" data-es="Comunicación sin sistema">Communication without a system</h3>
-          <p class="p-card-desc" data-es="La verdad vive dispersa entre correo, Excel y WhatsApp. No hay una vista en tiempo real de la operación, así que se decide medio a ciegas.">The truth lives scattered across email, Excel and WhatsApp. There's no real-time view of the operation, so decisions get made half-blind.</p>
-        </div>
+  <!-- ═════════ Manifiesto ═════════ -->
+  <section class="rv sec-reveal">
+    <div class="rv-inner">
+      <p class="rv-p" data-es="InTake es la plataforma de IA para compliance y operaciones de comercio exterior que conecta tus 3 operadores especializados en una sola app, reduciendo tus riesgos de multas y sobrecostos sin ralentizar tu operación.">InTake is the AI platform for trade compliance and operations that connects your 3 specialized operators in a single place, cutting your exposure to fines and cost overruns without slowing your operation down.</p>
+      <p class="rv-p" data-es="Enruta cada documento al operador correcto automáticamente, mantiene todo tu contexto aduanero en un solo lugar, y te permite pasar de extracción a auditoría a clasificación arancelaria — sin salir de tu flujo de trabajo.">It routes every document to the right operator automatically, keeps all your customs context in one place, and lets you go from extraction to audit to tariff classification — without leaving your workflow.</p>
+      <p class="rv-p" data-es="Desde extraer datos de pedimentos hasta detectar hallazgos de cumplimiento y encontrar oportunidades de ahorro en fracciones, InTake hace el trabajo pesado y aplica el motor correcto para cada tarea — SCAN, AUDIT o SCOUT — para que dejes de exponerte a multas del SAT y empieces a operar con certeza.">From pulling data out of pedimentos to detecting compliance findings and spotting savings in tariff codes, InTake does the heavy lifting and applies the right engine for each task — SCAN, AUDIT or SCOUT — so you stop exposing yourself to SAT fines and start operating with certainty.</p>
+    </div>
+  </section>
 
-        <!-- 3. portal legacy: barra negra + rejilla de módulos -->
-        <div class="p-card reveal d2">
-          <div class="p-card-media">
-            <div class="pm-sheet" aria-hidden="true">
-              <div class="pm-sheet-row"><span class="pm-sheet-k">ETA</span></div>
-              <div class="pm-sheet-row"><span class="pm-sheet-l">MX-4471</span><span class="pm-sheet-d">05/08</span></div>
-              <div class="pm-sheet-row"><span class="pm-sheet-l">US-2210</span><span class="pm-sheet-d">04/26</span></div>
-              <div class="pm-sheet-row"><span class="pm-sheet-l">MX-3907</span><span class="pm-sheet-d">03/28</span></div>
-            </div>
-            <img class="pm-legacy-shot" src="pm_legacy.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async">
+  <!-- ═════════ COMO FUNCIONA ═════════ -->
+  <section class="how sec-reveal">
+    <div class="how-inner">
+      <h2 class="how-title" data-es="Cómo funciona">How it works</h2>
+      <p class="how-sub" data-es="Conecta tu bandeja y deja que InTake empiece a ayudarte a ordenarla.<br>Nuestros agentes responden en tu bandeja y monitorean actualizaciones<br>en tiempo real del SAT, DOF y BANXICO.">Connect your inbox and let InTake start helping you organize it.<br>Our agents replies to your inbox and monitors real life updates<br>from SAT, DOF and BANXICO.</p>
+      <div class="how-cards">
+        <div class="how-col">
+          <div class="how-card is-shot bg-sky">
+          <img class="how-shot" src="how_card_mail.webp" alt="InTake redacta la respuesta al correo de la operacion" loading="lazy" decoding="async">
           </div>
-          <h3 class="p-card-title" data-es="El SAP viejo sigue mandando">Legacy SAP still runs the show</h3>
-          <p class="p-card-desc" data-es="Portales de agentes aduanales y pantallas de SAP diseñadas hace décadas: un muro de módulos, códigos crípticos y cuadrículas infinitas cargan el trabajo crítico.">Broker portals and SAP screens designed decades ago: a wall of modules, cryptic codes and endless grids still carry the critical work.</p>
+          <h3 class="how-name" data-es="Agente de correo">Mail agent</h3>
+          <p class="how-desc" data-es="InTake lee tu bandeja, entiende cada hilo y redacta<br>la respuesta — con los adjuntos ya ligados a la<br>operación, lista para que la revises y envíes.">InTake reads your inbox, understands each thread<br>and drafts the reply — attachments already linked<br>to the operation, ready for you to review and send.</p>
+        </div>
+        <div class="how-col">
+          <div class="how-card is-shot bg-forest">
+          <img class="how-shot" src="how_card_radar.webp" alt="InTake responde con el radar regulatorio y las fuentes citadas" loading="lazy" decoding="async">
+          </div>
+          <h3 class="how-name" data-es="Pregunta a InTake">Ask InTake</h3>
+          <p class="how-desc" data-es="Pregúntale a InTake lo que sea de tu operación y<br>te responde con la norma detrás — citando el DOF,<br>las reglas del SAT y las fuentes que consultó.">Ask InTake anything about your operation and it<br>answers with the regulation behind it — citing the<br>DOF, the SAT rules and the sources it consulted.</p>
+        </div>
+        <div class="how-col">
+          <div class="how-card is-shot bg-gold">
+          <img class="how-shot" src="how_card_dof.webp" alt="Monitor del DOF en InTake con notas detectadas y su impacto" loading="lazy" decoding="async">
+          </div>
+          <h3 class="how-name" data-es="Monitores regulatorios">Regulatory monitors</h3>
+          <p class="how-desc" data-es="Agentes vigilan el DOF, el SAT y Banxico las 24<br>horas, clasifican lo que de verdad importa y lo<br>cruzan con las fracciones de tus operaciones.">Agents watch the DOF, the SAT and Banxico around<br>the clock, classify what actually matters and cross<br>it against the tariff codes in your operations.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section-6">
-    <h2 class="s6-title" data-es="Conoce InTake, el nuevo estándar<br>para las operaciones IMMEX">Meet InTake, the New Standard<br>for IMMEX Operations</h2>
-    <p class="s6-desc" data-es="La primera plataforma nativa de IA construida para los equipos de comercio exterior: quita el ruido y la fricción de cada operación — la recaptura, las pestañas abiertas, los correos persiguiendo un dato — para que tu equipo dedique su tiempo a decidir, no a capturar.">The first AI native platform built for trade operators — one that strips the noise and the friction out of every operation: the re-keying, the dozen open tabs, the emails chasing a single number. Your team gets its time back to decide, not to type.</p>
-    <!-- misma pila de animación que el hero: Ken Burns + espejismo + sol + polvo + viñeta (+ grano/scanlines por ::before/::after) -->
-    <div class="s6-card reveal">
-      <img class="lh-img" src="s6_card_bg_mono.png" alt="" loading="lazy" decoding="async">
-      <img class="lh-img lh-mirage" src="s6_card_bg_mono.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <div class="lh-sun" aria-hidden="true"></div>
-      <div class="lh-dust" aria-hidden="true">
-        <span style="--y:6%;  --s:2px;   --c:rgba(255,255,255,1);   --o:.55; --dur:7.5s; --dl:-1.2s"></span>
-        <span style="--y:13%; --s:3px;   --c:rgba(255,236,204,1);   --o:.40; --dur:9.4s; --dl:-5.8s"></span>
-        <span style="--y:19%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.70; --dur:5.2s; --dl:-3.1s"></span>
-        <span style="--y:24%; --s:2.5px; --c:rgba(255,255,255,1);   --o:.30; --dur:8.8s; --dl:-7.4s"></span>
-        <span style="--y:29%; --s:4px;   --c:rgba(255,228,190,1);   --o:.28; --dur:10s;  --dl:-2.6s"></span>
-        <span style="--y:33%; --s:2px;   --c:rgba(255,255,255,1);   --o:.62; --dur:6.1s; --dl:-4.9s"></span>
-        <span style="--y:37%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.45; --dur:4.4s; --dl:-0.7s"></span>
-        <span style="--y:41%; --s:3px;   --c:rgba(255,240,214,1);   --o:.35; --dur:9.1s; --dl:-6.3s"></span>
-        <span style="--y:45%; --s:2px;   --c:rgba(255,255,255,1);   --o:.52; --dur:7.2s; --dl:-2.1s"></span>
-        <span style="--y:49%; --s:2.5px; --c:rgba(255,255,255,1);   --o:.25; --dur:5.7s; --dl:-5.2s"></span>
-        <span style="--y:53%; --s:1.5px; --c:rgba(255,232,198,1);   --o:.66; --dur:8.3s; --dl:-3.8s"></span>
-        <span style="--y:57%; --s:3.5px; --c:rgba(255,255,255,1);   --o:.30; --dur:6.6s; --dl:-1.9s"></span>
-        <span style="--y:61%; --s:2px;   --c:rgba(255,255,255,1);   --o:.48; --dur:9.8s; --dl:-8.1s"></span>
-        <span style="--y:64%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.58; --dur:4.9s; --dl:-4.2s"></span>
-        <span style="--y:68%; --s:2.5px; --c:rgba(255,238,208,1);   --o:.38; --dur:7.9s; --dl:-6.9s"></span>
-        <span style="--y:72%; --s:2px;   --c:rgba(255,255,255,1);   --o:.68; --dur:5.5s; --dl:-0.4s"></span>
-        <span style="--y:76%; --s:4px;   --c:rgba(255,255,255,1);   --o:.26; --dur:9.6s; --dl:-3.4s"></span>
-        <span style="--y:80%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.60; --dur:6.9s; --dl:-5.6s"></span>
-        <span style="--y:84%; --s:3px;   --c:rgba(255,226,186,1);   --o:.33; --dur:4.7s; --dl:-2.9s"></span>
-        <span style="--y:88%; --s:2px;   --c:rgba(255,255,255,1);   --o:.50; --dur:8.6s; --dl:-7.7s"></span>
-        <span style="--y:92%; --s:2.5px; --c:rgba(255,255,255,1);   --o:.42; --dur:6.3s; --dl:-1.5s"></span>
-        <span style="--y:96%; --s:1.5px; --c:rgba(255,255,255,1);   --o:.64; --dur:9.2s; --dl:-4.6s"></span>
-      </div>
-      <div class="lh-vignette" aria-hidden="true"></div>
-      <img class="s6-shot" src="s6_dash.png" alt="InTake dashboard" loading="lazy" decoding="async">
-    </div>
-  </section>
+
+
+
 
   <!-- capacidades: qué corre solo dentro de InTake -->
-  <section class="caps">
+  <section class="caps sec-reveal">
     <div class="caps-head reveal">
-      <span class="caps-eyebrow" data-es="El espacio de trabajo de InTake">The InTake workspace</span>
       <h2 class="caps-title" data-es="Del documento a la operación cerrada,<br>sin pasos manuales">From documents to a closed operation,<br>no manual steps</h2>
       <p class="caps-desc" data-es="Clasificación, validación cruzada, impacto fiscal y radar regulatorio corren solos. Tu equipo deja de perseguir datos y de recapturar a mano.">Classification, cross-validation, fiscal impact and the regulatory radar all run on their own. Your team stops chasing numbers and stops re-keying by hand.</p>
     </div>
@@ -2081,298 +2360,57 @@
     </div>
   </section>
 
-  <section class="section-8">
-    <div class="s8-left">
-      <span class="s8-eyebrow" data-es="Presentamos los Operadores de IA">Introducing AI Operators</span>
-      <h2 class="s8-title" data-es="Suelta los documentos. Mira correr tu operación.">Drop the documents. Watch your operation run.</h2>
-      <p class="s8-desc" data-es="Pídelo en lenguaje natural. InTake lee tus pedimentos, facturas y certificados, los cruza contra la ley aduanera y te entrega los hallazgos — con el costo en pesos.">Ask in plain language. InTake reads your pedimentos, invoices and certificates, cross-checks them against customs law, and hands you the findings — with the cost in pesos.</p>
+  <!-- ═════════ FILAS VISUAL + COPY ═════════ -->
+  <section class="duo sec-reveal">
 
-      <div class="s8-list">
-        <div class="s8-item">
-          <span class="s8-ico is-scan"><span class="s8-mask"></span></span>
-          <div class="s8-item-body">
-            <h3 class="s8-item-title">SCAN</h3>
-            <p class="s8-item-desc" data-es="Lee cada documento de la operación — pedimentos, facturas, listas de empaque y certificados —, los clasifica y extrae cada campo, incluso lo que no cabe en el formato.">Reads every document in the operation — pedimentos, invoices, packing lists and certificates — classifies them and pulls every field, even what doesn't fit the form.</p>
-          </div>
-        </div>
-        <div class="s8-item">
-          <span class="s8-ico is-audit"><span class="s8-mask"></span></span>
-          <div class="s8-item-body">
-            <h3 class="s8-item-title">AUDIT</h3>
-            <p class="s8-item-desc" data-es="Cruza la operación completa contra la ley aduanera y los catálogos oficiales, marca lo que puede costarte una multa y te dice cuánto — en pesos.">Cross-checks the whole operation against customs law and the official catalogs, flags what could get you fined, and tells you how much — in pesos.</p>
-          </div>
-        </div>
-        <div class="s8-item">
-          <span class="s8-ico is-scout"><span class="s8-mask"></span></span>
-          <div class="s8-item-body">
-            <h3 class="s8-item-title">SCOUT</h3>
-            <p class="s8-item-desc" data-es="Lee tu operación como un analista: riesgo arancelario, proveedores, costos y las oportunidades que estás dejando sobre la mesa.">Reads your operation like an analyst: tariff risk, suppliers, costs, and the opportunities you're leaving on the table.</p>
-          </div>
-        </div>
+    <div class="duo-row">
+      <div class="duo-media m1">
+        <img class="duo-shot" src="duo_scan.webp?v=2" alt="SCAN — extraccion y validacion de documentos en InTake" loading="lazy" decoding="async">
+      </div>
+      <div class="duo-copy">
+        <h2 class="duo-title" data-es="SCAN lee cada documento,<br>sin plantillas">SCAN reads every document,<br>with no templates</h2>
+        <p class="duo-text" data-es="Clasifica cada archivo por lo que trae dentro — pedimento, factura, lista de empaque, certificado de origen u otro — y extrae los campos página por página, en el formato de cualquier proveedor.">It classifies every file by what is inside — pedimento, invoice, packing list, certificate of origin or other — and pulls the fields page by page, whatever format the supplier uses.</p>
+        <a class="duo-cta" href="#" data-es="Ver cómo funciona">See how it works
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
       </div>
     </div>
 
-    <div class="s8-media" aria-hidden="true">
-      <!-- mismo composer que la card del hero (.hui-card), reescalado -->
-      <div class="hui-beam">
-        <div class="hui-card">
-        <div class="hui-files">
-          <div class="hui-file">
-            <span class="hui-file-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
-            </span>
-            <span class="hui-file-meta">
-              <b>Pedimento 44 2610</b>
-              <span>PDF</span>
-            </span>
-            <span class="hui-file-x">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-            </span>
-          </div>
-          <div class="hui-file">
-            <span class="hui-file-ico is-green">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M9 8.5l6 7M15 8.5l-6 7"/></svg>
-            </span>
-            <span class="hui-file-meta">
-              <b data-es="Facturas y packing">Invoices &amp; Packing</b>
-              <span>XLSX</span>
-            </span>
-            <span class="hui-file-x">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-            </span>
-          </div>
-        </div>
-        <p class="hui-line" data-es="Analiza este pedimento y los documentos adicionales, marca posibles señales de riesgo.">Analyze this Pedimento and additional documents, highlight possible red flags.</p>
-        <div class="hui-actions">
-          <div class="hui-pills">
-            <button class="hui-plus" type="button" tabindex="-1">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-            <span class="hui-model is-audit">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9c-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
-              <span>AUDIT</span>
-            </span>
-            <span class="hui-model">
-              <img class="hui-model-logo" src="intake_logo_nav.png" alt="">
-              <span>InTake Intelligence 1.0</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </span>
-          </div>
-          <button class="hui-send" type="button" tabindex="-1" aria-label="Send">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-          </button>
-        </div>
-        </div>
+    <div class="duo-row">
+      <div class="duo-media m2">
+        <img class="duo-shot" src="duo_audit.webp?v=2" alt="AUDIT — auditoria de riesgo aduanero en InTake" loading="lazy" decoding="async">
       </div>
-
-      <div class="s8-plan">
-        <div class="s8-plan-head" data-es="Primero voy a leer los documentos, extraer cada campo y entender los datos para detectar posibles inconsistencias. Después los cruzo entre sí y los valido contra la ley aduanera.">First, I'm going to read the documents, extract every field and understand the data to detect possible inconsistencies. Then I'll cross-check them and validate against customs law.</div>
-        <div class="s8-steps">
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a7.5 7.5 0 0 1-10.9 6.7L4 20l1.4-5.2A7.5 7.5 0 1 1 20.5 12z"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Leer los documentos">Read the documents</b>
-              <span data-es="6 archivos clasificados en la operación">Classified 6 files in the operation</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5l2 2 3-3"/><path d="M3.5 13l2 2 3-3"/><path d="M12 7.5h8.5"/><path d="M12 14h8.5"/><path d="M6 19.5h14.5"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Cruzar los datos">Cross-check the data</b>
-              <span data-es="El valor de la factura no coincide con el pedimento">Invoice value doesn't match the pedimento</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9c-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Validar contra la ley">Validate against the law</b>
-              <span data-es="3 hallazgos: 1 bloqueo, 2 advertencias">3 findings: 1 blocking, 2 warnings</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M16.5 6.5H10a2.8 2.8 0 0 0 0 5.6h4a2.8 2.8 0 0 1 0 5.6H7"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Cuantificar el impacto fiscal">Quantify the fiscal impact</b>
-              <span data-es="$30,696 MXN en riesgo">$30,696 MXN at risk</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-        </div>
+      <div class="duo-copy">
+        <h2 class="duo-title" data-es="AUDIT cruza todo<br>contra la ley vigente">AUDIT cross-checks it all<br>against the law in force</h2>
+        <p class="duo-text" data-es="Valida el pedimento contra las facturas, los certificados de origen y los catálogos oficiales — fracciones, NOMs, permisos y cuotas — y pone en pesos la multa, el impuesto y la contribución que están en riesgo.">It validates the pedimento against the invoices, the certificates of origin and the official catalogs — tariff codes, NOMs, permits and duties — and puts a peso figure on the fine, the tax and the duty at risk.</p>
+        <ul class="duo-points">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="Cada hallazgo cita el artículo que lo sustenta.">Every finding cites the article that backs it.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="El veredicto se ajusta a los documentos que sí tienes.">The verdict adapts to the documents you actually have.</span></li>
+        </ul>
       </div>
     </div>
+
+    <div class="duo-row">
+      <div class="duo-media m3">
+        <img class="duo-shot" src="duo_scout.webp?v=2" alt="SCOUT — clasificador arancelario de InTake" loading="lazy" decoding="async">
+      </div>
+      <div class="duo-copy">
+        <h2 class="duo-title" data-es="SCOUT clasifica<br>y muestra su razonamiento">SCOUT classifies<br>and shows its reasoning</h2>
+        <p class="duo-text" data-es="Propone la fracción arancelaria con el razonamiento de las Reglas Generales detrás, su nivel de confianza y el dossier regulatorio: qué NOMs, permisos y restricciones aplican.">It proposes the tariff code with the General Rules reasoning behind it, its confidence level and the regulatory dossier: which NOMs, permits and restrictions apply.</p>
+        <ul class="duo-points">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="Cuando no está seguro lo marca, en vez de inventar.">When it isn't sure it says so, instead of guessing.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="Trae el dossier regulatorio de cada fracción.">Brings the regulatory dossier for each code.</span></li>
+        </ul>
+      </div>
+    </div>
+
   </section>
 
-  <!-- gemela de la sección 8, con las columnas invertidas: card a la izquierda -->
-  <section class="section-8 s8-flip">
-    <div class="s8-media" aria-hidden="true">
-      <div class="hui-beam">
-        <div class="hui-card">
-        <p class="hui-line" data-es="Dame las últimas noticias sobre la MVE en México y redacta el resumen para mi equipo.">Give me the latest news on Mexico's MVE and draft the summary for my team.</p>
-        <div class="hui-actions">
-          <div class="hui-pills">
-            <button class="hui-plus" type="button" tabindex="-1">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-            <span class="hui-model is-web">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#2b93f0" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4"/><path d="M12 2.8a4.1 9.2 0 0 1 0 18.4a4.1 9.2 0 0 1 0-18.4"/></svg>
-              <span data-es="Búsqueda web">Web Search</span>
-            </span>
-            <span class="hui-model is-outlook">
-              <img class="hui-mode-ico" src="icon_outlook_t.png" alt="" loading="lazy" decoding="async">
-              <span>Outlook</span>
-            </span>
-            <span class="hui-model is-scan">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M20 16v2a2 2 0 0 1-2 2h-2"/><path d="M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M4 12h16"/></svg>
-              <span>SCAN</span>
-            </span>
-          </div>
-          <button class="hui-send" type="button" tabindex="-1" aria-label="Send">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-          </button>
-        </div>
-        </div>
-      </div>
 
-      <div class="s8-plan">
-        <div class="s8-plan-head" data-es="Claro. Primero reviso las fuentes oficiales, verifico fechas y cifras, y luego redacto el resumen y lo envío a tu equipo con las citas de cada fuente.">Sure. I'll check the official sources first, verify the dates and figures, then draft the summary and send it to your team with citations to every source.</div>
-        <div class="s8-steps">
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13 13 0 0 1 0 18a13 13 0 0 1 0-18"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Buscar en las fuentes oficiales">Search the official sources</b>
-              <span data-es="DOF, SAT y VUCEM">DOF, SAT and VUCEM</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Leer las publicaciones recientes">Read the latest publications</b>
-              <span data-es="3 notas sobre la MVE desde el 1 de junio">3 notes on the MVE since June 1</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4.5-1.2L19.3 8a2.1 2.1 0 0 0-3-3L5.2 15.5z"/><path d="M14.5 6.5l3 3"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Redactar el resumen">Draft the summary</b>
-              <span data-es="Con citas en línea a cada fuente">With inline citations to every source</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div class="s8-step">
-            <span class="s8-step-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3 7l9 6 9-6"/></svg>
-            </span>
-            <div class="s8-step-body">
-              <b data-es="Enviarlo a tu equipo">Send it to your team</b>
-              <span data-es="Entregado desde Outlook a 3 destinatarios">Delivered from Outlook to 3 recipients</span>
-            </div>
-            <svg class="s8-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="s8-left">
-      <span class="s8-eyebrow is-grad" data-es="Conoce a tu copiloto con IA">Meet Your AI Copilot</span>
-      <h2 class="s8-title" data-es="Usa InTake como tu asistente para las tareas complejas.">Run InTake as your assistant for complex tasks.</h2>
-      <p class="s8-desc" data-es="Pide en lenguaje natural — consulta una fracción arancelaria, redacta un correo a un proveedor o pide el reporte completo. InTake entiende la petición y la resuelve de punta a punta.">Ask in plain language — look up a tariff, draft a supplier email, or ask for the full report. InTake understands the request and sees it through, end to end.</p>
 
-      <div class="s8-list">
-        <div class="s8-item">
-          <span class="s8-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13 13 0 0 1 0 18a13 13 0 0 1 0-18"/></svg>
-          </span>
-          <div class="s8-item-body">
-            <h3 class="s8-item-title" data-es="Monitorea las reglas en tiempo real">Monitor the rules in real time</h3>
-            <p class="s8-item-desc" data-es="Pregunta por cualquier regulación o cambio de mercado: InTake busca en las fuentes oficiales, verifica fechas y cifras, y responde con citas.">Ask about any regulation or market change: InTake searches the official sources, cross-checks the dates and figures, and answers with citations.</p>
-          </div>
-        </div>
-        <div class="s8-item">
-          <span class="s8-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3 7l9 6 9-6"/></svg>
-          </span>
-          <div class="s8-item-body">
-            <h3 class="s8-item-title" data-es="Redacta y envía tus correos">Draft and send your emails</h3>
-            <p class="s8-item-desc" data-es="Dile a quién contactar: redacta los correos para tus proveedores y tu agente aduanal, listos para revisar y enviar desde Outlook.">Tell it who to reach: it drafts the emails to your suppliers and customs broker, ready to review and send from Outlook.</p>
-          </div>
-        </div>
-        <div class="s8-item">
-          <span class="s8-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M4 9h16M9.5 9v11.5"/></svg>
-          </span>
-          <div class="s8-item-body">
-            <h3 class="s8-item-title" data-es="Reportes y hojas de cálculo, entregados">Full reports and spreadsheets, delivered</h3>
-            <p class="s8-item-desc" data-es="Pide el reporte de la operación: InTake lo arma, genera los Excel con las fórmulas verificadas y los envía a tu equipo.">Ask for the operation's report: InTake builds it, generates the spreadsheets with verified formulas, and sends them to your team.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- integraciones: se enchufa a lo que el equipo ya usa -->
-  <section class="plug">
-    <div class="plug-left reveal">
-      <span class="plug-eyebrow" data-es="Integraciones">Integrations</span>
-      <h2 class="plug-title" data-es="Todos tus buzones,<br>una sola operación">All your mailboxes,<br>one operation</h2>
-      <p class="plug-desc" data-es="Conecta Outlook y los buzones compartidos de tu equipo. InTake lee cada adjunto, lo archiva en la operación que le toca y redacta la respuesta — sin que salgas de tu bandeja. Y del otro lado se enchufa a las fuentes oficiales: SAT, DOF y Banxico, más los Excel que ya usas.">Connect Outlook and your team's shared mailboxes. InTake reads every attachment, files it into the operation it belongs to and drafts the reply — without you leaving your inbox. On the other side it plugs into the official sources — SAT, DOF and Banxico — and into the spreadsheets you already use.</p>
-
-      <div class="plug-list">
-        <div class="plug-row">
-          <b data-es="Conectas en un clic">One-click connect</b>
-          <span data-es="OAuth con Outlook: nada que instalar, nada que configurar en el servidor de correo.">OAuth with Outlook — nothing to install, nothing to configure on your mail server.</span>
-        </div>
-        <div class="plug-row">
-          <b data-es="Copiloto o piloto automático">Copilot or autopilot</b>
-          <span data-es="Deja que redacte y tú envías, o que responda solo a tus proveedores. Tú eliges el modo, buzón por buzón.">Let it draft and you send, or let it reply to your suppliers on its own. You pick the mode, mailbox by mailbox.</span>
-        </div>
-        <div class="plug-row">
-          <b data-es="Cada correo, una operación">Every email, one operation</b>
-          <span data-es="Los adjuntos se clasifican y se archivan en la operación correcta — no en una carpeta más.">Attachments get classified and filed into the right operation — not into one more folder.</span>
-        </div>
-        <div class="plug-row">
-          <b data-es="Gmail, en camino">Gmail, coming next</b>
-          <span data-es="El agente de correo está construido sobre una capa de proveedores: Gmail es el siguiente en la fila.">The mail agent runs on a provider layer — Gmail is next in line. <em>Q3</em></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="plug-media reveal d1" aria-hidden="true">
-      <div class="plug-cluster">
-        <span class="plug-tile"><img src="int_outlook_t.png" alt="" loading="lazy" decoding="async"></span>
-        <span class="plug-tile"><span>SAT</span></span>
-        <span class="plug-tile"><img src="int_gmail_t.png" alt="" loading="lazy" decoding="async"></span>
-
-        <span class="plug-tile"><img src="int_docs_t.png" alt="" loading="lazy" decoding="async"></span>
-        <span class="plug-tile is-core"><img src="intake_logo_white.png" alt="" loading="lazy" decoding="async"></span>
-        <span class="plug-tile"><img src="int_excel_t.png" alt="" loading="lazy" decoding="async"></span>
-
-        <span class="plug-tile"><span>DOF</span></span>
-        <span class="plug-tile"><span>BMX</span></span>
-        <span class="plug-tile"><span>VUCEM</span></span>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-faq">
+  <section class="section-faq sec-reveal">
     <div class="faq-inner">
       <h2 class="faq-title reveal" data-es="Preguntas frecuentes">Frequently asked questions</h2>
       <div class="faq-list reveal d1">
@@ -2410,8 +2448,8 @@
     </div>
   </section>
 
-  <section class="section-cta">
-    <h2 class="cta-headline reveal" data-es='Simple para empezar,<br>hecho para crecer junto a tu operación.'>Simple to start,<br>built to grow alongside your trade operation.</h2>
+  <section class="section-cta sec-reveal">
+    <h2 class="cta-headline reveal" data-es='Simple para empezar,<br>hecho para crecer junto a ti'>Simple to start,<br>built to grow alongside you</h2>
     <div class="prompt-beam cta-beam reveal d1">
       <a class="cta-pill" href="#">
         <span class="cta-pill-text" data-es="Pruébalo ahora">Try it now</span>
@@ -2419,17 +2457,8 @@
     </div>
   </section>
 
-  <section class="footer-blank">
+  <section class="footer-blank sec-reveal">
     <div class="ft-inner">
-      <div class="ft-top reveal">
-        <div class="ft-brand">
-          <img class="ft-logo" src="intake_logo_nav.png" alt="">
-          <span class="ft-brand-name">InTake</span>
-        </div>
-        <a class="ft-cta" href="#"><span data-es="Comenzar">Get started</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
       <div class="ft-cols reveal d1">
         <p class="ft-tagline" data-es="El copiloto de IA para las operaciones IMMEX en México. Clasifica, audita y despacha aduanas — de principio a fin.">The AI copilot for Mexican IMMEX operations. Classify, audit and clear customs — end to end.</p>
         <div class="ft-links">
@@ -2617,89 +2646,70 @@
       })();
     };
   }
+  // manifiesto: las palabras pasan de gris claro a negro conforme entra la seccion
+  (function () {
+    const sec = document.querySelector('.rv');
+    if (!sec) return;
+    const paras = [].slice.call(sec.querySelectorAll('.rv-p'));
+    let words = [], lit = 0, ticking = false;
+
+    function wrap() {
+      words = [];
+      paras.forEach(function (el) {
+        const txt = (el.textContent || '').trim();
+        el.textContent = '';
+        const frag = document.createDocumentFragment();
+        txt.split(/\s+/).forEach(function (w) {
+          const sp = document.createElement('span');
+          sp.className = 'rv-w';
+          sp.textContent = w;
+          frag.appendChild(sp);
+          frag.appendChild(document.createTextNode(' '));
+          words.push(sp);
+        });
+        el.appendChild(frag);
+      });
+      sec.classList.add('is-armed');
+      lit = 0;
+      update();
+    }
+
+    function update() {
+      const r = sec.getBoundingClientRect(), vh = window.innerHeight;
+      // arranca cuando el bloque cruza el 80% del alto y cierra al llegar al 40%
+      const span = vh * 0.4 + r.height;
+      const prog = Math.max(0, Math.min(1, (vh * 0.8 - r.top) / span));
+      const n = Math.round(prog * words.length);
+      if (n === lit) return;
+      if (n > lit) { for (let i = lit; i < n; i++) words[i].classList.add('on'); }
+      else { for (let i = lit - 1; i >= n; i--) words[i].classList.remove('on'); }
+      lit = n;
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; update(); });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    (window.__typedRebuild = window.__typedRebuild || []).push(wrap);
+    wrap();
+  })();
+
+
   window.__onLangChange = function (lang) {
     (window.__typedRebuild || []).forEach(function (f) { try { f(); } catch (e) {} });
     if (typeof window.__setDemoLang === 'function') window.__setDemoLang(lang);
   };
 
 
-  // sección 8 (y su gemela invertida): animación en bucle de cada card
-  // (typewriter con fade + pasos que se ponen en verde)
-  document.querySelectorAll('.s8-media').forEach(function (media) {
-    const promptEl = media.querySelector('.hui-line');
-    const plan = media.querySelector('.s8-plan');
-    const planEl = media.querySelector('.s8-plan-head');
-    const steps = Array.from(media.querySelectorAll('.s8-step'));
-    if (!promptEl || !plan || !planEl || !steps.length) return;
-
-    // texto EN de origen (el ES vive en data-es; el i18n rellena data-en al primer swap)
-    const EN = { prompt: promptEl.textContent.trim(), plan: planEl.textContent.trim() };
-    function textOf(el, key) {
-      if (window.__lang === 'es') return el.getAttribute('data-es') || EN[key];
-      return el.getAttribute('data-en') || EN[key];
-    }
-
-    plan.classList.add('js-anim');
-
-    let gen = 0;                     // token de generación: invalida ciclos viejos
-    const wait = (ms) => new Promise(r => setTimeout(r, ms));
-
-    function type(el, text, speed, myGen) {
-      return new Promise(resolve => {
-        el.textContent = '';
-        let i = 0;
-        (function step() {
-          if (myGen !== gen) { resolve(); return; }
-          if (i >= text.length) { resolve(); return; }
-          const c = document.createElement('span');
-          c.className = 'tw-c';
-          c.textContent = text.charAt(i);
-          el.appendChild(c);
-          i++;
-          setTimeout(step, speed);
-        })();
-      });
-    }
-
-    async function cycle(myGen) {
-      while (myGen === gen) {
-        steps.forEach(s => s.classList.remove('is-active', 'is-done'));
-        promptEl.textContent = '';
-        planEl.textContent = '';
-        await wait(800);                                     if (myGen !== gen) return;
-        await type(promptEl, textOf(promptEl, 'prompt'), 28, myGen);
-        await wait(750);                                     if (myGen !== gen) return;
-        await type(planEl, textOf(planEl, 'plan'), 17, myGen);
-        await wait(600);                                     if (myGen !== gen) return;
-        for (const s of steps) {                             // cada paso: activo → verde
-          s.classList.add('is-active');
-          await wait(1150);                                  if (myGen !== gen) return;
-          s.classList.remove('is-active');
-          s.classList.add('is-done');
-          await wait(300);                                   if (myGen !== gen) return;
-        }
-        await wait(3000);                                    if (myGen !== gen) return;
-      }
-    }
-
-    let running = false;
-    function start() { if (running) return; running = true; cycle(++gen); }
-    function stop() { running = false; gen++; }               // los ciclos viejos se autocancelan
-
-    if ('IntersectionObserver' in window) {                   // pausa fuera de pantalla (CPU)
-      const io = new IntersectionObserver(function (es) {
-        es.forEach(function (e) { e.isIntersecting ? start() : stop(); });
-      }, { threshold: 0.15 });
-      io.observe(media);
-    } else {
-      start();
-    }
-  });
 
 
   // reveal genérico al scroll: secciones finales (sección 12 → footer)
   (function () {
-    const els = document.querySelectorAll('.reveal, .reveal-fade');
+    const els = document.querySelectorAll('.reveal, .reveal-fade, .sec-reveal');
     if (!els.length) return;
     if (!('IntersectionObserver' in window)) {
       els.forEach(function (el) { el.classList.add('in'); });
@@ -2711,7 +2721,47 @@
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     els.forEach(function (el) { io.observe(el); });
+
+    // Barrido de seguridad: el observer solo dispara cuando el elemento CRUZA el
+    // viewport. Si se salta de golpe (ancla, arrastre de la barra, Fin), lo que
+    // quedo arriba nunca intersecta y se quedaria invisible para siempre.
+    let pend = false;
+    function barrer() {
+      pend = false;
+      let vivos = 0;
+      els.forEach(function (el) {
+        if (el.classList.contains('in')) return;
+        vivos++;
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.92) {
+          el.classList.add('in');
+          io.unobserve(el);
+        }
+      });
+      if (!vivos) {
+        window.removeEventListener('scroll', ping);
+        window.removeEventListener('resize', ping);
+      }
+    }
+    function ping() { if (!pend) { pend = true; requestAnimationFrame(barrer); } }
+    window.addEventListener('scroll', ping, { passive: true });
+    window.addEventListener('resize', ping, { passive: true });
+    barrer();
   })();
   </script>
+<script>
+  /* Los CTAs apuntan al Railway de produccion. Cuando la landing se abre en
+     local (file:// o localhost) el destino se reescribe al server de dev, para
+     ver el login que se este trabajando y no el desplegado. En produccion este
+     bloque no hace nada. */
+  (function () {
+    var esLocal = location.protocol === 'file:' ||
+                  /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    if (!esLocal) return;
+    document.querySelectorAll('a[href*="railway.app/login"]').forEach(function (a) {
+      a.href = a.getAttribute('href').replace(
+        /^https:\/\/[^/]+/, 'http://localhost:5555');
+    });
+  })();
+</script>
 </body>
 </html>
