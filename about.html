@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InTake — Misión</title>
+<meta name="description" content="Por qué existe InTake: qué resuelve, por qué importa, por qué ahora y a qué nos comprometemos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Mismos pesos que la landing: 300 titulares · 400 base · 500 nav · 700 idioma activo -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="mission_band.jpg?v=5" fetchpriority="high">
+<link rel="icon" href="favicon.ico">
+<style>
+  /* Tokens y reset: copiados tal cual de la landing para que el nav y el footer
+     no sean una imitacion sino la misma pieza. Si alla cambia --h7-inset o el
+     ritmo vertical, aqui hay que cambiarlo igual. */
+  :root {
+    --sec-pad: clamp(48px, 5vw, 88px);
+    --h7-inset: 64px;
+    /* cuerpo de TODOS los titulares de la pagina — el del hero y los de cada
+       capitulo. Van juntos a proposito: si se separan, uno se queda atras. */
+    --titular: clamp(32px, 4.4vw, 62px);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #FAFAFA;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  html { overflow-x: clip; }
+  body { overflow-x: clip; }
+
+  /* reveal generico al scroll — mismo contrato que la landing (.in lo pone el
+     observador del final del archivo) */
+  .sec-reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  .sec-reveal.in { opacity: 1; transform: none; }
+  .reveal, .reveal-fade {
+    opacity: 0;
+    transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal { transform: translateY(34px); }
+  .reveal.in, .reveal-fade.in { opacity: 1; }
+  .reveal.in { transform: translateY(0); }
+  .reveal.d1, .reveal-fade.d1 { transition-delay: .09s; }
+  .reveal.d2, .reveal-fade.d2 { transition-delay: .18s; }
+  .reveal.d3, .reveal-fade.d3 { transition-delay: .27s; }
+  @media (prefers-reduced-motion: reduce) {
+    .sec-reveal, .reveal, .reveal-fade { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ═════ NAV — identica a la de la landing ═════ */
+  .h7-top {
+    position: sticky; top: 0; z-index: 60;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 18px var(--h7-inset);
+    background: #FAFAFA;
+    border-bottom: 1px solid rgba(0,0,0,.09);
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .h7-top-left { justify-self: start; display: flex; align-items: center; gap: 6px; }
+  /* en la landing el logo no es enlace porque YA estas en el inicio; aqui si lo
+     es, que es la salida natural de una pagina interior */
+  .h7-home { display: flex; align-items: center; gap: 6px; text-decoration: none; }
+  .h7-logo { height: 16px; width: auto; display: block; }
+  .h7-brand {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 600; font-size: 16px; letter-spacing: -0.02em; color: #101013;
+  }
+  .h7-top-links { justify-self: center; display: flex; gap: 38px; }
+  .h7-top-links a {
+    color: rgba(16,16,19,.6); text-decoration: none;
+    font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+    transition: color .2s ease;
+  }
+  .h7-top-links a:hover { color: #101013; }
+  .h7-top-links a.es-activo { color: #101013; }
+  .h7-top-right { justify-self: end; display: flex; align-items: center; gap: 12px; }
+  .nav-lang {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; font-weight: 500; user-select: none;
+  }
+  .nav-lang button {
+    background: none; border: none; padding: 0; font: inherit; cursor: pointer;
+    transition: color .2s ease;
+  }
+  .h7-lang { margin-right: 8px; }
+  .h7-lang button { color: rgba(15,15,18,.4); }
+  .h7-lang button:hover { color: rgba(15,15,18,.75); }
+  .h7-lang button.active { color: #0f0f12; font-weight: 700; }
+  .h7-lang .sep { color: rgba(15,15,18,.3); }
+  .h7-btn-login, .h7-btn-start {
+    font-size: 14.5px; font-weight: 500; letter-spacing: -0.01em;
+    text-decoration: none; padding: 12px 24px; border-radius: 6px;
+  }
+  .h7-btn-login { color: #17171a; background: #fafafa; border: 1px solid rgba(0,0,0,.12); }
+  .h7-btn-start { color: #ffffff; background: #111114; border: 1px solid #111114; }
+
+  /* ═════ HERO DE LA MISION ═════
+     El degradado SE VE: el scrim es ligero, solo lo suficiente para que el
+     titular blanco aguante sobre la zona naranja, que es la unica parte de la
+     imagen donde el blanco pierde contraste. Si se sube mas, la imagen se
+     vuelve un color plano y deja de valer la pena. */
+  .mi-hero {
+    position: relative;
+    /* El encuadre esta RECORTADO EN EL ARCHIVO, no con background-position: con
+       cover en un contenedor mas ancho que la imagen no hay desborde horizontal
+       que desplazar, asi que la propiedad no hace nada. mission_band.jpg es la
+       ventana 3:1 (aspecto real del hero, asi cover casi no recorta) abierta
+       hacia la IZQUIERDA para que entre la curva naranja: pasa de 7% a 24% del
+       cuadro. El precio es que la banda donde cae el texto sube de 0.044 a
+       0.141 de luminancia, y por eso el scrim de abajo pesa hacia ese lado. */
+    background: #4a4a41 url('mission_band.jpg?v=5') center / cover no-repeat;
+    /* el aire de arriba es MENOR que el de abajo: eso es lo que sube el bloque
+       sin dejarlo pegado a la nav. Antes iba 16vh/14vh y quedaba hundido. */
+    padding: clamp(58px, 9.5vh, 118px) var(--h7-inset) clamp(96px, 17vh, 200px);
+    overflow: hidden;
+  }
+  .mi-hero::before {
+    content: ''; position: absolute; inset: 0;
+    /* pesa hacia la DERECHA, que en esta imagen es el lado calido y claro; la
+       izquierda (azul profundo) se deja casi limpia */
+    /* pesa hacia la izquierda, que es por donde entra el naranja; el lado
+       derecho (verde profundo) casi no se toca. Calibrado midiendo. */
+    background: linear-gradient(to right, rgba(6,12,14,.62) 0%, rgba(6,12,14,.34) 55%, rgba(6,12,14,.10) 100%);
+  }
+  /* Grano: mismo SVG de turbulencia que usa .footer-grain en la landing, con
+     soft-light para que module el degradado en vez de tapar. Va DESPUES del
+     scrim en orden de pintado (el ::before del padre pinta antes que sus
+     hijos) y debajo del contenido, que lleva z-index 1. */
+  .mi-grain {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 190px 190px;
+    mix-blend-mode: soft-light;
+    opacity: .82;
+  }
+  .mi-hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; text-align: center; }
+  .mi-title {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: var(--titular);
+    line-height: 1.1; letter-spacing: -0.022em;
+    color: #ffffff;
+  }
+  /* la marca va en mono, como .h7-brand del nav. A igual cuerpo JetBrains pesa
+     mas que Archivo, asi que baja a .88em para que los dos renglones se lean
+     del mismo tamano. */
+  .mi-mark {
+    /* flex y no block: el logo y la palabra son UN lockup, y asi se centran
+       como pareja en vez de centrarse el renglon de texto por su cuenta */
+    display: flex; align-items: center; justify-content: center; gap: .2em;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 400; font-size: .88em; letter-spacing: -0.045em;
+  }
+  /* el alto va en em: escala con el clamp del titular sin una regla aparte.
+     La version blanca del logo, que es la que aguanta sobre el fondo oscuro. */
+  .mi-logo { height: .98em; width: auto; display: block; flex: none; }
+  /* el segundo renglon baja de tono, como .h7-title-soft en la landing */
+  /* los tres bloques de texto del hero van en blanco pleno: sin escalonar
+     tonos, la jerarquia la hacen el tamano y el interlineado. Esto deja el
+     contraste MUY por encima del minimo en todo el bloque (medido: el peor
+     punto pasa de 3.50 a 8.9). */
+  .mi-title em { font-style: normal; display: block; color: #ffffff; }
+  .mi-sub {
+    margin: clamp(34px, 5vh, 60px) auto 0; max-width: 46ch;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, 1.25vw, 19px);
+    line-height: 1.65; color: #ffffff;
+  }
+
+  /* ═════ EL PAPER ═════
+     Un solo riel para todo el ensayo, con las mismas lineas verticales que las
+     secciones de la landing. La columna de texto NO es el riel completo: la
+     medida de lectura vive en .ch-lead / .ch-body. */
+  .paper { background: #FAFAFA; }
+  .paper-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    padding: 0 clamp(28px, 2.6vw, 48px);
+  }
+  .chapter { padding: clamp(60px, 11vh, 140px) 0; }
+  /* TODO el contenido del capitulo vive en la misma columna centrada, y todos
+     los hijos miden lo mismo para que compartan el borde izquierdo. Por eso
+     .ch-lead / .ch-body / .promesas ya NO llevan max-width propio: si lo
+     llevaran, cada uno se centraria a su ancho y las izquierdas bailarian. */
+  .chapter > * { width: min(700px, 100%); margin-inline: auto; text-align: left; }
+  /* la linea entre capitulos va a sangre, como las de la landing */
+  .chapter + .chapter { position: relative; }
+  .chapter + .chapter::before {
+    content: ''; position: absolute; top: 0;
+    left:  calc(-1 * var(--h7-inset) - clamp(28px, 2.6vw, 48px));
+    right: calc(-1 * var(--h7-inset) - clamp(28px, 2.6vw, 48px));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .ch-eyebrow {
+    display: block; margin: 0 auto clamp(24px, 3.4vh, 40px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11.5px, .78vw, 13px); font-weight: 400;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: rgba(16,16,19,.40);
+  }
+  .ch-lead {
+    margin: 0 auto clamp(30px, 4.5vh, 54px);
+    /* Archivo 300, el mismo peso de titular que .stats-title / .prob-title de
+       la landing. La escala baja respecto a una serif: a igual cuerpo, una
+       grotesca pesa mas en la pagina. Y baja otra vez al meterse en la columna
+       de 700px: a 62px cortaba en tres palabras por renglon. */
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: var(--titular);
+    line-height: 1.1; letter-spacing: -0.022em;
+    color: #101013;
+  }
+  /* la medida de lectura la fija ahora la columna (700px ~= 75 caracteres) */
+  .ch-body p {
+    margin: 0 0 clamp(18px, 2.6vh, 28px);
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(15px, 1.2vw, 18.5px);
+    line-height: 1.7; letter-spacing: -0.004em;
+    color: rgba(16,16,19,.62);
+  }
+  .ch-body p:last-child { margin-bottom: 0; }
+  /* el renglon que remata un capitulo: tinta plena, sin negritas */
+  .ch-body p.remate { color: #101013; }
+  .ch-body strong { font-weight: 500; color: #101013; }
+
+  /* bloque a dos columnas: el titular a la izquierda y el cuerpo a la derecha,
+     como el paper de referencia. Debajo de 900 se apila. */
+  /* los capitulos a dos columnas se apilan: con una sola columna centrada, un
+     split partiria el bloque y romperia el borde izquierdo comun */
+  .ch-split > div + div { margin-top: clamp(26px, 4vh, 44px); }
+
+  /* — los compromisos, numerados — */
+  .promesas { list-style: none; margin: clamp(34px, 5vh, 56px) auto 0; padding: 0; }
+  .promesa {
+    display: grid; grid-template-columns: 3.2rem 1fr;
+    gap: clamp(14px, 2vw, 28px);
+    padding: clamp(22px, 3vh, 32px) 0;
+    border-top: 1px solid rgba(0,0,0,.09);
+  }
+  .promesa:last-child { border-bottom: 1px solid rgba(0,0,0,.09); }
+  .promesa-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; letter-spacing: .12em; color: rgba(16,16,19,.34);
+    padding-top: .45em;
+  }
+  .promesa h3 {
+    margin: 0 0 10px;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: clamp(19px, 1.7vw, 26px);
+    letter-spacing: -0.015em; color: #101013;
+  }
+  .promesa p {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(14.5px, 1.1vw, 17px);
+    line-height: 1.65; color: rgba(16,16,19,.55);
+  }
+
+  /* — la retícula de cifras del capitulo "por que nosotros" — */
+  .catalogo {
+    /* 2x2 y no 4 en fila: dentro de la columna de 700px, cuatro celdas dejaban
+       175px cada una y las leyendas se partian en cuatro renglones */
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(20px, 2.6vw, 40px);
+    margin: clamp(38px, 5.5vh, 64px) auto 0;
+    padding-top: clamp(28px, 4vh, 44px);
+    border-top: 1px solid rgba(0,0,0,.09);
+  }
+  .catalogo-num {
+    display: block;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300; font-size: clamp(30px, 3.4vw, 52px);
+    line-height: 1; letter-spacing: -0.03em; color: #101013;
+    font-variant-numeric: tabular-nums;
+  }
+  .catalogo-cap {
+    margin: clamp(10px, 1.4vh, 16px) 0 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(13px, .95vw, 15px);
+    line-height: 1.5; color: rgba(16,16,19,.5);
+  }
+
+  @media (max-width: 900px) {
+    .catalogo { gap: 30px 22px; }
+  }
+
+  /* ═════ CTA DE CIERRE — misma pieza que la landing ═════ */
+  .section-cta {
+    /* misma banda que el hero de la landing y que la card del flow: ya esta
+       precargada, asi que esta seccion no baja un solo byte extra.
+       El 88% vertical NO es decorativo: la seccion es mucho mas ancha que la
+       imagen, asi que cover la escala al ancho y solo se puede paner en
+       vertical. Al centro caia la mancha teal oscura detras del titular en
+       tinta y el contraste bajaba a 2.13:1 (minimo 3.0 para texto grande);
+       en 88% se ve la franja calida de abajo y sube a 7.26. */
+    background: #d39b57 url('hero_band_streak.jpg?v=1') center 88% / cover no-repeat;
+    padding: var(--sec-pad) 6vw;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; gap: 5vh;
+  }
+  .cta-headline {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(26px, 4vw, 54px);
+    font-weight: 300; line-height: 1.1; letter-spacing: -0.02em;
+    color: #0f0f12;
+  }
+  .prompt-beam { position: relative; width: 100%; }
+  .prompt-beam.cta-beam { width: fit-content; margin-top: 0; }
+  .cta-pill {
+    display: flex; align-items: center; justify-content: center;
+    background: #0f0f12; border-radius: 6px; padding: 12px 24px;
+    text-decoration: none; transition: background .2s ease;
+  }
+  .cta-pill:hover { background: #000000; }
+  .cta-pill-text {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14.5px; font-weight: 500; color: #ffffff; letter-spacing: -0.01em;
+  }
+
+  /* ═════ FOOTER — misma pieza que la landing ═════ */
+  .footer-blank { position: relative; background: #f4f4f2; padding: var(--sec-pad) 6vw 0; overflow: hidden; }
+  .ft-inner { max-width: 1360px; margin: 0 auto; position: relative; z-index: 1; }
+  .ft-cols {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 48px; flex-wrap: wrap; padding: 5vh 0;
+    border-top: 1px solid rgba(0,0,0,0.09);
+  }
+  .ft-tagline {
+    margin: 0; max-width: 460px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(15px, 1.3vw, 19px);
+    line-height: 1.5; letter-spacing: -0.005em; color: #55555e;
+  }
+  .ft-links { display: flex; flex-wrap: wrap; gap: 14px 30px; }
+  .ft-links a {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px; font-weight: 500; color: #55555e;
+    text-decoration: none; transition: color .2s ease;
+  }
+  .ft-links a:hover { color: #0f0f12; }
+  .ft-legal {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; padding: 3.5vh 0 4.5vh;
+    border-top: 1px solid rgba(0,0,0,0.09);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px; color: #9a9aa0;
+  }
+  .ft-legal-links { display: flex; gap: 22px; }
+  .ft-legal-links a { color: #9a9aa0; text-decoration: none; transition: color .2s ease; }
+  .ft-legal-links a:hover { color: #0f0f12; }
+  .ft-wordmark {
+    margin: 0;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(90px, 26vw, 400px);
+    line-height: 0.7; font-weight: 500; letter-spacing: -0.03em;
+    color: #0f0f12; text-align: center; white-space: nowrap;
+    user-select: none; pointer-events: none; transform: translateY(0.05em);
+  }
+  .footer-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 190px 190px;
+    mix-blend-mode: soft-light; opacity: 0.9; pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 26%);
+  }
+
+  @media (max-width: 768px) {
+    :root { --h7-inset: 20px; }
+    .h7-top { grid-template-columns: auto 1fr; gap: 10px; padding: 14px var(--h7-inset); }
+    .h7-top-links { display: none; }
+    .h7-btn-login { display: none; }
+    .h7-btn-start { padding: 10px 18px; font-size: 13.5px; }
+    .mi-hero { padding: 64px 20px 72px; }
+    .paper-rail { padding: 0 18px; }
+    .promesa { grid-template-columns: 1fr; gap: 6px; }
+    .promesa-num { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="h7-top">
+    <div class="h7-top-left">
+      <a class="h7-home" href="index.html" aria-label="InTake — inicio">
+        <img class="h7-logo" src="intake_logo_nav.png" alt="InTake">
+        <span class="h7-brand">InTake</span>
+      </a>
+    </div>
+    <div class="h7-top-links">
+      <a href="index.html" data-es="Agentes">Agents</a>
+      <a href="index.html" data-es="Proceso">Process</a>
+      <a href="index.html" data-es="Demos">Demos</a>
+      <a href="about.html" class="es-activo" data-es="Misión">Mission</a>
+    </div>
+    <div class="h7-top-right">
+      <div class="nav-lang h7-lang">
+        <button type="button" class="active" data-lang="es">ES</button>
+        <span class="sep">/</span>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="https://web-production-9447ae.up.railway.app/login" class="h7-btn-login" data-es="Iniciar sesión">Log In</a>
+      <a href="https://web-production-9447ae.up.railway.app/login?mode=register" class="h7-btn-start" data-es="Comenzar">Get Started</a>
+    </div>
+  </header>
+
+  <!-- ═════════ HERO — LA MISIÓN ═════════ -->
+  <section class="mi-hero">
+    <div class="mi-grain" aria-hidden="true"></div>
+    <div class="mi-hero-inner">
+      <h1 class="mi-title">
+        <span class="mi-mark"><img class="mi-logo" src="intake_logo_white.png" alt="">InTake:</span><em data-es="back office, sin puntos ciegos.">back-office, without blind spots.</em>
+      </h1>
+      <p class="mi-sub" data-es="La operación más regulada de México se sigue armando a mano, documento por documento. Estamos construyendo la capa que la lee, la contrasta contra la norma vigente y responde por lo que dice.">Mexico's most regulated operation is still assembled by hand, one document at a time. We're building the layer that reads it, checks it against the rules in force, and stands behind what it says.</p>
+    </div>
+  </section>
+
+  <main class="paper">
+    <div class="paper-rail">
+
+      <!-- ───────── 1 · LA OPORTUNIDAD ───────── -->
+      <section class="chapter sec-reveal">
+        <span class="ch-eyebrow" data-es="La oportunidad">The opportunity</span>
+        <h2 class="ch-lead" data-es="El comercio exterior es una industria de documentos que nadie trata como tal.">Foreign trade is a document industry that nobody treats as one.</h2>
+        <div class="ch-body">
+          <p data-es="Un contenedor no cruza porque exista. Cruza porque existe un expediente que dice qué trae, de dónde viene, cuánto vale, quién lo vende, quién lo compra, bajo qué régimen entra y qué reglas cumple. La mercancía es la consecuencia; el expediente es el trámite.">A container doesn't cross because it exists. It crosses because a file exists that says what's inside, where it came from, what it's worth, who sold it, who bought it, under which regime it enters and which rules it meets. The goods are the consequence; the file is the transaction.</p>
+          <p data-es="Ese expediente no lo arma una sola persona. Lo arman un proveedor en otro huso horario, un transportista, un agente aduanal, un área de comercio exterior y, cuando algo se atora, un abogado. Cada uno manda su pedazo por correo, en el formato que le tocó, el día que pudo.">No single person assembles that file. It's assembled by a supplier in another time zone, a carrier, a customs broker, a trade compliance team and, when something jams, a lawyer. Each sends their piece by email, in whatever format they happened to have, on whatever day they managed.</p>
+          <p data-es="México mueve una de las operaciones de comercio exterior más grandes del mundo, y la mueve documento por documento sobre una infraestructura que en el último tramo sigue siendo humana: alguien lee, alguien captura, alguien coteja.">Mexico runs one of the largest foreign trade operations in the world, and it runs it document by document on an infrastructure whose last mile is still human: someone reads, someone types, someone cross-checks.</p>
+          <p class="remate" data-es="Ese último tramo es el producto. Y sigue sin construirse.">That last mile is the product. And it still hasn't been built.</p>
+        </div>
+      </section>
+
+      <!-- ───────── 2 · EL PROBLEMA ───────── -->
+      <section class="chapter sec-reveal">
+        <span class="ch-eyebrow" data-es="El problema">The problem</span>
+        <h2 class="ch-lead" data-es="Llega en pedazos, se captura dos veces y la norma cambia sin avisar.">It arrives in pieces, gets typed twice, and the rules move without warning.</h2>
+        <div class="ch-body">
+          <p data-es="<strong>Los pedimentos, las facturas, las listas de empaque y los certificados de origen</strong> caen en hilos distintos, en momentos distintos y de remitentes distintos. Alguien tiene que reconocer que esos cinco archivos sueltos son una sola operación, y rearmarla a mano."><strong>Pedimentos, invoices, packing lists and certificates of origin</strong> land in different threads, at different times, from different senders. Someone has to recognize that those five loose files are a single operation, and put it back together by hand.</p>
+          <p data-es="Después, las mismas cifras se teclean del PDF al sistema, y luego se cotejan otra vez contra el PDF. Es el mismo trabajo hecho dos veces, y el segundo pase existe únicamente porque nadie confía en el primero. Un dígito mal viaja hasta el pedimento sin que nada lo detenga.">Then the same figures are keyed from the PDF into the system, and checked against the PDF again. It's the same work done twice, and the second pass exists only because nobody trusts the first. One wrong digit travels all the way to the pedimento with nothing to stop it.</p>
+          <p data-es="Mientras tanto, la LIGIE, los NOM, los permisos y las cuotas compensatorias cambian en el DOF. Si nadie lo leyó esa semana, la operación se despacha bajo una regla que ya no existe.">Meanwhile LIGIE codes, NOMs, permits and countervailing duties change in the DOF. If nobody read it that week, the operation clears under a rule that no longer exists.</p>
+          <p class="remate" data-es="El trabajo que te protege de una multa es justo el que nadie alcanza a terminar.">The work that protects you from a fine is exactly the work nobody gets to finish.</p>
+        </div>
+      </section>
+
+      <!-- ───────── 3 · POR QUÉ IMPORTA ───────── -->
+      <section class="chapter sec-reveal">
+        <div class="ch-split">
+          <div>
+            <span class="ch-eyebrow" data-es="Por qué importa">Why it matters</span>
+            <h2 class="ch-lead" data-es="El error no se paga cuando se comete.">A mistake isn't paid when it's made.</h2>
+          </div>
+          <div class="ch-body">
+            <p data-es="Se paga meses después, cuando la autoridad cruza lo que se declaró contra lo que se documentó. Para entonces la mercancía ya se vendió, el proveedor ya cobró y el expediente ya se archivó.">It's paid months later, when the authority cross-checks what was declared against what was documented. By then the goods have been sold, the supplier has been paid and the file has been archived.</p>
+            <p data-es="Una diferencia entre la factura y el pedimento deja de ser un error de dedo y se vuelve un crédito fiscal. Un proveedor que aparece en el listado del 69-B contamina la deducción de todo lo que se le compró. Una NOM que faltaba detiene el cruce. Un permiso vencido lo detiene igual.">A gap between the invoice and the pedimento stops being a typo and becomes a tax assessment. A supplier that shows up on the 69-B list contaminates the deduction on everything bought from them. A missing NOM stops the crossing. An expired permit stops it just the same.</p>
+            <p data-es="Y las consecuencias no viven en un solo lugar: están repartidas entre la Ley Aduanera, su Reglamento y el Código Fiscal de la Federación. Saber cuánto cuesta un hallazgo exige saber qué artículo lo sanciona.">And the consequences don't live in one place: they're spread across the Ley Aduanera, its Reglamento and the Código Fiscal de la Federación. Knowing what a finding costs means knowing which article penalizes it.</p>
+            <p class="remate" data-es="Lo más caro no es la multa. Es que la operación se detenga.">The fine isn't the expensive part. The operation stopping is.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────── 4 · POR QUÉ AHORA ───────── -->
+      <section class="chapter sec-reveal">
+        <span class="ch-eyebrow" data-es="Por qué ahora">Why now</span>
+        <h2 class="ch-lead" data-es="Tres cosas cambiaron al mismo tiempo.">Three things changed at once.</h2>
+        <div class="ch-body">
+          <p data-es="<strong>La primera: la autoridad se digitalizó.</strong> La VUCEM, el expediente electrónico y la transmisión de la Manifestación de Valor por web service movieron el trámite de una carpeta a un acuse. Lo que antes se guardaba, ahora se transmite y queda registrado."><strong>The first: the authority went digital.</strong> VUCEM, the electronic file and the transmission of the Manifestación de Valor over a web service moved the process from a folder to a receipt. What used to be filed away is now transmitted and recorded.</p>
+          <p data-es="<strong>La segunda: los modelos por fin leen un documento malo.</strong> Un pedimento escaneado torcido, una factura en otro idioma, una lista de empaque anotada a mano. Hasta hace poco eso exigía una plantilla por proveedor; hoy no."><strong>The second: models can finally read a bad document.</strong> A pedimento scanned crooked, an invoice in another language, a packing list annotated by hand. Until recently that required a template per supplier; it doesn't anymore.</p>
+          <p data-es="<strong>La tercera: el volumen no va a bajar.</strong> La relocalización de cadenas de suministro hacia México suma operaciones, y cada operación suma expedientes. El cuello de botella deja de ser la aduana y pasa a ser la capacidad de un equipo para revisar papeles."><strong>The third: volume isn't going down.</strong> Supply chains relocating to Mexico add operations, and every operation adds files. The bottleneck stops being the border and becomes a team's capacity to review paperwork.</p>
+          <p class="remate" data-es="Ninguna de las tres, por separado, alcanza. Juntas hacen posible algo que hace cinco años no lo era.">None of the three is enough on its own. Together they make possible something that wasn't five years ago.</p>
+        </div>
+      </section>
+
+      <!-- ───────── 5 · POR QUÉ NOSOTROS ───────── -->
+      <section class="chapter sec-reveal">
+        <span class="ch-eyebrow" data-es="Por qué nosotros">Why us</span>
+        <h2 class="ch-lead" data-es="Porque la norma mexicana no es una integración que se agrega al final.">Because Mexican regulation isn't an integration you bolt on at the end.</h2>
+        <div class="ch-body">
+          <p data-es="Un modelo general puede leer un pedimento. Lo que no sabe es que una misma fracción puede tener varias entradas en el Anexo 2.2.1 según el supuesto, ni que el DTA de un retorno no se calcula igual que el de una definitiva, ni que un certificado de origen cambia lo que se debe pagar solo si cumple la regla específica de esa fracción.">A general model can read a pedimento. What it doesn't know is that one tariff code can carry several entries in Anexo 2.2.1 depending on the scenario, or that the DTA on a return isn't calculated like the DTA on a definitive import, or that a certificate of origin only changes what's owed if it meets the specific rule for that code.</p>
+          <p data-es="Eso no se improvisa: se cataloga. InTake se construyó sobre los catálogos reales, tipados y con vigencia, no sobre una descripción aproximada de ellos.">That isn't improvised: it's catalogued. InTake was built on the real catalogues — typed, with their effective dates — not on an approximate description of them.</p>
+        </div>
+        <div class="catalogo">
+          <div>
+            <span class="catalogo-num">8,183</span>
+            <p class="catalogo-cap" data-es="Fracciones de la LIGIE 2026">LIGIE 2026 tariff codes</p>
+          </div>
+          <div>
+            <span class="catalogo-num">1,177</span>
+            <p class="catalogo-cap" data-es="Regulaciones del Anexo 2.2.1, tipadas por supuesto, alcance y numeral">Anexo 2.2.1 regulations, typed by scenario, scope and clause</p>
+          </div>
+          <div>
+            <span class="catalogo-num">444</span>
+            <p class="catalogo-cap" data-es="Normas Oficiales Mexicanas en catálogo">Mexican Official Standards catalogued</p>
+          </div>
+          <div>
+            <span class="catalogo-num">124</span>
+            <p class="catalogo-cap" data-es="Cuotas compensatorias vigentes">Countervailing duties in force</p>
+          </div>
+        </div>
+        <div class="ch-body" style="margin-top: clamp(30px, 4vh, 48px);">
+          <p data-es="Encima de esos catálogos corren tres operadores que se pasan el trabajo sobre la misma operación en vez de vivir en tres herramientas separadas: <strong>SCAN</strong> extrae, <strong>AUDIT</strong> valida contra la norma y cuantifica el riesgo fiscal, <strong>SCOUT</strong> clasifica la fracción y deja el razonamiento por escrito.">On top of those catalogues run three operators that hand work to each other over the same operation instead of living in three separate tools: <strong>SCAN</strong> extracts, <strong>AUDIT</strong> checks against the rules and quantifies fiscal exposure, <strong>SCOUT</strong> classifies the tariff code and puts its reasoning on the record.</p>
+          <p class="remate" data-es="Y las validaciones no las adivina un modelo: son reglas deterministas. Cuando el resultado tiene que ser el mismo dos veces, lo es.">And the checks aren't a model guessing: they're deterministic rules. When the answer has to be the same twice, it is.</p>
+        </div>
+      </section>
+
+      <!-- ───────── 6 · EL COMPROMISO ───────── -->
+      <section class="chapter sec-reveal">
+        <span class="ch-eyebrow" data-es="El compromiso">The commitment</span>
+        <h2 class="ch-lead" data-es="A cinco cosas nos amarramos.">Five things we hold ourselves to.</h2>
+        <div class="ch-body">
+          <p data-es="Un sistema que opera trámites regulados no se gana la confianza prometiendo que nunca se equivoca. Se la gana enseñando en qué se apoya, dónde duda y qué deja por escrito.">A system that runs regulated filings doesn't earn trust by promising it never gets anything wrong. It earns it by showing what it leaned on, where it hesitates, and what it puts on the record.</p>
+        </div>
+        <ol class="promesas">
+          <li class="promesa">
+            <span class="promesa-num">01</span>
+            <div>
+              <h3 data-es="Decimos cuándo no estamos seguros.">We say when we aren't sure.</h3>
+              <p data-es="Cada hallazgo trae su nivel de confianza y la regla detrás. Cuando no hay con qué sostenerlo, marcamos el hueco en vez de rellenarlo con algo verosímil.">Every finding carries its confidence level and the rule behind it. When there's nothing to support it, we flag the gap instead of filling it with something plausible.</p>
+            </div>
+          </li>
+          <li class="promesa">
+            <span class="promesa-num">02</span>
+            <div>
+              <h3 data-es="Nada se transmite solo.">Nothing gets transmitted on its own.</h3>
+              <p data-es="El agente prepara, ordena y valida; la persona revisa y firma. En un trámite que no se puede modificar después de enviarlo, el último paso es humano a propósito.">The agent prepares, orders and validates; a person reviews and signs. In a filing that can't be amended once sent, the last step is human on purpose.</p>
+            </div>
+          </li>
+          <li class="promesa">
+            <span class="promesa-num">03</span>
+            <div>
+              <h3 data-es="La norma vigente, no la del año pasado.">The rules in force, not last year's.</h3>
+              <p data-es="Seguimos el DOF, al SAT y a Banxico de forma continua, y los catálogos traen vigencia. Una regla que cambió el martes no puede seguir aplicándose el miércoles.">We follow the DOF, the SAT and Banxico continuously, and the catalogues carry effective dates. A rule that changed on Tuesday can't still be applied on Wednesday.</p>
+            </div>
+          </li>
+          <li class="promesa">
+            <span class="promesa-num">04</span>
+            <div>
+              <h3 data-es="Tus datos son tuyos.">Your data is yours.</h3>
+              <p data-es="Cada cuenta vive en su propio espacio, la información sensible se guarda cifrada y puedes exportarla o pedir que se borre. No entrenamos nada con tus expedientes.">Every account lives in its own space, sensitive information is stored encrypted, and you can export it or ask for it to be deleted. We don't train anything on your files.</p>
+            </div>
+          </li>
+          <li class="promesa">
+            <span class="promesa-num">05</span>
+            <div>
+              <h3 data-es="El expediente queda.">The record stays.</h3>
+              <p data-es="Qué se extrajo, de qué documento, contra qué regla se validó y por qué se clasificó así. Si mañana alguien pregunta, la respuesta está escrita y se puede auditar.">What was extracted, from which document, against which rule it was checked and why it was classified that way. If someone asks tomorrow, the answer is written down and can be audited.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ───────── CIERRE ───────── -->
+      <section class="chapter sec-reveal">
+        <div class="ch-split">
+          <div>
+            <span class="ch-eyebrow" data-es="Hacia dónde">Where this goes</span>
+            <h2 class="ch-lead" data-es="Que revisar deje de ser el trabajo.">So reviewing stops being the job.</h2>
+          </div>
+          <div class="ch-body">
+            <p data-es="El objetivo no es que un equipo de comercio exterior revise más rápido. Es que deje de revisar lo que una máquina puede revisar, y dedique sus horas a lo que ninguna máquina debería decidir sola: qué régimen conviene, cómo se defiende un criterio, qué riesgo se acepta.">The goal isn't for a trade team to review faster. It's for them to stop reviewing what a machine can review, and spend their hours on what no machine should decide alone: which regime fits, how a position is defended, which risk is worth taking.</p>
+            <p data-es="Empezamos por el pedazo más ingrato — leer, capturar, cotejar y vigilar la norma — porque es el que consume el día y el que nadie extraña.">We started with the most thankless part — read, type, cross-check and watch the rules — because it's the part that eats the day and the part nobody misses.</p>
+            <p class="remate" data-es="Si esto te suena a tu semana, hablemos.">If this sounds like your week, let's talk.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ═════════ CTA DE CIERRE ═════════ -->
+  <section class="section-cta sec-reveal">
+    <h2 class="cta-headline reveal" data-es='Simple para empezar,<br>hecho para crecer junto a ti'>Simple to start,<br>built to grow alongside you</h2>
+    <div class="prompt-beam cta-beam reveal d1">
+      <a class="cta-pill" href="https://web-production-9447ae.up.railway.app/login?mode=register">
+        <span class="cta-pill-text" data-es="Pruébalo ahora">Try it now</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="footer-blank sec-reveal">
+    <div class="ft-inner">
+      <div class="ft-cols reveal d1">
+        <p class="ft-tagline" data-es="El copiloto de IA para las operaciones IMMEX en México. Clasifica, audita y despacha aduanas — de principio a fin.">The AI copilot for Mexican IMMEX operations. Classify, audit and clear customs — end to end.</p>
+        <div class="ft-links">
+          <a href="index.html" data-es="Agentes">Agents</a>
+          <a href="index.html" data-es="Proceso">Process</a>
+          <a href="index.html" data-es="Demos">Demos</a>
+          <a href="about.html" data-es="Misión">Mission</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">X.com</a>
+        </div>
+      </div>
+      <div class="ft-legal reveal d2">
+        <span data-es="© 2026 InTake Software Inc. Todos los derechos reservados.">© 2026 InTake Software Inc. All rights reserved.</span>
+        <div class="ft-legal-links"><a href="#" data-es="Privacidad">Privacy</a><a href="#" data-es="Términos">Terms</a></div>
+      </div>
+    </div>
+    <div class="ft-wordmark reveal-fade d1" aria-hidden="true">InTake</div>
+    <div class="footer-grain" aria-hidden="true"></div>
+  </section>
+
+<script>
+  // i18n ES / EN — mismo contrato que la landing: swap por atributo data-es,
+  // el HTML trae el EN y se guarda en data-en la primera vez.
+  (function () {
+    var botones = [].slice.call(document.querySelectorAll('.nav-lang button'));
+    function applyLang(lang) {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-es]').forEach(function (el) {
+        if (!el.hasAttribute('data-en')) el.setAttribute('data-en', el.innerHTML);
+        el.innerHTML = (lang === 'es') ? el.getAttribute('data-es') : el.getAttribute('data-en');
+      });
+      botones.forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+      });
+    }
+    botones.forEach(function (b) {
+      b.addEventListener('click', function () { applyLang(b.getAttribute('data-lang')); });
+    });
+    applyLang('es');   // la pagina abre en espanol, como la landing
+  })();
+
+  // reveal al scroll + barrido de seguridad: el observador solo dispara cuando
+  // el elemento CRUZA el viewport, asi que un salto de ancla o un arrastre de
+  // la barra dejaria invisible lo que quedo arriba.
+  (function () {
+    var els = [].slice.call(document.querySelectorAll('.reveal, .reveal-fade, .sec-reveal'));
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(function (el) { io.observe(el); });
+
+    var pend = false;
+    function barrer() {
+      pend = false;
+      els.forEach(function (el) {
+        if (el.classList.contains('in')) return;
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.94) {
+          el.classList.add('in');
+          io.unobserve(el);
+        }
+      });
+    }
+    window.addEventListener('scroll', function () {
+      if (!pend) { pend = true; requestAnimationFrame(barrer); }
+    }, { passive: true });
+    barrer();
+  })();
+</script>
+
+<script>
+  /* Los CTAs apuntan al Railway de produccion. Cuando la pagina se abre en
+     local (file:// o localhost) el destino se reescribe al server de dev, para
+     ver el login que se este trabajando y no el desplegado. En produccion este
+     bloque no hace nada. */
+  (function () {
+    var esLocal = location.protocol === 'file:' ||
+                  /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    if (!esLocal) return;
+    document.querySelectorAll('a[href*="railway.app/login"]').forEach(function (a) {
+      a.href = a.getAttribute('href').replace(
+        /^https:\/\/[^/]+/, 'http://localhost:5555');
+    });
+  })();
+</script>
+</body>
+</html>

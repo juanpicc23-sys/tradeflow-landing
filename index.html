@@ -6,9 +6,15 @@
 <title>InTake</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="hero_band_spectral.jpg?v=1" fetchpriority="high">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- 300 = titular del hero · 400 = base · 500 = links y botones de la nav ·
+     700 = idioma activo (ES/EN). Si se quita un peso de aqui, el CSS que lo
+     pida cae al mas cercano sin avisar. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- OJO: este preload debe apuntar SIEMPRE al mismo archivo que el background de
+     .h7-band. Si se cambia el fondo y no esto, se baja una imagen que nunca se
+     pinta y la que sí se usa llega tarde. -->
+<link rel="preload" as="image" href="hero_band_streak.jpg?v=1" fetchpriority="high">
 <!-- el hero gana la carrera de descarga contra las imágenes de las secciones de abajo -->
 <link rel="preload" as="image" href="hero_home.png?v=8" fetchpriority="high">
 <style>
@@ -17,9 +23,11 @@
      con varios clamp por vw: los huecos iban de 112 a 176 px. */
   :root {
     --sec-pad: clamp(48px, 5vw, 88px);
-    /* inset horizontal del contenido de la nav: lo comparten .h7-top y la
-       banda del dashboard para que sus bordes no se puedan desalinear */
-    --h7-inset: 44px;
+    /* inset horizontal del contenido de la nav. Hoy lo usa SOLO .h7-top (la
+       banda del hero pasó a sangre completa), asi que subirlo mueve el logo a
+       la derecha y Get Started a la izquierda por igual: la nav queda simetrica.
+       En 1600 lo deja justo encima del eyebrow y del titular. */
+    --h7-inset: 64px;
     /* paleta extraida del degradado del hero (cuantizacion a 8 colores) */
     --tone-sage:  #82a7a2;   /* teal claro, esquina superior izquierda */
     --tone-mist:  #d3dcda;   /* gris verdoso del centro */
@@ -788,9 +796,12 @@
   .faq-title {
     margin: 0 0 5vh;
     text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* mismo tratamiento que .stats-title, el otro titulo centrado de la pagina:
+       Archivo 300 y -0.02em. Este bloque venia en Helvetica 500 de la version
+       que sigue en index.html y era el UNICO encabezado fuera de la familia. */
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: clamp(26px, 2.9vw, 38px);
-    font-weight: 500;
+    font-weight: 300;
     letter-spacing: -0.02em;
     color: #0f0f12;
   }
@@ -806,9 +817,9 @@
     padding: 24px 2px;
     cursor: pointer;
     user-select: none;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: clamp(17px, 1.5vw, 21px);
-    font-weight: 500;
+    font-weight: 400;   /* el mismo de .flow-step h4 y .prob-card h3 */
     letter-spacing: -0.01em;
     color: #0f0f12;
   }
@@ -834,14 +845,21 @@
     margin: 0;
     padding: 0 2px 26px;
     max-width: 720px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: clamp(14px, 1.15vw, 17px);
     line-height: 1.6;
     letter-spacing: -0.005em;
     color: #55555e;
   }
   .section-cta {
-    background: #FAFAFA;
+    /* misma banda que el hero de la landing y que la card del flow: ya esta
+       precargada, asi que esta seccion no baja un solo byte extra.
+       El 88% vertical NO es decorativo: la seccion es mucho mas ancha que la
+       imagen, asi que cover la escala al ancho y solo se puede paner en
+       vertical. Al centro caia la mancha teal oscura detras del titular en
+       tinta y el contraste bajaba a 2.13:1 (minimo 3.0 para texto grande);
+       en 88% se ve la franja calida de abajo y sube a 7.26. */
+    background: #d39b57 url('hero_band_streak.jpg?v=1') center 88% / cover no-repeat;
     padding: var(--sec-pad) 6vw;
     display: flex;
     flex-direction: column;
@@ -852,11 +870,14 @@
   }
   .cta-headline {
     margin: 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* Archivo 300, como .stats-title y .faq-title: es un titular de seccion.
+       El .cta-pill-text de abajo SI se queda en Helvetica — todos los botones
+       de la pagina (.h7-cta, .h7-btn-start) heredan la de body. */
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: clamp(26px, 4vw, 54px);
-    font-weight: 500;
+    font-weight: 300;
     line-height: 1.1;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
     color: #0f0f12;
   }
   /* beam animado del botón CTA */
@@ -1709,28 +1730,6 @@
   }
 
 
-  /* ═════════ Manifiesto con reveal por scroll ═════════ */
-  .rv { padding: var(--sec-pad) 0; background: #FAFAFA; }
-  .rv-inner {
-    max-width: 900px; margin: 0 auto; padding: 0 44px;
-    text-align: left;            /* bloque centrado, texto a la izquierda */
-  }
-  .rv-p {
-    margin: 0 0 1.15em;
-    font-size: clamp(18px, 1.55vw, 26px);
-    line-height: 1.62; letter-spacing: -0.01em;
-    color: #101013;
-  }
-  .rv-p:last-child { margin-bottom: 0; }
-  /* el atenuado solo se aplica si el JS armo el efecto: sin JS el texto se lee negro */
-  .rv.is-armed .rv-w { color: rgba(16,16,19,.20); transition: color .5s cubic-bezier(.22,.7,.25,1); }
-  .rv.is-armed .rv-w.on { color: #101013; }
-  @media (prefers-reduced-motion: reduce) {
-    .rv.is-armed .rv-w { color: #101013; transition: none; }
-  }
-  @media (max-width: 768px) {
-    .rv-inner { padding: 0 20px; }
-  }
 
   /* ═════════ Que resolvemos — lista conmutable + panel ═════════ */
   .solve { padding: clamp(56px, 7vw, 120px) 0; background: #FAFAFA; }
@@ -1957,7 +1956,7 @@
 
   /* ═════════ Seccion FEATURES — card blanca sobre el fondo de pagina ═════════ */
   .feat { padding: clamp(40px, 5vw, 84px) 0; background: #FAFAFA; }
-  /* sin card: mismo contenedor que .h7-head para que el texto alinee con el hero */
+  /* sin card: mismo contenedor que .h7-rail para que el texto alinee con el hero */
   .feat-card {
     max-width: 1560px; margin: 0 auto;
     padding: 0 44px;
@@ -2041,24 +2040,37 @@
   .h7-top {
     position: sticky; top: 0; z-index: 60;
     display: grid;
+    /* 1fr auto 1fr: los huecos elasticos van a los lados, asi los links
+       quedan centrados en la nav. */
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     padding: 18px var(--h7-inset);
     background: #FAFAFA;
+    /* TODA la nav en Archivo (links, ES/EN, Log In, Get Started). Se hereda
+       desde aqui en vez de repetirlo en cada regla; la unica excepcion es
+       .h7-brand ("InTake"), que declara JetBrains Mono y por eso gana. */
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
-  .h7-top-left { justify-self: start; display: flex; align-items: center; gap: 10px; }
-  .h7-logo { height: 20px; width: auto; display: block; }
+  .h7-top-left { justify-self: start; display: flex; align-items: center; gap: 6px; }
+  .h7-logo { height: 16px; width: auto; display: block; }
   .h7-brand {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
+    /* 600 se pide explicitamente en el <link> de Google Fonts de arriba;
+       si se saca de la URL esto cae al peso mas cercano en silencio */
+    font-weight: 600;
     font-size: 15px; letter-spacing: -0.01em; color: #0f0f12;
   }
   .h7-top-links { justify-self: center; display: flex; gap: 38px; }
   .h7-top-links a {
-    color: #17171a; text-decoration: none;
+    /* gris claro, pero al tope legible: mas transparente que esto y el
+       contraste sobre #FAFAFA cae debajo de 4.5:1 (texto de 15px) */
+    color: rgba(16,16,19,.6); text-decoration: none;
     font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
-    transition: opacity .2s ease;
+    transition: color .2s ease;
   }
-  .h7-top-links a:hover { opacity: .55; }
+  /* al pasar el mouse OSCURECE. Bajarle opacidad, como antes, sobre un gris
+     claro lo dejaba casi invisible: el hover parecia un bug. */
+  .h7-top-links a:hover { color: #101013; }
   .h7-top-right { justify-self: end; display: flex; align-items: center; gap: 12px; }
   /* toggle de idioma reutiliza .nav-lang (el JS lo escucha); aquí sin blend */
   .h7-lang { mix-blend-mode: normal; margin-right: 8px; }
@@ -2074,83 +2086,91 @@
   .h7-btn-start { color: #ffffff; background: #111114; border: 1px solid #111114; }
 
   /* fila editorial: titular gigante izq / copy + CTAs der */
-  .h7-hero { background: #FAFAFA; }
-  .h7-head {
-    display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr);
-    column-gap: clamp(40px, 6vw, 110px);
-    row-gap: 0;                     /* el aire titulo->marquesina lo da .h7-marq */
-    align-items: stretch;
-    max-width: 1560px; margin: 0 auto;
-    padding: clamp(44px, 7vh, 84px) 44px clamp(44px, 6vh, 76px);
-  }
-  .h7-title {
-    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(30px, 3.5vw, 56px);
-    line-height: 1.0;
-    letter-spacing: -0.015em;
-    color: #101013;
-    text-wrap: balance;
-    grid-column: 1; grid-row: 1;
-  }
-  /* marquesina bajo el titular — confinada al ancho de la columna del titulo */
-  .h7-marq {
-    grid-column: 1; grid-row: 2; align-self: start;
-    position: relative; overflow: hidden;
-    margin-top: 28px;
-  }
-  .h7-marq-track {
-    display: flex; align-items: center;
-    width: max-content;
-    animation: h7MarqScroll 26s linear infinite;
-  }
-  .h7-marq:hover .h7-marq-track { animation-play-state: paused; }
-  .h7-marq-item {
-    flex: none;
-    font-size: clamp(13px, 1.05vw, 16px);
-    font-weight: 500; letter-spacing: 0.02em;
-    color: rgba(16, 16, 19, .38);
-    white-space: nowrap;
-    padding: 0 20px;
-  }
-  .h7-marq-sep {
-    flex: none; width: 4px; height: 4px;
-    border-radius: 999px; background: rgba(16, 16, 19, .18);
-  }
-  /* difuminado en los extremos, del mismo color que el fondo del hero */
-  .h7-marq::before, .h7-marq::after {
-    content: ''; position: absolute; top: 0; bottom: 0;
-    width: 56px; z-index: 2; pointer-events: none;
-  }
-  .h7-marq::before { left: 0;  background: linear-gradient(to right, #FAFAFA, rgba(250,250,250,0)); }
-  .h7-marq::after  { right: 0; background: linear-gradient(to left,  #FAFAFA, rgba(250,250,250,0)); }
-  @keyframes h7MarqScroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }   /* la pista lleva la lista duplicada */
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .h7-marq-track { animation: none; }
-  }
+  /* ═════ HERO variante B: rieles + titular bicolor + CTA al lado + banda a sangre ═════ */
+  /* el hero cierra con la banda pegada al borde; sin este padding la seccion
+     siguiente arranca a 80px (media pauta) y se ve encimada a la imagen */
+  .h7-hero { background: #FAFAFA; padding-bottom: var(--sec-pad); }
+  /* Reparto de lineas del hero:
+       · VERTICALES  -> inseteadas en --h7-inset (arrancan donde el logo y
+                        terminan donde Get Started). Van como border en los
+                        bloques, que ya viven inseteados.
+       · HORIZONTALES-> a sangre completa, de borde a borde de la ventana.
+                        Como los bloques estan inseteados, se dibujan con un
+                        ::after que se sale --h7-inset por cada lado.
+     La linea de ARRIBA del titular es el border-bottom de .h7-top (la nav ya
+     es full-bleed, no necesita truco). */
+  .h7-top { border-bottom: 1px solid rgba(0,0,0,.09); }
 
-  .h7-side {
-    grid-column: 2; grid-row: 1 / 3;   /* abarca titulo + marquesina */
-    display: flex; flex-direction: column;
-    justify-content: flex-start; gap: 34px;
-    padding-top: 0;   /* arranca a la altura del titulo */
+  .h7-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    /* El aire de arriba y abajo se reparte ~1:1.15 (un pelo mas abajo, que es
+       lo que hace que un bloque se lea centrado y no hundido). Antes iba 1:2.35
+       y el grupo se veia pegado al techo. El alto total del riel no cambia. */
+    padding: clamp(34px, 5.3vh, 70px) clamp(28px, 2.6vw, 48px) clamp(40px, 6.1vh, 80px);
   }
+  /* linea a sangre al pie de un bloque inseteado. Va absolute a proposito:
+     dentro de .h7-trust (flex) un pseudo estatico se volveria un flex item
+     fantasma y descuadraria las 5 celdas. */
+  .h7-rail::after, .h7-trust::after {
+    content: ''; position: absolute; bottom: 0;
+    left:  calc(-1 * var(--h7-inset));
+    right: calc(-1 * var(--h7-inset));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .h7-eyebrow {
+    /* este margen es LO que separa el eyebrow del titular: bajarlo sube el
+       titular sin mover el eyebrow ni el alto del bloque */
+    margin: 0 0 clamp(18px, 3vh, 40px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11.5px, .78vw, 13px); font-weight: 400;
+    letter-spacing: .13em; text-transform: uppercase;
+    color: rgba(16,16,19,.40);
+  }
+  .h7-title-row {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: clamp(24px, 4vw, 64px);
+  }
+  /* columna izquierda: titular + texto de apoyo. El CTA queda de hermano a la
+     derecha, y align-items:flex-end de la fila lo alinea con el pie de esta
+     columna (o sea, con el ultimo renglon del texto chico). */
+  .h7-title-col { flex: 1 1 auto; min-width: 0; }
+  .h7-title {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* 300, no 400: el peso 300 se pide explicitamente en el <link> de Google
+       Fonts de arriba — si alguien lo saca de la URL, esto cae a 400 en
+       silencio y el titular se vuelve a ver pesado */
+    font-weight: 300;
+    font-size: clamp(26px, 3.4vw, 54px);
+    line-height: 1.08; letter-spacing: -0.02em;
+  }
+  .h7-title span { display: block; }
+  .h7-title-strong { color: #101013; }
+  .h7-title-soft   { color: rgba(16,16,19,.42); }   /* 2a linea en gris, como la referencia */
+  /* texto de apoyo bajo la 2a linea del titular: mucho mas chico y en gris,
+     para que no le pelee jerarquia al titular */
   .h7-desc {
+    margin: clamp(18px, 2vh, 28px) 0 0;
     font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(16px, 1.45vw, 21px);
-    line-height: 1.5; letter-spacing: -0.005em;
-    color: #232327; max-width: 46ch;
+    font-size: clamp(15px, 1.15vw, 18px);
+    line-height: 1.55; letter-spacing: -0.005em;
+    color: rgba(16,16,19,.55);
+    /* sin max-width: va en UN renglon. En movil envuelve solo, que es lo
+       correcto ahi — por eso no se fuerza con white-space: nowrap. */
   }
+  /* el CTA se sienta en la linea base del ultimo renglon de la columna */
+  .h7-title-cta { flex: none; padding-bottom: clamp(4px, .6vw, 10px); }
+
   .h7-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
   .h7-cta {
     display: inline-flex; align-items: center; gap: 10px;
     font-size: 15.5px; font-weight: 500; letter-spacing: -0.01em;
-    text-decoration: none; padding: 17px 30px; border-radius: 6px;
+    text-decoration: none; padding: 17px 30px; border-radius: 8px;
+    white-space: nowrap;
     transition: transform .15s ease, opacity .2s ease;
   }
   .h7-cta svg { width: 15px; height: 15px; }
@@ -2158,42 +2178,803 @@
   .h7-cta-dark { background: #111114; color: #ffffff; }
   .h7-cta-light { background: #f2f2f0; color: #17171a; }
 
-  /* reveal de entrada: título → descripción → pills, una sola coreografía al load */
+  /* ── CTA con reveal lateral: al pasar el cursor entra el isotipo de InTake
+     desde la izquierda y el texto se recorre para hacerle lugar.
+     El boton NO cambia de ancho a proposito: va en la misma fila flex que la
+     columna del titular, asi que ensancharlo encogeria esa columna y podria
+     partir en dos renglones la descripcion. Por eso el logo va absoluto y el
+     texto solo se desplaza dentro del padding que ya existe. ── */
+  .h7-cta-reveal {
+    position: relative; overflow: hidden;
+    /* mismas medidas que .h7-btn-start del nav — los dos botones del hero se
+       leen como par. NO se toca .h7-cta a secas: esa la comparten el CTA del
+       flow y los 3 de operadores, que siguen en su tamano grande. */
+    font-size: 14.5px; padding: 12px 24px; border-radius: 6px;
+    /* el borde del mismo color del fondo: no se ve, pero .h7-btn-start si lo
+       lleva y sin el este boton quedaba 2px mas bajo */
+    border: 1px solid #111114;
+  }
+  .h7-cta-reveal:hover { opacity: 1; }   /* el .h7-cta generico lo bajaba a .9 */
+  .h7-cta-face {
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: transform .42s cubic-bezier(.22,.7,.2,1);
+  }
+  .h7-cta-face-logo {
+    /* los tres offsets van a escala del padding: al bajar de 30 a 24 se
+       reescalan igual, si no el logo entra corrido y el texto se sale */
+    position: absolute; top: 0; bottom: 0; left: 13px;
+    justify-content: flex-start;
+    transform: translateX(-21px); opacity: 0;
+    transition: transform .42s cubic-bezier(.22,.7,.2,1), opacity .28s ease;
+  }
+  .h7-cta-face-logo img { height: 16px; width: auto; display: block; }
+  .h7-cta-reveal:hover .h7-cta-face { transform: translateX(10px); }
+  .h7-cta-reveal:hover .h7-cta-face-logo { transform: translateX(0); opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .h7-cta-face, .h7-cta-face-logo { transition: none; }
+    .h7-cta-reveal:hover .h7-cta-face { transform: none; }
+    .h7-cta-reveal:hover .h7-cta-face-logo { transform: translateX(-21px); opacity: 0; }
+  }
+
+  /* franja de fuentes: ocupa el lugar de la fila de logos de clientes de la
+     referencia — celdas iguales divididas por hairlines, a sangre completa */
+  .h7-trust {
+    position: relative;
+    display: flex;
+    margin-inline: var(--h7-inset);   /* mismas verticales que .h7-rail y la nav */
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    /* su linea de arriba es el ::after de .h7-rail; la de abajo, el propio */
+  }
+  .h7-trust-item {
+    flex: 1; min-width: 0;
+    display: grid; place-items: center;
+    padding: clamp(18px, 2.4vw, 32px) 10px;
+    border-left: 1px solid rgba(0,0,0,.09);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, .78vw, 13.5px); font-weight: 400;
+    letter-spacing: .08em; text-align: center;
+    color: rgba(16,16,19,.42);
+  }
+  .h7-trust-item:first-child { border-left: none; }
+
+  /* reveal de entrada: eyebrow → titulo → CTA → franja */
   @keyframes h7Rise {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .h7-title, .h7-desc, .h7-ctas .h7-cta {
+  .h7-eyebrow, .h7-title, .h7-desc, .h7-title-cta .h7-cta, .h7-trust {
     opacity: 0;
     animation: h7Rise .7s cubic-bezier(.2,.7,.2,1) forwards;
   }
-  .h7-title { animation-delay: .05s; }
-  .h7-desc  { animation-delay: .2s; }
-  .h7-ctas .h7-cta:nth-child(1) { animation-delay: .34s; }
-  .h7-ctas .h7-cta:nth-child(2) { animation-delay: .44s; }
+  .h7-eyebrow { animation-delay: 0s; }
+  .h7-title   { animation-delay: .12s; }
+  .h7-desc    { animation-delay: .24s; }
+  .h7-title-cta .h7-cta { animation-delay: .36s; }
+  .h7-trust   { animation-delay: .48s; }
   @media (prefers-reduced-motion: reduce) {
-    .h7-title, .h7-desc, .h7-ctas .h7-cta { animation: none; opacity: 1; }
+    .h7-eyebrow, .h7-title, .h7-desc, .h7-title-cta .h7-cta, .h7-trust { animation: none; opacity: 1; }
   }
 
-  /* banda del hero a sangre completa, sin bordes */
+  /* la banda cierra el marco: sus bordes caen exactamente donde arrancan y
+     terminan las lineas del riel y de la franja (misma --h7-inset que la nav).
+     Sigue recortando el mockup por abajo. */
   .h7-band {
-    width: auto;
-    margin-inline: var(--h7-inset);   /* alineada con el logo y con Get Started */
-    border-radius: clamp(10px, 1vw, 16px);
+    width: auto; margin-inline: var(--h7-inset); margin-top: 0;
+    border-radius: 0;
     overflow: hidden;
-    padding: clamp(26px, 3.4vw, 52px) clamp(10px, 1.9vw, 30px) clamp(20px, 2.8vw, 40px);
+    /* sin max-height: el dashboard se ve COMPLETO, como antes del recorte.
+       Si se vuelve a poner un tope aqui, hay que devolverle tambien las
+       esquinas de abajo cuadradas a .h7-frame (si no, el radio queda flotando
+       a media imagen). */
+    padding: clamp(30px, 3.6vw, 74px) clamp(14px, 5vw, 96px) clamp(22px, 3vw, 48px) clamp(14px, 8vw, 150px);
     /* alternas: la reticula CSS (ver .how-card/.duo-media) · hero_band.jpg ·
-       _halftone · _sky · _warm · _ascii · _grain · _spectral · _clouds */
-    background: #af8a95 url('hero_band_dusk.jpg?v=1') center / cover no-repeat;
+       _halftone · _sky · _warm · _ascii · _grain · _spectral · _dusk · _clouds ·
+       _prism · _solar. El respaldo #d39b57 es el color medio real de _streak,
+       para no parpadear un tono ajeno mientras carga. */
+    background: #d39b57 url('hero_band_streak.jpg?v=1') center / cover no-repeat;
   }
+  /* el mockup arranca pegado al padding izquierdo y se ve completo */
   .h7-frame {
-    max-width: 1480px; margin: 0 auto;
-    border-radius: clamp(8px, 1vw, 14px);
+    max-width: none; margin: 0;
+    border-radius: clamp(8px, .9vw, 13px);   /* las 4 esquinas: ya no se corta */
     box-shadow: 0 30px 80px rgba(6,14,13,.45), 0 6px 22px rgba(6,14,13,.3);
   }
   .h7-frame img {
     display: block; width: 100%; height: auto;
-    border-radius: clamp(8px, 1vw, 14px);
+    border-radius: clamp(8px, .9vw, 13px);
+  }
+
+  /* ═════ Seccion FLUJO — mismo riel y tipografia que el hero ═════
+     Repite el reparto de lineas del hero: verticales inseteadas en --h7-inset,
+     horizontales a sangre via ::before/::after. Si cambia esa regla alla, tiene
+     que cambiar aqui tambien. */
+  .flow { background: #FAFAFA; }
+  .flow-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    padding: var(--sec-pad) clamp(28px, 2.6vw, 48px);
+  }
+  .flow-rail::before, .flow-rail::after {
+    content: ''; position: absolute;
+    left:  calc(-1 * var(--h7-inset));
+    right: calc(-1 * var(--h7-inset));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .flow-rail::before { top: 0; }
+  .flow-rail::after  { bottom: 0; }
+
+  /* fila 1: titular izq / parrafo der */
+  .flow-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 76px);
+    align-items: start;
+    margin-bottom: clamp(46px, 7vh, 92px);
+  }
+  .flow-title {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;                      /* mismo peso que el titular del hero */
+    font-size: clamp(24px, 2.7vw, 42px);
+    line-height: 1.1; letter-spacing: -0.02em;
+    color: #101013;
+    max-width: 18ch;                       /* corta en 2 renglones, como la referencia */
+  }
+  .flow-lead {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, 1.15vw, 18px);
+    line-height: 1.6; letter-spacing: -0.005em;
+    color: rgba(16,16,19,.55);
+    max-width: 48ch;
+  }
+
+  /* pastilla + titular grande */
+  .flow-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 14px; border-radius: 6px;
+    background: #f2f2f0; border: 1px solid rgba(0,0,0,.06);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; letter-spacing: .03em;
+    color: rgba(16,16,19,.62);
+  }
+  .flow-badge::before {
+    content: ''; flex: none;
+    width: 3px; height: 13px; border-radius: 2px; background: #2f9e6d;
+  }
+  .flow-h2 {
+    margin: clamp(16px, 2.2vh, 26px) 0 clamp(42px, 6vh, 80px);
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(26px, 3.1vw, 48px);
+    line-height: 1.08; letter-spacing: -0.02em;
+    color: #101013;
+  }
+
+  /* 2 columnas: pasos izq / captura der */
+  .flow-body {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: clamp(30px, 4.5vw, 84px);
+    align-items: start;
+  }
+
+  /* stepper: cuadrito + linea vertical que los une + separador punteado */
+  .flow-steps {
+    --paso-gap: clamp(18px, 2.4vh, 26px);
+    position: relative; list-style: none; margin: 0; padding: 0;
+  }
+  /* UNA sola linea continua detras de todos los cuadritos. Antes iba por tramos
+     (uno por paso) y dejaba un hueco de 5px justo encima de cada cuadrito.
+     Los 12/11px son el centro del cuadrito respecto al alto de su renglon: no
+     dependen de --paso-gap, por eso aguantan si cambia el espaciado. */
+  .flow-steps::before {
+    content: ''; position: absolute; left: 6px; top: 12px; bottom: 11px;
+    width: 2px; background: #101013;
+  }
+  /* relleno verde que avanza sobre la linea negra. scaleY con origen arriba:
+     es transform puro, no toca layout ni repinta el resto. */
+  .flow-steps::after {
+    content: ''; position: absolute; left: 6px; top: 12px; bottom: 11px;
+    width: 2px; background: #2f9e6d;
+    transform-origin: top; transform: scaleY(0);
+    animation: flowLinea 9s linear infinite;
+  }
+  .flow-step { display: grid; grid-template-columns: 14px 1fr; column-gap: 20px; }
+  /* --cuad-top: el desplazamiento del cuadrito. Del 2o paso en adelante el
+     cuerpo lleva padding arriba y el cuadrito tiene que bajar lo mismo, si no
+     queda flotando sobre su titulo. Lo comparten el cuadro y su palomita. */
+  .flow-step-mark { position: relative; --cuad-top: 5px; }
+  .flow-step + .flow-step .flow-step-mark { --cuad-top: calc(var(--paso-gap) + 5px); }
+  .flow-step-mark::before {           /* el cuadrito, encima de la linea */
+    content: ''; position: absolute; left: 0; top: var(--cuad-top); z-index: 1;
+    width: 14px; height: 14px; background: #101013;
+  }
+  /* la palomita vive DENTRO del cuadrito y comparte sus keyframes: el fondo que
+     hereda es del mismo color que el cuadro (invisible) y lo que se ve aparecer
+     es el border-color. Asi un solo @keyframes sirve para los dos. */
+  .flow-step-mark::after {
+    content: ''; position: absolute; left: 5px; top: calc(var(--cuad-top) + 2px);
+    z-index: 2; width: 4px; height: 8px;
+    border: solid transparent; border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .flow-step-mark::before, .flow-step-mark::after {
+    animation-duration: 9s; animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  .flow-step:nth-child(1) .flow-step-mark::before,
+  .flow-step:nth-child(1) .flow-step-mark::after { animation-name: flowPaso1; }
+  .flow-step:nth-child(2) .flow-step-mark::before,
+  .flow-step:nth-child(2) .flow-step-mark::after { animation-name: flowPaso2; }
+  .flow-step:nth-child(3) .flow-step-mark::before,
+  .flow-step:nth-child(3) .flow-step-mark::after { animation-name: flowPaso3; }
+  .flow-step:nth-child(4) .flow-step-mark::before,
+  .flow-step:nth-child(4) .flow-step-mark::after { animation-name: flowPaso4; }
+
+  /* el relleno se detiene en cada cuadrito y espera antes de seguir */
+  @keyframes flowLinea {
+    0%,   8%  { transform: scaleY(0); }
+    22%, 30%  { transform: scaleY(.3333); }
+    44%, 52%  { transform: scaleY(.6667); }
+    66%, 88%  { transform: scaleY(1); }
+    90%, 100% { transform: scaleY(0); }
+  }
+  @keyframes flowPaso1 {
+    0%,   4%  { background-color: #101013; border-color: transparent; }
+    6%,  88%  { background-color: #2f9e6d; border-color: #fff; }
+    90%, 100% { background-color: #101013; border-color: transparent; }
+  }
+  @keyframes flowPaso2 {
+    0%,  20%  { background-color: #101013; border-color: transparent; }
+    22%, 88%  { background-color: #2f9e6d; border-color: #fff; }
+    90%, 100% { background-color: #101013; border-color: transparent; }
+  }
+  @keyframes flowPaso3 {
+    0%,  42%  { background-color: #101013; border-color: transparent; }
+    44%, 88%  { background-color: #2f9e6d; border-color: #fff; }
+    90%, 100% { background-color: #101013; border-color: transparent; }
+  }
+  @keyframes flowPaso4 {
+    0%,  64%  { background-color: #101013; border-color: transparent; }
+    66%, 88%  { background-color: #2f9e6d; border-color: #fff; }
+    90%, 100% { background-color: #101013; border-color: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow-steps::after,
+    .flow-step-mark::before, .flow-step-mark::after { animation: none; }
+  }
+  .flow-step-body { padding-bottom: var(--paso-gap); }
+  .flow-step + .flow-step .flow-step-body { padding-top: var(--paso-gap); }
+  .flow-step:last-child .flow-step-body { padding-bottom: 0; }
+  /* el punteado arranca en el texto, no debajo del cuadrito */
+  .flow-step:not(:last-child) .flow-step-body { border-bottom: 1px dashed rgba(0,0,0,.2); }
+  .flow-step h4 {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(17px, 1.4vw, 21px);
+    letter-spacing: -0.01em; color: #101013;
+  }
+  .flow-step p {
+    margin: 10px 0 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(14px, 1.05vw, 16px);
+    line-height: 1.55; color: rgba(16,16,19,.5);
+    max-width: 44ch;
+  }
+  .flow-cta { margin-top: clamp(30px, 4vh, 52px); }
+
+  /* captura del producto sobre banda oscura, mismo patron que .h7-band del hero:
+     la banda pone el fondo y el padding, el frame de adentro pone el radio y la
+     sombra de la captura. */
+  .flow-shot {
+    border-radius: clamp(8px, .9vw, 14px);
+    overflow: hidden;
+    padding: clamp(18px, 2.4vw, 42px);
+    /* MISMA banda que el hero, a proposito: las dos riman y ademas sale gratis
+       — el <link rel=preload> de arriba ya la bajo, asi que esta card la toma
+       de cache. Si se cambia el fondo del hero, esta cambia con el. Respaldo
+       #d39b57 = color medio real de _streak. */
+    background: #d39b57 url('hero_band_streak.jpg?v=1') center / cover no-repeat;
+    box-shadow: 0 24px 60px rgba(16,16,19,.16), 0 4px 14px rgba(16,16,19,.07);
+  }
+  .flow-shot-frame {
+    border-radius: clamp(6px, .7vw, 10px);
+    overflow: hidden;
+    box-shadow: 0 18px 44px rgba(4,8,18,.5), 0 4px 12px rgba(4,8,18,.35);
+  }
+  .flow-shot img { display: block; width: 100%; height: auto; }
+
+  @media (max-width: 900px) {
+    .flow-head { grid-template-columns: 1fr; gap: 22px; }
+    .flow-title { max-width: none; }
+    .flow-body { grid-template-columns: 1fr; gap: 34px; }
+    /* la captura primero seria mas vistosa, pero los pasos son el contenido */
+  }
+  @media (max-width: 768px) {
+    .flow-rail { padding: var(--sec-pad) 18px; }
+  }
+
+  /* ═════ Seccion PILARES — enunciado a dos tonos + 3 columnas con hairline ═════ */
+  .pillars { background: #FAFAFA; }
+  .pillars-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    padding: var(--sec-pad) 0 0;
+  }
+  .pillars-rail::after {
+    content: ''; position: absolute; bottom: 0;
+    left:  calc(-1 * var(--h7-inset));
+    right: calc(-1 * var(--h7-inset));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .pillars-lead {
+    margin: 0 0 clamp(46px, 7vh, 90px);
+    padding-inline: clamp(28px, 2.6vw, 48px);
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.5vw, 40px);
+    line-height: 1.22; letter-spacing: -0.02em;
+    max-width: 58ch;
+  }
+  .pillars-lead b { font-weight: 400; color: #101013; }      /* la afirmacion */
+  .pillars-lead span { color: rgba(16,16,19,.42); }          /* el desarrollo */
+
+  .pillars-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pillar {
+    display: flex; flex-direction: column;
+    /* el bottom es el que cierra la seccion: por eso va el token, no un clamp propio */
+    padding: clamp(20px, 2vw, 30px) clamp(24px, 2.4vw, 42px) var(--sec-pad);
+  }
+  /* los divisores van entre columnas, no en los extremos: esos ya los pone el riel */
+  .pillar + .pillar { border-left: 1px solid rgba(0,0,0,.09); }
+  .pillar-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: .16em; color: rgba(16,16,19,.3);
+  }
+  .pillar-fig { margin: clamp(10px, 1.4vh, 18px) 0 clamp(26px, 3.4vh, 44px); }
+  .pillar-fig svg { display: block; width: 100%; height: auto; }
+  .pillar-fig svg [stroke] { vector-effect: non-scaling-stroke; }
+  .pillar h3 {
+    margin: 0 0 10px;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: clamp(16px, 1.3vw, 19px);
+    letter-spacing: -0.01em; color: #101013;
+  }
+  .pillar p {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(14px, 1.05vw, 16px);
+    line-height: 1.55; color: rgba(16,16,19,.5);
+  }
+  @media (max-width: 900px) {
+    .pillars-lead { max-width: none; }
+    .pillars-grid { grid-template-columns: 1fr; }
+    /* apiladas, el divisor pasa a ser horizontal */
+    .pillar + .pillar { border-left: none; border-top: 1px solid rgba(0,0,0,.09); }
+  }
+  @media (max-width: 768px) {
+    .pillars-lead { padding-inline: 18px; }
+    .pillar { padding: 22px 18px var(--sec-pad); }
+  }
+
+
+  /* ═════ Movimiento de las FIG 0.1 / 0.2 / 0.3 ═════
+     Las tres figuras se animan SOLO mientras estan en cuadro: el observador del
+     final del archivo pone y QUITA .viva sobre .pillar-fig, y aqui no se asigna
+     ninguna animacion sin esa clase — fuera de pantalla no es que corran
+     invisibles, es que no existen. .viva es la fuente unica de "esta figura se
+     mueve", y el freno por movimiento reducido vive en ese mismo observador.
+
+     OJO AL PARCHAR: los <g> que ya traen transform="translate(...)" NO se pueden
+     animar directo. La propiedad CSS transform PISA al atributo, asi que la
+     pieza se iria al origen del viewBox en el primer fotograma. Por eso cada
+     parte movil lleva su propio <g> envoltorio sin atributo (.p1-escena,
+     .p1-cubo, .p2-nodo): la posicion sigue viviendo en un solo lugar.
+
+     Todo es transform y stroke-dashoffset. Ninguna propiedad que reflowe, y el
+     stroke no engorda al escalar porque .pillar-fig svg [stroke] ya trae
+     vector-effect: non-scaling-stroke. */
+
+  /* — FIG 0.1 · el piso —
+     Deriva de camara lentisima sobre toda la escena y las tres celdas flotando
+     en fases distintas. El desfase es lo que da la profundidad: si las tres
+     subieran juntas se veria un ascensor, no un piso vivo. */
+  @keyframes p1Deriva {
+    0%, 100% { transform: translate(-3px, 0); }
+    50%      { transform: translate( 3px, 0); }
+  }
+  @keyframes p1Flota {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(0, -3.5px); }
+  }
+  .pillar-fig.viva .p1-escena { animation: p1Deriva 15s ease-in-out infinite; }
+  .pillar-fig.viva .p1-cubo   { animation: p1Flota 6s ease-in-out infinite; }
+  /* delays NEGATIVOS: cada celda arranca a media orbita, asi la figura nunca se
+     ve "empezando" cuando entra a cuadro. */
+  .pillar-fig.viva .p1-c1 { animation-duration: 6.4s; animation-delay: -2.1s; }
+  .pillar-fig.viva .p1-c2 { animation-duration: 5.2s; animation-delay: -0.7s; }
+  .pillar-fig.viva .p1-c3 { animation-duration: 7.1s; animation-delay: -3.4s; }
+
+  /* — FIG 0.2 · el trabajo se pasa de un agente a otro —
+     Los guiones viajan en el sentido del path (arriba -> laterales -> abajo) y
+     los nodos se encienden en ESE orden con medio segundo de diferencia: el
+     pulso persigue al guion, que es lo que hace legible el relevo. */
+  @keyframes p2Flujo {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -14; }   /* 2 periodos del "3 4": el ciclo cierra sin salto */
+  }
+  @keyframes p2Pulso {
+    0%, 62%, 100% { transform: translate(0, 0)    scale(1); }
+    18%           { transform: translate(0, -2px) scale(1.055); }
+  }
+  .pillar-fig.viva .p2-enlaces { animation: p2Flujo 1.6s linear infinite; }
+  .pillar-fig.viva .p2-nodo {
+    /* sin fill-box el origen seria la esquina del viewBox y el nodo se iria en
+       diagonal al escalar, no crecería en su sitio */
+    transform-box: fill-box; transform-origin: 50% 50%;
+    animation: p2Pulso 3.6s cubic-bezier(.25,.8,.3,1) infinite;
+  }
+  .pillar-fig.viva .p2-n2, .pillar-fig.viva .p2-n3 { animation-delay: .5s; }
+  .pillar-fig.viva .p2-n4 { animation-delay: 1s; }
+
+  /* — FIG 0.3 · el fajo —
+     Una onda lo recorre de la hoja del frente a la del fondo. El orden del
+     markup ES el del apilado, por eso basta escalonar los delays. La hoja
+     marcada se despega mas y AGUANTA arriba (dos keyframes iguales al 40% y al
+     60%): es la que el producto no da por buena. */
+  @keyframes p3Onda {
+    0%, 100% { transform: translate(0, 0); }
+    45%      { transform: translate(0, -3px); }
+  }
+  @keyframes p3Foco {
+    0%, 100% { transform: translate(0, 0); }
+    40%, 60% { transform: translate(3px, -7px); }
+  }
+  .pillar-fig.viva .p3-hoja { animation: p3Onda 4.4s ease-in-out infinite; }
+  .pillar-fig.viva .p3-h1 { animation-delay: 0s; }
+  .pillar-fig.viva .p3-h2 { animation-delay: .12s; }
+  .pillar-fig.viva .p3-h3 { animation-delay: .24s; }
+  .pillar-fig.viva .p3-h4 { animation-delay: .36s; }
+  .pillar-fig.viva .p3-h5 { animation-delay: .48s; }
+  .pillar-fig.viva .p3-h6 { animation-delay: .60s; }
+  .pillar-fig.viva .p3-h7 { animation-delay: .72s; }
+  .pillar-fig.viva .p3-h8 { animation-delay: .84s; }
+  .pillar-fig.viva .p3-h9 { animation-delay: .96s; }
+  /* solo cambia la coreografia: el delay se lo sigue poniendo .p3-h7 */
+  .pillar-fig.viva .p3-foco { animation-name: p3Foco; animation-duration: 4.4s; }
+
+  /* ═════ Seccion PROBLEMA — mismo riel y tipografia que el hero ═════ */
+  .prob { background: #FAFAFA; }
+  .prob-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    padding: var(--sec-pad) clamp(28px, 2.6vw, 48px);
+  }
+  .prob-rail::after {           /* solo la de abajo: la de arriba la pone .flow */
+    content: ''; position: absolute; bottom: 0;
+    left:  calc(-1 * var(--h7-inset));
+    right: calc(-1 * var(--h7-inset));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .prob-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 76px);
+    align-items: start;
+    margin-bottom: clamp(38px, 5.5vh, 68px);
+  }
+  .prob-title {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(24px, 2.7vw, 42px);
+    line-height: 1.1; letter-spacing: -0.02em; color: #101013;
+    max-width: 20ch;
+  }
+  .prob-lead {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(15px, 1.15vw, 18px);
+    line-height: 1.6; color: rgba(16,16,19,.55);
+    max-width: 48ch;
+  }
+
+  .prob-grid {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 2.4vw, 40px);
+  }
+  .prob-card { display: flex; flex-direction: column; }
+
+  /* lienzo oscuro de la figura */
+  .prob-fig {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: clamp(8px, .9vw, 14px);
+    overflow: hidden;
+    /* blanco PLANO, no degradado: el relleno de las figuras usa este mismo
+       color para ocluir; con un degradado las formas se recortarian encima. */
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,.08);
+    margin-bottom: clamp(16px, 2vh, 24px);
+  }
+  .prob-fig-label {
+    position: absolute; top: 14px; left: 16px; z-index: 1;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: .16em;
+    color: rgba(16,16,19,.32);
+  }
+  .prob-fig svg { display: block; width: 100%; height: 100%; }
+  /* hairline pareja: no engorda aunque el SVG escale con la card */
+  .prob-fig svg [stroke] { vector-effect: non-scaling-stroke; }
+
+  .prob-card h3 {
+    margin: 0 0 10px;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(17px, 1.4vw, 21px);
+    line-height: 1.25; letter-spacing: -0.01em; color: #101013;
+  }
+  .prob-card p {
+    margin: 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(14px, 1.05vw, 16px);
+    line-height: 1.55; color: rgba(16,16,19,.5);
+  }
+
+  @media (max-width: 900px) {
+    .prob-head { grid-template-columns: 1fr; gap: 20px; }
+    .prob-title { max-width: none; }
+    .prob-grid { grid-template-columns: 1fr; gap: 34px; }
+  }
+  @media (max-width: 768px) {
+    .prob-rail { padding: var(--sec-pad) 18px; }
+  }
+
+
+  /* ═════ Movimiento de las FIG 0.4 / 0.5 / 0.6 ═════
+     Mismo mecanismo que las FIG 0.1-0.3: .viva la pone y la quita el observador
+     del final del archivo, y sin ella aqui no se asigna ninguna animacion.
+     Y la misma trampa: los <g> con transform="translate(...)" van envueltos en
+     un <g> propio sin atributo, porque la propiedad CSS pisaria al atributo.
+
+     Estas tres cuentan un problema, no una virtud, asi que el movimiento es
+     el sintoma: nada aqui cierra en su sitio. */
+
+  /* — FIG 0.4 · llegan en pedazos —
+     Las siete piezas se deslizan sobre el eje de la escalera (10,-15 por paso)
+     con DURACIONES PRIMAS ENTRE SI: el conjunto se abre y casi se junta, pero
+     el patron no se repite a la vista. Nunca terminan de alinearse, que es
+     exactamente el problema que ilustra la figura. */
+  @keyframes f4Deriva {
+    0%, 100% { transform: translate(-2.4px,  3.6px); }
+    50%      { transform: translate( 2.4px, -3.6px); }
+  }
+  .prob-fig.viva .f4-pieza { animation: f4Deriva 6s ease-in-out infinite; }
+  .prob-fig.viva .f4-p1 { animation-duration: 5.8s; animation-delay: -0.4s; }
+  .prob-fig.viva .f4-p2 { animation-duration: 7.3s; animation-delay: -3.1s; }
+  .prob-fig.viva .f4-p3 { animation-duration: 6.1s; animation-delay: -1.7s; }
+  .prob-fig.viva .f4-p4 { animation-duration: 8.4s; animation-delay: -5.2s; }
+  .prob-fig.viva .f4-p5 { animation-duration: 6.9s; animation-delay: -2.3s; }
+  .prob-fig.viva .f4-p6 { animation-duration: 7.7s; animation-delay: -6.0s; }
+  .prob-fig.viva .f4-p7 { animation-duration: 5.3s; animation-delay: -0.9s; }
+
+  /* — FIG 0.5 · se captura DOS VECES —
+     La placa baja, sella, sube, y vuelve a bajar a sellar lo mismo. Los dos
+     golpes por ciclo son el chiste de la figura: el segundo no aporta nada.
+     Despues viene una pausa larga para que se lea como ciclo y no como
+     temblor. El bloque acusa cada golpe con un retroceso de 2px. */
+  @keyframes f5Sella {
+    0%, 6%    { transform: translateY(0); }
+    16%, 22%  { transform: translateY(15px); }   /* primer golpe */
+    32%, 38%  { transform: translateY(0); }
+    48%, 54%  { transform: translateY(15px); }   /* el segundo, el que sobra */
+    64%, 100% { transform: translateY(0); }
+  }
+  @keyframes f5Acusa {
+    0%, 12%   { transform: translateY(0); }
+    18%       { transform: translateY(2px); }
+    26%, 44%  { transform: translateY(0); }
+    50%       { transform: translateY(2px); }
+    58%, 100% { transform: translateY(0); }
+  }
+  @keyframes f5Hilos {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -14; }   /* 2 periodos del "2 5": cierra sin salto */
+  }
+  .prob-fig.viva .f5-placa  { animation: f5Sella 5.2s cubic-bezier(.5,0,.35,1) infinite; }
+  .prob-fig.viva .f5-bloque { animation: f5Acusa 5.2s cubic-bezier(.3,0,.2,1) infinite; }
+  .prob-fig.viva .f5-hilos  { animation: f5Hilos 1.9s linear infinite; }
+
+  /* — FIG 0.6 · la norma cambia sin avisar —
+     Cada cubo esta quieto el 70% de su ciclo y da UN brinco seco con rebote.
+     Los cuatro ciclos son primos entre si (7.1 / 9.3 / 11.7 / 8.6): no hay
+     forma de anticipar cual se mueve, que es literalmente el titulo de la
+     tarjeta. Si se igualaran las duraciones se volveria un baile coordinado
+     y diria lo contrario. */
+  @keyframes f6Brinco {
+    0%, 68%   { transform: translate(0, 0); }
+    73%       { transform: translate(0, -7px); }
+    79%       { transform: translate(0, 2px); }
+    85%, 100% { transform: translate(0, 0); }
+  }
+  .prob-fig.viva .f6-cubo { animation: f6Brinco 9s cubic-bezier(.2,.9,.25,1) infinite; }
+  .prob-fig.viva .f6-c1 { animation-duration:  7.1s; animation-delay: -1.3s; }
+  .prob-fig.viva .f6-c2 { animation-duration:  9.3s; animation-delay: -6.4s; }
+  .prob-fig.viva .f6-c3 { animation-duration: 11.7s; animation-delay: -3.8s; }
+  .prob-fig.viva .f6-c4 { animation-duration:  8.6s; animation-delay: -7.9s; }
+
+  /* ═════ Seccion CIFRAS — mismo riel y tipografia ═════ */
+  .stats { background: #FAFAFA; }
+  .stats-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+    padding: var(--sec-pad) clamp(28px, 2.6vw, 48px);
+  }
+  .stats-rail::after {
+    content: ''; position: absolute; bottom: 0;
+    left:  calc(-1 * var(--h7-inset));
+    right: calc(-1 * var(--h7-inset));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .stats-title {
+    margin: 0 auto clamp(42px, 6vh, 80px);
+    max-width: 22ch; text-align: center;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(26px, 3.1vw, 48px);
+    line-height: 1.1; letter-spacing: -0.02em; color: #101013;
+  }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(28px, 3vw, 48px);
+  }
+  .stats-item { text-align: center; }
+  .stats-num {
+    display: block;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(38px, 4.4vw, 68px);
+    line-height: 1; letter-spacing: -0.03em; color: #101013;
+    /* cifras de ancho fijo: sin esto los numeros bailan al cambiar de idioma */
+    font-variant-numeric: tabular-nums;
+  }
+  .stats-cap {
+    margin: clamp(14px, 1.8vh, 20px) auto 0; max-width: 26ch;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(13.5px, 1vw, 15.5px);
+    line-height: 1.5; color: rgba(16,16,19,.5);
+  }
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 24px; }
+  }
+  @media (max-width: 768px) {
+    .stats-rail { padding: var(--sec-pad) 18px; }
+  }
+
+  /* ═════ Seccion OPERADORES — un bloque por agente ═════ */
+  .ops { background: #FAFAFA; }
+  .ops-rail {
+    position: relative;
+    margin-inline: var(--h7-inset);
+    border-left: 1px solid rgba(0,0,0,.09);
+    border-right: 1px solid rgba(0,0,0,.09);
+  }
+  .ops-rail::after {
+    content: ''; position: absolute; bottom: 0;
+    left:  calc(-1 * var(--h7-inset));
+    right: calc(-1 * var(--h7-inset));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+  .op { position: relative; padding: var(--sec-pad) clamp(28px, 2.6vw, 48px); }
+  /* separador a sangre entre operadores: se sale el inset del riel MAS el
+     padding propio del bloque, si no la linea arranca adentro */
+  .op + .op::before {
+    content: ''; position: absolute; top: 0;
+    left:  calc(-1 * var(--h7-inset) - clamp(28px, 2.6vw, 48px));
+    right: calc(-1 * var(--h7-inset) - clamp(28px, 2.6vw, 48px));
+    height: 1px; background: rgba(0,0,0,.09);
+  }
+
+  /* encabezado: copy a la izquierda, CTA empujado a la derecha */
+  .op-head {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(24px, 3vw, 60px); align-items: center;
+    margin-bottom: clamp(40px, 5.5vh, 72px);
+  }
+  .op-badge {
+    display: inline-block; margin: 0 0 clamp(20px, 2.6vh, 30px);
+    padding: 7px 13px; border: 1px solid rgba(0,0,0,.14); border-radius: 6px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(16,16,19,.6);
+  }
+  .op-title {
+    margin: 0 0 clamp(20px, 2.6vh, 30px);
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(30px, 3.6vw, 58px);
+    line-height: 1.04; letter-spacing: -0.025em;
+  }
+  .op-title span { display: block; }
+  .op-title .n { color: #101013; }      /* el nombre del operador */
+  .op-title .r { color: rgba(16,16,19,.42); }   /* lo que hace */
+  .op-lead {
+    margin: 0; max-width: 62ch;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(15px, 1.15vw, 18px);
+    line-height: 1.62; color: rgba(16,16,19,.55);
+  }
+
+  /* comparacion: hoy a la izquierda, con InTake en panel a la derecha */
+  .op-compare {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(20px, 2.4vw, 40px);
+    margin-bottom: clamp(34px, 4.5vh, 58px);
+  }
+  .op-side { padding: clamp(22px, 2.4vw, 34px); border-radius: clamp(8px, .9vw, 14px); }
+  .op-side.es-hoy { padding-left: 0; }           /* el lado sin panel alinea con el titular */
+  .op-side.es-intake { background: #f2f2f0; border: 1px solid rgba(0,0,0,.06); }
+  .op-side h4 {
+    display: flex; align-items: center; gap: 9px;
+    margin: 0 0 clamp(16px, 2vh, 22px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 500; font-size: 11.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: rgba(16,16,19,.55);
+  }
+  /* sin tamano explicito el svg del h4 se estira a llenar el flex y sale gigante */
+  .op-side h4 svg { width: 13px; height: 13px; flex: none; }
+  .es-hoy h4 svg { color: rgba(16,16,19,.4); }
+  .es-intake h4 svg { color: #2f9e6d; }
+  .op-side ul { list-style: none; margin: 0; padding: 0; }
+  .op-side li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: clamp(7px, .9vh, 10px) 0;
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(14px, 1.05vw, 16px);
+    line-height: 1.5; color: rgba(16,16,19,.55);
+  }
+  .op-side li svg { width: 14px; height: 14px; flex: none; margin-top: 4px; }
+  .es-hoy li svg { color: rgba(16,16,19,.34); }
+  .es-intake li svg { color: #2f9e6d; }
+  /* el ultimo renglon es el remate (el tiempo): va en tinta plena */
+  .op-side li:last-child { color: #101013; }
+
+  /* banda de cierre de cada operador: solo el degradado, sin captura.
+     Sin imagen adentro no hay nada que le de altura, por eso va explicita. */
+  .op-shot {
+    border-radius: clamp(8px, .9vw, 14px);
+    overflow: hidden;
+    height: clamp(150px, 17vw, 280px);
+    background: #b3d188 url('op_band.jpg?v=1') center / cover no-repeat;
+  }
+  /* variante con captura: la imagen le da el alto, asi que la fija se quita */
+  .op-shot.con-captura { height: auto; padding: clamp(16px, 2vw, 40px); }
+  .op-shot img {
+    display: block; width: 100%; height: auto;
+    border-radius: clamp(5px, .6vw, 9px);
+    box-shadow: 0 18px 44px rgba(6,14,13,.34), 0 4px 12px rgba(6,14,13,.2);
+  }
+
+  @media (max-width: 900px) {
+    .op-head { grid-template-columns: 1fr; gap: 26px; align-items: start; }
+    .op-compare { grid-template-columns: 1fr; }
+    .op-side.es-hoy { padding: 0 0 8px; }
+  }
+  @media (max-width: 768px) {
+    .op { padding: var(--sec-pad) 18px; }
+    .op + .op::before { left: -18px; right: -18px; }
   }
 
   @media (max-width: 768px) {
@@ -2201,13 +2982,17 @@
     .h7-top { grid-template-columns: auto 1fr; gap: 10px; padding: 14px var(--h7-inset); }
     .h7-top-links { display: none; }
     .h7-btn-login { display: none; }
-    .h7-btn-start { padding: 10px 18px; font-size: 13.5px; }
-    .h7-head { grid-template-columns: 1fr; gap: 26px; padding: 34px 20px 40px; }
-    /* en movil vuelve al flujo natural: kicker, titulo, marquesina, copy */
-    .h7-title, .h7-marq, .h7-side { grid-column: 1; grid-row: auto; }
-    .h7-title { font-size: clamp(36px, 10vw, 52px); }
-    .h7-side { gap: 24px; padding-top: 0; }
-    .h7-band { padding: 32px 14px 28px; }
+    .h7-btn-start, .h7-cta-reveal { padding: 10px 18px; font-size: 13.5px; }
+    /* el marco se conserva en movil, solo se encoge el aire interior */
+    .h7-rail { padding: 22px 18px 30px; }
+    .h7-eyebrow { margin-bottom: 34px; }
+    .h7-title-row { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .h7-title { font-size: clamp(27px, 7.4vw, 38px); }
+    .h7-title-cta { padding-bottom: 0; }
+    .h7-trust { flex-wrap: wrap; }
+    .h7-trust-item { flex: 1 1 50%; border-left: none; border-top: 1px solid rgba(0,0,0,.09); padding: 15px 8px; }
+    .h7-trust-item:nth-child(-n+2) { border-top: none; }
+    .h7-band { max-height: clamp(220px, 62vw, 340px); padding: 24px 0 0 20px; }
   }
 
 </style>
@@ -2223,6 +3008,7 @@
       <a href="#" data-es="Agentes">Agents</a>
       <a href="#" data-es="Proceso">Process</a>
       <a href="#" data-es="Demos">Demos</a>
+      <a href="about.html" data-es="Misión">Mission</a>
     </div>
     <div class="h7-top-right">
       <div class="nav-lang h7-lang">
@@ -2236,24 +3022,37 @@
   </header>
 
   <section class="h7-hero">
-    <div class="h7-head">
-      <h1 class="h7-title" data-es="Comercio exterior con IA<br>Back office sin fricción">AI-Powered Trade Compliance<br>Backoffice Without Friction</h1>
-      <div class="h7-marq" aria-hidden="true">
-        <div class="h7-marq-track"><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span><span class="h7-marq-item">LIGIE 2026</span><span class="h7-marq-sep"></span><span class="h7-marq-item">DOF</span><span class="h7-marq-sep"></span><span class="h7-marq-item">VUCEM</span><span class="h7-marq-sep"></span><span class="h7-marq-item">BANXICO</span><span class="h7-marq-sep"></span><span class="h7-marq-item">ANEXOS 21/22/24/20/31</span><span class="h7-marq-sep"></span></div>
-      </div>
-      <div class="h7-side">
-        <p class="h7-desc" data-es="Extrae, analiza, audita y clasifica<br>tus operaciones de comercio exterior, todo en un solo lugar">Extract, analyse, audit and scout<br>your trade operations, all in one single place</p>
-        <div class="h7-ctas">
-          <a class="h7-cta h7-cta-dark" href="https://web-production-9447ae.up.railway.app/login?mode=register">
-            <span data-es="Comenzar">Get Started</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
-          </a>
-          <a class="h7-cta h7-cta-light" href="#">
-            <span data-es="Ver demo">View Demo</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
-          </a>
+    <div class="h7-rail">
+      <p class="h7-eyebrow" data-es="Construido para las operaciones IMMEX de México">Built for Mexican IMMEX operations</p>
+      <div class="h7-title-row">
+        <div class="h7-title-col">
+          <h1 class="h7-title">
+            <span class="h7-title-strong" data-es="¿Ahogado en trabajo repetitivo?">Drowning in Trade Busywork?</span>
+            <span class="h7-title-soft" data-es="InTake opera tu back office de cumplimiento.">InTake runs your compliance back office.</span>
+          </h1>
+          <p class="h7-desc" data-es="IA de punta a punta para comercio IMMEX: clasificación, cumplimiento, auditorías y MVE.">End-to-end AI for IMMEX trade that runs classification, compliance, audits, MVE filing</p>
+        </div>
+        <div class="h7-title-cta">
+          <div class="h7-ctas">
+            <a class="h7-cta h7-cta-dark h7-cta-reveal" href="about.html">
+              <span class="h7-cta-face">
+                <span data-es="Nosotros">About us</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </span>
+              <span class="h7-cta-face h7-cta-face-logo" aria-hidden="true">
+                <img src="intake_logo_white.png" alt="">
+              </span>
+            </a>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="h7-trust">
+      <span class="h7-trust-item">LIGIE 2026</span>
+      <span class="h7-trust-item">DOF</span>
+      <span class="h7-trust-item">VUCEM</span>
+      <span class="h7-trust-item">BANXICO</span>
+      <span class="h7-trust-item">ANEXOS 21/22/24/20/31</span>
     </div>
     <div class="h7-band">
       <div class="h7-frame">
@@ -2263,157 +3062,511 @@
   </section>
 
 
-  <!-- ═════════ Manifiesto ═════════ -->
-  <section class="rv sec-reveal">
-    <div class="rv-inner">
-      <p class="rv-p" data-es="InTake es la plataforma de IA para compliance y operaciones de comercio exterior que conecta tus 3 operadores especializados en una sola app, reduciendo tus riesgos de multas y sobrecostos sin ralentizar tu operación.">InTake is the AI platform for trade compliance and operations that connects your 3 specialized operators in a single place, cutting your exposure to fines and cost overruns without slowing your operation down.</p>
-      <p class="rv-p" data-es="Enruta cada documento al operador correcto automáticamente, mantiene todo tu contexto aduanero en un solo lugar, y te permite pasar de extracción a auditoría a clasificación arancelaria — sin salir de tu flujo de trabajo.">It routes every document to the right operator automatically, keeps all your customs context in one place, and lets you go from extraction to audit to tariff classification — without leaving your workflow.</p>
-      <p class="rv-p" data-es="Desde extraer datos de pedimentos hasta detectar hallazgos de cumplimiento y encontrar oportunidades de ahorro en fracciones, InTake hace el trabajo pesado y aplica el motor correcto para cada tarea — SCAN, AUDIT o SCOUT — para que dejes de exponerte a multas del SAT y empieces a operar con certeza.">From pulling data out of pedimentos to detecting compliance findings and spotting savings in tariff codes, InTake does the heavy lifting and applies the right engine for each task — SCAN, AUDIT or SCOUT — so you stop exposing yourself to SAT fines and start operating with certainty.</p>
-    </div>
-  </section>
 
-  <!-- ═════════ COMO FUNCIONA ═════════ -->
-  <section class="how sec-reveal">
-    <div class="how-inner">
-      <h2 class="how-title" data-es="Cómo funciona">How it works</h2>
-      <p class="how-sub" data-es="Conecta tu bandeja y deja que InTake empiece a ayudarte a ordenarla.<br>Nuestros agentes responden en tu bandeja y monitorean actualizaciones<br>en tiempo real del SAT, DOF y BANXICO.">Connect your inbox and let InTake start helping you organize it.<br>Our agents replies to your inbox and monitors real life updates<br>from SAT, DOF and BANXICO.</p>
-      <div class="how-cards">
-        <div class="how-col">
-          <div class="how-card is-shot bg-sky">
-          <img class="how-shot" src="how_card_mail.webp" alt="InTake redacta la respuesta al correo de la operacion" loading="lazy" decoding="async">
+  <!-- ═════════ PILARES ═════════ -->
+  <section class="pillars">
+    <div class="pillars-rail">
+      <p class="pillars-lead"><b data-es="Un back office que se opera solo.">A back office that runs itself.</b> <span data-es="Hecho para las operaciones de comercio exterior de México desde el primer día: InTake lee tus documentos, los contrasta contra la norma vigente y te dice de qué no está seguro.">Built for Mexican trade operations from the ground up, InTake reads your documents, checks them against the rules in force today, and tells you what it isn't sure about.</span></p>
+      <div class="pillars-grid">
+        <article class="pillar">
+          <span class="pillar-label">FIG 0.1</span>
+          <div class="pillar-fig">
+        <svg viewBox="0 0 320 240" role="img" aria-hidden="true">
+          <g class="p1-escena">
+            <g transform="translate(160,118)">
+              <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                <path d="M-92,0 L0,-46 L92,0 L0,46 Z"/>
+                <path d="M-92,0 L-92,9 L0,55 L0,46 Z"/>
+                <path d="M0,46 L0,55 L92,9 L92,0 Z"/>
+              </g>
+                <path d="M-76.7,-7.7 L15.3,38.3" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-76.7,7.7 L15.3,-38.3" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-61.3,-15.3 L30.7,30.7" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-61.3,15.3 L30.7,-30.7" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-46.0,-23.0 L46.0,23.0" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-46.0,23.0 L46.0,-23.0" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-30.7,-30.7 L61.3,15.3" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-30.7,30.7 L61.3,-15.3" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-15.3,-38.3 L76.7,7.7" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+                <path d="M-15.3,38.3 L76.7,-7.7" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none"/>
+              <!-- tres celdas levantadas: lo que ya esta cargado -->
+              <g class="p1-cubo p1-c1"><g transform="translate(-30,-6)" stroke="rgba(16,16,19,0.44)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                <path d="M-15,0 L0,-7.5 L15,0 L0,7.5 Z"/>
+                <path d="M-15,0 L-15,14 L0,21.5 L0,7.5 Z"/>
+                <path d="M0,7.5 L0,21.5 L15,14 L15,0 Z"/>
+              </g></g>
+              <g class="p1-cubo p1-c2"><g transform="translate(6,8)" stroke="rgba(16,16,19,0.44)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                <path d="M-15,0 L0,-7.5 L15,0 L0,7.5 Z"/>
+                <path d="M-15,0 L-15,20 L0,27.5 L0,7.5 Z"/>
+                <path d="M0,7.5 L0,27.5 L15,20 L15,0 Z"/>
+              </g></g>
+              <g class="p1-cubo p1-c3"><g transform="translate(40,-4)" stroke="rgba(16,16,19,0.44)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                <path d="M-15,0 L0,-7.5 L15,0 L0,7.5 Z"/>
+                <path d="M-15,0 L-15,11 L0,18.5 L0,7.5 Z"/>
+                <path d="M0,7.5 L0,18.5 L15,11 L15,0 Z"/>
+              </g></g>
+            </g>
+          </g>
+          </svg>
           </div>
-          <h3 class="how-name" data-es="Agente de correo">Mail agent</h3>
-          <p class="how-desc" data-es="InTake lee tu bandeja, entiende cada hilo y redacta<br>la respuesta — con los adjuntos ya ligados a la<br>operación, lista para que la revises y envíes.">InTake reads your inbox, understands each thread<br>and drafts the reply — attachments already linked<br>to the operation, ready for you to review and send.</p>
-        </div>
-        <div class="how-col">
-          <div class="how-card is-shot bg-forest">
-          <img class="how-shot" src="how_card_radar.webp" alt="InTake responde con el radar regulatorio y las fuentes citadas" loading="lazy" decoding="async">
+          <h3 data-es="Hecho para México">Built for Mexico</h3>
+          <p data-es="La LIGIE, los NOMs, los Anexos, PROSEC y VUCEM no son una integración que se agrega después: son el piso sobre el que está parado el producto.">LIGIE, NOMs, Anexos, PROSEC and VUCEM are not an integration bolted on later — they are the ground the product stands on.</p>
+        </article>
+        <article class="pillar">
+          <span class="pillar-label">FIG 0.2</span>
+          <div class="pillar-fig">
+        <svg viewBox="0 0 320 240" role="img" aria-hidden="true">
+            <g>
+              <!-- los vinculos van primero: quedan detras de los nodos -->
+              <g class="p2-enlaces" stroke="rgba(16,16,19,.17)" stroke-width="1" fill="none" stroke-dasharray="3 4">
+                <path d="M160,88 L96,120"/>
+                <path d="M160,88 L224,120"/>
+                <path d="M96,133 L160,166"/>
+                <path d="M224,133 L160,166"/>
+              </g>
+              <g class="p2-nodo p2-n1"><g transform="translate(160,74) scale(1.0)">
+                <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                  <path d="M-26,0 L0,-13 L26,0 L0,13 Z"/>
+                  <path d="M-26,0 L-26,22 L0,35 L0,13 Z"/>
+                  <path d="M0,13 L0,35 L26,22 L26,0 Z"/>
+                </g>
+              </g></g>
+              <g class="p2-nodo p2-n2"><g transform="translate(96,118) scale(0.86)">
+                <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                  <path d="M-26,0 L0,-13 L26,0 L0,13 Z"/>
+                  <path d="M-26,0 L-26,20 L0,33 L0,13 Z"/>
+                  <path d="M0,13 L0,33 L26,20 L26,0 Z"/>
+                </g>
+              </g></g>
+              <g class="p2-nodo p2-n3"><g transform="translate(224,118) scale(0.86)">
+                <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                  <path d="M-26,0 L0,-13 L26,0 L0,13 Z"/>
+                  <path d="M-26,0 L-26,20 L0,33 L0,13 Z"/>
+                  <path d="M0,13 L0,33 L26,20 L26,0 Z"/>
+                </g>
+              </g></g>
+              <g class="p2-nodo p2-n4"><g transform="translate(160,158) scale(1.0)">
+                <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+                  <path d="M-26,0 L0,-13 L26,0 L0,13 Z"/>
+                  <path d="M-26,0 L-26,22 L0,35 L0,13 Z"/>
+                  <path d="M0,13 L0,35 L26,22 L26,0 Z"/>
+                </g>
+              </g></g>
+            </g>
+          </svg>
           </div>
-          <h3 class="how-name" data-es="Pregunta a InTake">Ask InTake</h3>
-          <p class="how-desc" data-es="Pregúntale a InTake lo que sea de tu operación y<br>te responde con la norma detrás — citando el DOF,<br>las reglas del SAT y las fuentes que consultó.">Ask InTake anything about your operation and it<br>answers with the regulation behind it — citing the<br>DOF, the SAT rules and the sources it consulted.</p>
-        </div>
-        <div class="how-col">
-          <div class="how-card is-shot bg-gold">
-          <img class="how-shot" src="how_card_dof.webp" alt="Monitor del DOF en InTake con notas detectadas y su impacto" loading="lazy" decoding="async">
+          <h3 data-es="Operado por agentes">Run by agents</h3>
+          <p data-es="SCAN, AUDIT y SCOUT se pasan el trabajo sobre la misma operación, en vez de vivir en tres herramientas separadas.">SCAN, AUDIT and SCOUT hand work to each other over the same operation, instead of living in three separate tools.</p>
+        </article>
+        <article class="pillar">
+          <span class="pillar-label">FIG 0.3</span>
+          <div class="pillar-fig">
+        <svg viewBox="0 0 320 240" role="img" aria-hidden="true">
+      <g class="p3-hoja p3-h1" stroke="rgba(16,16,19,0.20)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M74,168 L132,197 L132,175 L74,146 Z"/>
+        <path d="M74,146 L132,175 L139,171 L81,142 Z"/>
+      </g>
+      <g class="p3-hoja p3-h2" stroke="rgba(16,16,19,0.23)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M84,163 L142,192 L142,162 L84,133 Z"/>
+        <path d="M84,133 L142,162 L149,158 L91,129 Z"/>
+      </g>
+      <g class="p3-hoja p3-h3" stroke="rgba(16,16,19,0.25)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M94,158 L152,187 L152,149 L94,120 Z"/>
+        <path d="M94,120 L152,149 L159,145 L101,116 Z"/>
+      </g>
+      <g class="p3-hoja p3-h4" stroke="rgba(16,16,19,0.28)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M104,153 L162,182 L162,136 L104,107 Z"/>
+        <path d="M104,107 L162,136 L169,132 L111,103 Z"/>
+      </g>
+      <g class="p3-hoja p3-h5" stroke="rgba(16,16,19,0.30)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M114,148 L172,177 L172,123 L114,94 Z"/>
+        <path d="M114,94 L172,123 L179,119 L121,90 Z"/>
+      </g>
+      <g class="p3-hoja p3-h6" stroke="rgba(16,16,19,0.33)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M124,143 L182,172 L182,110 L124,81 Z"/>
+        <path d="M124,81 L182,110 L189,106 L131,77 Z"/>
+      </g>
+      <g class="p3-hoja p3-h7 p3-foco" stroke="rgba(16,16,19,0.58)" stroke-width="1.3" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M134,108 L192,137 L192,67 L134,38 Z"/>
+        <path d="M134,38 L192,67 L199,63 L141,34 Z"/>
+      </g>
+      <g class="p3-hoja p3-h8" stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M144,133 L202,162 L202,84 L144,55 Z"/>
+        <path d="M144,55 L202,84 L209,80 L151,51 Z"/>
+      </g>
+      <g class="p3-hoja p3-h9" stroke="rgba(16,16,19,0.41)" stroke-width="1" fill="#FAFAFA" stroke-linejoin="round">
+        <path d="M154,128 L212,157 L212,71 L154,42 Z"/>
+        <path d="M154,42 L212,71 L219,67 L161,38 Z"/>
+      </g>
+  </svg>
           </div>
-          <h3 class="how-name" data-es="Monitores regulatorios">Regulatory monitors</h3>
-          <p class="how-desc" data-es="Agentes vigilan el DOF, el SAT y Banxico las 24<br>horas, clasifican lo que de verdad importa y lo<br>cruzan con las fracciones de tus operaciones.">Agents watch the DOF, the SAT and Banxico around<br>the clock, classify what actually matters and cross<br>it against the tariff codes in your operations.</p>
+          <h3 data-es="Te dice cuándo no está seguro">It says when it isn't sure</h3>
+          <p data-es="Cada hallazgo trae su nivel de confianza y la regla detrás. Cuando no hay con qué sostenerlo, marca el hueco en vez de rellenarlo.">Every finding carries its confidence and the rule behind it. When the evidence isn't there, it flags the gap instead of filling it in.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ FLUJO ═════════ -->
+  <section class="flow">
+    <div class="flow-rail">
+      <div class="flow-head">
+        <h2 class="flow-title" data-es="De la bandeja al trámite, en un solo flujo">From inbox to filing, in one flow</h2>
+        <p class="flow-lead" data-es="Conecta tu bandeja y InTake sigue solo: enruta cada documento, extrae los datos, los valida contra la norma y los clasifica — sin salir de tu flujo de trabajo.">Connect your inbox and InTake takes it from there — routing every document, pulling the data, checking it against the rules and classifying it, without leaving your workflow.</p>
+      </div>
+
+      <span class="flow-badge" data-es="Comercio exterior, simplificado">Trade operations, simplified</span>
+      <h3 class="flow-h2" data-es="Opera con certeza. Adelántate al SAT.">Run your operation. Stay ahead of the SAT.</h3>
+
+      <div class="flow-body">
+        <div>
+          <ol class="flow-steps">
+            <li class="flow-step">
+              <span class="flow-step-mark" aria-hidden="true"></span>
+              <div class="flow-step-body">
+                <h4 data-es="Conecta tu bandeja">Connect your inbox</h4>
+                <p data-es="InTake lee cada hilo, agrupa los adjuntos por operación y los enruta al operador correcto.">InTake reads every thread, groups the attachments by operation and routes them to the right operator.</p>
+              </div>
+            </li>
+            <li class="flow-step">
+              <span class="flow-step-mark" aria-hidden="true"></span>
+              <div class="flow-step-body">
+                <h4 data-es="SCAN extrae los datos">SCAN pulls the data</h4>
+              </div>
+            </li>
+            <li class="flow-step">
+              <span class="flow-step-mark" aria-hidden="true"></span>
+              <div class="flow-step-body">
+                <h4 data-es="AUDIT valida contra la norma">AUDIT checks the rules</h4>
+              </div>
+            </li>
+            <li class="flow-step">
+              <span class="flow-step-mark" aria-hidden="true"></span>
+              <div class="flow-step-body">
+                <h4 data-es="SCOUT clasifica la fracción">SCOUT classifies the tariff code</h4>
+              </div>
+            </li>
+          </ol>
+          <div class="flow-cta">
+            <a class="h7-cta h7-cta-dark" href="https://web-production-9447ae.up.railway.app/login?mode=register">
+              <span data-es="Pruébalo">Try it now</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="flow-shot">
+          <div class="flow-shot-frame">
+            <img src="flow_shot_mail.jpg" alt="InTake — borrador de respuesta redactado sobre un correo de operación" loading="lazy" decoding="async">
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-
-
-
-
-  <!-- capacidades: qué corre solo dentro de InTake -->
-  <section class="caps sec-reveal">
-    <div class="caps-head reveal">
-      <h2 class="caps-title" data-es="Del documento a la operación cerrada,<br>sin pasos manuales">From documents to a closed operation,<br>no manual steps</h2>
-      <p class="caps-desc" data-es="Clasificación, validación cruzada, impacto fiscal y radar regulatorio corren solos. Tu equipo deja de perseguir datos y de recapturar a mano.">Classification, cross-validation, fiscal impact and the regulatory radar all run on their own. Your team stops chasing numbers and stops re-keying by hand.</p>
-    </div>
-
-    <div class="caps-grid reveal d1">
-      <div class="cap">
-        <span class="cap-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
-        </span>
-        <h3 class="cap-title" data-es="Extracción sin recaptura">Extraction with zero re-keying</h3>
-        <p class="cap-desc" data-es="SCAN lee pedimentos, facturas, listas de empaque y certificados — clasifica cada archivo y extrae cada campo, incluso lo anotado a mano o lo que no cabe en el formato.">SCAN reads pedimentos, invoices, packing lists and certificates — it classifies every file and pulls every field, even what is handwritten or off-format.</p>
+  <!-- ═════════ PROBLEMA ═════════ -->
+  <section class="prob">
+    <div class="prob-rail">
+      <div class="prob-head">
+        <h2 class="prob-title" data-es="A dónde se van realmente las horas">Where the hours actually go</h2>
+        <p class="prob-lead" data-es="Entre perseguir adjuntos, capturar lo mismo dos veces y alcanzar a leer el DOF, el trabajo que te protege de una multa es justo el que nadie termina.">Between chasing attachments, typing the same data twice and keeping up with the DOF, the work that protects you from a fine is the work nobody finishes.</p>
       </div>
-
-      <div class="cap">
-        <span class="cap-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9c-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
-        </span>
-        <h3 class="cap-title" data-es="Validación contra la ley">Validation against the law</h3>
-        <p class="cap-desc" data-es="AUDIT cruza los documentos entre sí y contra la ley aduanera y los catálogos oficiales: LIGIE, NOMs, permisos, cuotas compensatorias y reglas IMMEX.">AUDIT cross-checks the documents against each other and against customs law and the official catalogs: tariff schedule, NOMs, permits, duties and IMMEX rules.</p>
-      </div>
-
-      <div class="cap">
-        <span class="cap-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M16.5 6.5H10a2.8 2.8 0 0 0 0 5.6h4a2.8 2.8 0 0 1 0 5.6H7"/></svg>
-        </span>
-        <h3 class="cap-title" data-es="Cada hallazgo, en pesos">Every finding, priced in pesos</h3>
-        <p class="cap-desc" data-es="No solo marca qué está mal: cuantifica la multa, el DTA y el IVA en riesgo, y cita el artículo de la ley que sustenta cada cifra.">It doesn't just flag what is wrong: it quantifies the fine, the duty and the tax at risk, and cites the article of the law behind every number.</p>
-      </div>
-
-      <div class="cap">
-        <span class="cap-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13 13 0 0 1 0 18a13 13 0 0 1 0-18"/></svg>
-        </span>
-        <h3 class="cap-title" data-es="Radar regulatorio 24/7">A regulatory radar, 24/7</h3>
-        <p class="cap-desc" data-es="InTake vigila el DOF, el SAT y Banxico sin parar, y te avisa cuando un cambio toca tus fracciones o tu tipo de cambio — antes de que te cueste.">InTake watches the official gazette, the tax authority and the central bank around the clock, and tells you when a change hits your tariff codes.</p>
-      </div>
-
-      <div class="cap">
-        <span class="cap-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3 7l9 6 9-6"/></svg>
-        </span>
-        <h3 class="cap-title" data-es="Correos y reportes, entregados">Emails and reports, delivered</h3>
-        <p class="cap-desc" data-es="Redacta los correos a tu proveedor y a tu agente aduanal listos para enviar desde Outlook, y arma las hojas de cálculo con las fórmulas ya verificadas.">It drafts the emails to your supplier and your customs broker, ready to send from Outlook, and builds the spreadsheets with the formulas already verified.</p>
-      </div>
-
-      <div class="cap">
-        <span class="cap-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-        </span>
-        <h3 class="cap-title" data-es="Expediente por operación">A file for every operation</h3>
-        <p class="cap-desc" data-es="Cada operación queda armada con sus documentos, sus hallazgos y su historial — trazable, auditable y aislada por cuenta.">Every operation is assembled with its documents, its findings and its history — traceable, auditable and isolated per account.</p>
+      <div class="prob-grid">
+        <article class="prob-card">
+          <div class="prob-fig">
+            <span class="prob-fig-label">FIG 0.4</span>
+          <svg viewBox="0 0 320 240" role="img" aria-hidden="true">
+    <g transform="translate(126,168)">
+      <g class="f4-pieza f4-p1"><g transform="translate(0,0)" stroke="rgba(16,16,19,0.18)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+      <g class="f4-pieza f4-p2"><g transform="translate(10,-15)" stroke="rgba(16,16,19,0.22)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+      <g class="f4-pieza f4-p3"><g transform="translate(20,-30)" stroke="rgba(16,16,19,0.25)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+      <g class="f4-pieza f4-p4"><g transform="translate(30,-45)" stroke="rgba(16,16,19,0.29)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+      <g class="f4-pieza f4-p5"><g transform="translate(40,-60)" stroke="rgba(16,16,19,0.32)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+      <g class="f4-pieza f4-p6"><g transform="translate(50,-75)" stroke="rgba(16,16,19,0.36)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+      <g class="f4-pieza f4-p7"><g transform="translate(60,-90)" stroke="rgba(16,16,19,0.40)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-48,0 L0,-24 L48,0 L0,24 Z"/>
+        <path d="M-48,0 L-48,6 L0,30 L0,24 Z"/>
+        <path d="M0,24 L0,30 L48,6 L48,0 Z"/>
+      </g></g>
+    </g>
+  </svg>
+          </div>
+          <h3 data-es="Los documentos llegan en pedazos">Documents arrive in pieces</h3>
+          <p data-es="Pedimentos, facturas, packing lists y certificados caen en hilos distintos, en momentos distintos y de remitentes distintos. Alguien tiene que rearmar cada operación a mano.">Pedimentos, invoices, packing lists and certificates land in different threads, at different times, from different senders. Someone has to put each operation back together by hand.</p>
+        </article>
+        <article class="prob-card">
+          <div class="prob-fig">
+            <span class="prob-fig-label">FIG 0.5</span>
+          <svg viewBox="0 0 320 240" role="img" aria-hidden="true">
+    <g transform="translate(160,132) scale(.8)">
+      <!-- 1) el bloque, que va detras -->
+<g class="f5-bloque">      <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-70,0 L0,-35 L70,0 L0,35 Z"/>
+        <path d="M-70,0 L-70,72 L0,107 L0,35 Z"/>
+        <path d="M0,35 L0,107 L70,72 L70,0 Z"/>
+      </g>
+        <path d="M-70,22 L0,57 L70,22" stroke="rgba(16,16,19,.18)" stroke-width="1" fill="none"/>
+        <path d="M-70,39 L0,74 L70,39" stroke="rgba(16,16,19,.18)" stroke-width="1" fill="none"/>
+        <path d="M-70,56 L0,91 L70,56" stroke="rgba(16,16,19,.18)" stroke-width="1" fill="none"/></g>
+      <!-- 2) los punteados, entre bloque y placa -->
+      <g class="f5-hilos"><g stroke="rgba(16,16,19,.18)" stroke-width="1" fill="none" stroke-dasharray="2 5">
+        <path d="M-70,-104 L-70,0"/>
+        <path d="M70,-104 L70,0"/>
+      </g></g>
+      <!-- 3) la placa hasta arriba: separada del bloque para que no se crucen -->
+      <g class="f5-placa"><g transform="translate(0,-104)" stroke="rgba(16,16,19,0.46)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-70,0 L0,-35 L70,0 L0,35 Z"/>
+        <path d="M-70,0 L-70,8 L0,43 L0,35 Z"/>
+        <path d="M0,35 L0,43 L70,8 L70,0 Z"/>
+        <ellipse cx="0" cy="-2" rx="28" ry="14" fill="none"/>
+        <path d="M-22,5 L22,5" stroke="rgba(16,16,19,.18)" stroke-width="1" fill="none"/>
+        <path d="M-15,11 L15,11" stroke="rgba(16,16,19,.18)" stroke-width="1" fill="none"/>
+      </g></g>
+    </g>
+  </svg>
+          </div>
+          <h3 data-es="Todo se captura dos veces">Everything gets typed twice</h3>
+          <p data-es="Las mismas cifras se teclean del PDF al sistema, y luego se cotejan otra vez contra el PDF. Un dígito mal viaja hasta el pedimento.">The same figures are keyed from the PDF into the system, then checked against the PDF again. One wrong digit travels all the way to the pedimento.</p>
+        </article>
+        <article class="prob-card">
+          <div class="prob-fig">
+            <span class="prob-fig-label">FIG 0.6</span>
+          <svg viewBox="0 0 320 240" role="img" aria-hidden="true">
+    <g class="f6-cubo f6-c1"><g transform="translate(118,80) scale(0.78)">
+      <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-40,0 L0,-20 L40,0 L0,20 Z"/>
+        <path d="M-40,0 L-40,62 L0,82 L0,20 Z"/>
+        <path d="M0,20 L0,82 L40,62 L40,0 Z"/>
+      </g>
+      <g stroke="rgba(16,16,19,.38)" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <path d="M-7,-3 h.5"/><path d="M0,-3 h.5"/><path d="M7,-3 h.5"/>
+        <path d="M-3.5,1 h.5"/><path d="M3.5,1 h.5"/>
+      </g>
+    </g></g>
+    <g class="f6-cubo f6-c2"><g transform="translate(198,106) scale(0.7)">
+      <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-40,0 L0,-20 L40,0 L0,20 Z"/>
+        <path d="M-40,0 L-40,44 L0,64 L0,20 Z"/>
+        <path d="M0,20 L0,64 L40,44 L40,0 Z"/>
+      </g>
+      <g stroke="rgba(16,16,19,.38)" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <path d="M-7,-3 h.5"/><path d="M0,-3 h.5"/><path d="M7,-3 h.5"/>
+        <path d="M-3.5,1 h.5"/><path d="M3.5,1 h.5"/>
+      </g>
+    </g></g>
+    <g class="f6-cubo f6-c3"><g transform="translate(146,140) scale(0.74)">
+      <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-40,0 L0,-20 L40,0 L0,20 Z"/>
+        <path d="M-40,0 L-40,50 L0,70 L0,20 Z"/>
+        <path d="M0,20 L0,70 L40,50 L40,0 Z"/>
+      </g>
+      <g stroke="rgba(16,16,19,.38)" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <path d="M-7,-3 h.5"/><path d="M0,-3 h.5"/><path d="M7,-3 h.5"/>
+        <path d="M-3.5,1 h.5"/><path d="M3.5,1 h.5"/>
+      </g>
+    </g></g>
+    <g class="f6-cubo f6-c4"><g transform="translate(214,158) scale(0.62)">
+      <g stroke="rgba(16,16,19,0.38)" stroke-width="1" fill="#ffffff" stroke-linejoin="round">
+        <path d="M-40,0 L0,-20 L40,0 L0,20 Z"/>
+        <path d="M-40,0 L-40,34 L0,54 L0,20 Z"/>
+        <path d="M0,20 L0,54 L40,34 L40,0 Z"/>
+      </g>
+      <g stroke="rgba(16,16,19,.38)" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <path d="M-7,-3 h.5"/><path d="M0,-3 h.5"/><path d="M7,-3 h.5"/>
+        <path d="M-3.5,1 h.5"/><path d="M3.5,1 h.5"/>
+      </g>
+    </g></g>
+  </svg>
+          </div>
+          <h3 data-es="La norma cambia sin avisar">The rules move without warning</h3>
+          <p data-es="La LIGIE, los NOMs, los permisos y los cupos cambian en el DOF. Si nadie lo leyó esa semana, te enteras cuando llega la multa.">LIGIE, NOMs, permits and quotas change in the DOF. If nobody read it that week, you find out when the fine arrives.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ═════════ FILAS VISUAL + COPY ═════════ -->
-  <section class="duo sec-reveal">
-
-    <div class="duo-row">
-      <div class="duo-media m1">
-        <img class="duo-shot" src="duo_scan.webp?v=2" alt="SCAN — extraccion y validacion de documentos en InTake" loading="lazy" decoding="async">
-      </div>
-      <div class="duo-copy">
-        <h2 class="duo-title" data-es="SCAN lee cada documento,<br>sin plantillas">SCAN reads every document,<br>with no templates</h2>
-        <p class="duo-text" data-es="Clasifica cada archivo por lo que trae dentro — pedimento, factura, lista de empaque, certificado de origen u otro — y extrae los campos página por página, en el formato de cualquier proveedor.">It classifies every file by what is inside — pedimento, invoice, packing list, certificate of origin or other — and pulls the fields page by page, whatever format the supplier uses.</p>
-        <a class="duo-cta" href="#" data-es="Ver cómo funciona">See how it works
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="duo-row">
-      <div class="duo-media m2">
-        <img class="duo-shot" src="duo_audit.webp?v=2" alt="AUDIT — auditoria de riesgo aduanero en InTake" loading="lazy" decoding="async">
-      </div>
-      <div class="duo-copy">
-        <h2 class="duo-title" data-es="AUDIT cruza todo<br>contra la ley vigente">AUDIT cross-checks it all<br>against the law in force</h2>
-        <p class="duo-text" data-es="Valida el pedimento contra las facturas, los certificados de origen y los catálogos oficiales — fracciones, NOMs, permisos y cuotas — y pone en pesos la multa, el impuesto y la contribución que están en riesgo.">It validates the pedimento against the invoices, the certificates of origin and the official catalogs — tariff codes, NOMs, permits and duties — and puts a peso figure on the fine, the tax and the duty at risk.</p>
-        <ul class="duo-points">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="Cada hallazgo cita el artículo que lo sustenta.">Every finding cites the article that backs it.</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="El veredicto se ajusta a los documentos que sí tienes.">The verdict adapts to the documents you actually have.</span></li>
-        </ul>
+  <!-- ═════════ CIFRAS ═════════ -->
+  <section class="stats">
+    <div class="stats-rail">
+      <h2 class="stats-title" data-es="Tu equipo está por trabajar distinto.">Your team is about to work differently.</h2>
+      <div class="stats-grid">
+        <div class="stats-item">
+          <span class="stats-num">8,183</span>
+          <p class="stats-cap" data-es="Fracciones de la LIGIE 2026 en catálogo">LIGIE 2026 tariff codes catalogued</p>
+        </div>
+        <div class="stats-item">
+          <span class="stats-num">100%</span>
+          <p class="stats-cap" data-es="De pureza en la extracción">Purity in document extraction</p>
+        </div>
+        <div class="stats-item">
+          <span class="stats-num">&lt;30s</span>
+          <p class="stats-cap" data-es="De la captura al procesamiento">From capture to processed</p>
+        </div>
+        <div class="stats-item">
+          <span class="stats-num">100%</span>
+          <p class="stats-cap" data-es="De la captura de datos, automatizada">Of manual data capture automated</p>
+        </div>
       </div>
     </div>
-
-    <div class="duo-row">
-      <div class="duo-media m3">
-        <img class="duo-shot" src="duo_scout.webp?v=2" alt="SCOUT — clasificador arancelario de InTake" loading="lazy" decoding="async">
-      </div>
-      <div class="duo-copy">
-        <h2 class="duo-title" data-es="SCOUT clasifica<br>y muestra su razonamiento">SCOUT classifies<br>and shows its reasoning</h2>
-        <p class="duo-text" data-es="Propone la fracción arancelaria con el razonamiento de las Reglas Generales detrás, su nivel de confianza y el dossier regulatorio: qué NOMs, permisos y restricciones aplican.">It proposes the tariff code with the General Rules reasoning behind it, its confidence level and the regulatory dossier: which NOMs, permits and restrictions apply.</p>
-        <ul class="duo-points">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="Cuando no está seguro lo marca, en vez de inventar.">When it isn't sure it says so, instead of guessing.</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><span data-es="Trae el dossier regulatorio de cada fracción.">Brings the regulatory dossier for each code.</span></li>
-        </ul>
-      </div>
-    </div>
-
   </section>
 
+  <!-- ═════════ OPERADORES ═════════ -->
+  <section class="ops">
+    <div class="ops-rail">
+      <article class="op">
+        <div class="op-head">
+          <div class="op-copy">
+            <span class="op-badge">Operator 01</span>
+            <h3 class="op-title">
+              <span class="n">SCAN</span>
+              <span class="r" data-es="Extracción documental">Document extraction</span>
+            </h3>
+            <p class="op-lead" data-es="Hecho para el papeleo que nunca llega completo — pedimentos, facturas comerciales, packing lists y certificados de origen, repartidos entre hilos y remitentes. SCAN lee todas las páginas, decide qué es cada documento, extrae los campos y los reagrupa en la operación a la que pertenecen.">Built for the paperwork that never arrives in one piece — pedimentos, commercial invoices, packing lists and certificates of origin, spread across threads and senders. SCAN reads every page, decides what each document actually is, pulls the fields out and groups them back into the operation they belong to.</p>
+          </div>
+          <a class="h7-cta h7-cta-dark" href="https://web-production-9447ae.up.railway.app/login?mode=register">
+            <span data-es="Ver SCAN">See SCAN</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
 
+        <div class="op-compare">
+          <div class="op-side es-hoy">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="El proceso manual hoy">The manual process today</span></h4>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Abrir cada PDF y teclear los campos a mano">Open every PDF and key the fields by hand</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Cotejar el pedimento contra cada factura, línea por línea">Cross-check the pedimento against each invoice, line by line</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Rearmar la operación juntando adjuntos de varios correos">Rebuild the operation from attachments in several emails</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Volver a capturar lo mismo en el sistema del cliente">Type the same data again into the client’s system</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Tiempo total: horas por operación">Total time: hours per operation</span></li>
+            </ul>
+          </div>
+          <div class="op-side es-intake">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Con InTake">With InTake</span></h4>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Lee todas las páginas y clasifica cada documento solo">Reads every page and classifies each document on its own</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Extrae los cuatro tipos de documento en paralelo">Extracts the four document types in parallel</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Reagrupa los documentos en su operación">Groups the documents back into their operation</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Conserva lo que no cabe en el esquema en vez de tirarlo">Keeps what doesn’t fit the schema instead of dropping it</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Tiempo total: menos de 30 segundos">Total time: under 30 seconds</span></li>
+            </ul>
+          </div>
+        </div>
 
+        <div class="op-shot con-captura">
+          <img src="op_shot_scan.png" alt="InTake — dashboard de SCAN" loading="lazy" decoding="async">
+        </div>
+      </article>
+      <article class="op">
+        <div class="op-head">
+          <div class="op-copy">
+            <span class="op-badge">Operator 02</span>
+            <h3 class="op-title">
+              <span class="n">AUDIT</span>
+              <span class="r" data-es="Revisión de cumplimiento">Compliance review</span>
+            </h3>
+            <p class="op-lead" data-es="La revisión que te protege de una multa es la que nadie alcanza a terminar. AUDIT corre dieciséis validaciones numeradas sobre cada operación — fechas, valores, fracciones, permisos, cupos, permanencia — y devuelve cada hallazgo con el artículo del que sale y lo que podría costar en pesos.">The review that protects you from a fine is the one nobody has time to finish. AUDIT runs sixteen numbered checks over every operation — dates, values, tariff codes, permits, quotas, permanence — and returns each finding with the article it comes from and what it could cost in pesos.</p>
+          </div>
+          <a class="h7-cta h7-cta-dark" href="https://web-production-9447ae.up.railway.app/login?mode=register">
+            <span data-es="Ver AUDIT">See AUDIT</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
 
+        <div class="op-compare">
+          <div class="op-side es-hoy">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="El proceso manual hoy">The manual process today</span></h4>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Revisar el pedimento contra la Ley Aduanera a mano">Check the pedimento against the Ley Aduanera by hand</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Buscar cada fracción en la LIGIE y sus anexos">Look up each tariff code in the LIGIE and its annexes</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Calcular el DTA y las contribuciones en una hoja de cálculo">Calculate the DTA and contributions in a spreadsheet</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Verificar proveedores contra la lista 69-B del SAT">Verify suppliers against the SAT’s 69-B list</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Y aun así, enterarte cuando llega la multa">And still find out when the fine arrives</span></li>
+            </ul>
+          </div>
+          <div class="op-side es-intake">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Con InTake">With InTake</span></h4>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Dieciséis validaciones numeradas sobre cada operación">Sixteen numbered validations on every operation</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Cada hallazgo con su artículo y un rango en pesos">Each finding with its article and a range in pesos</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Proveedores cruzados contra el catálogo EFOS">Suppliers cross-checked against the EFOS catalogue</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Se ajusta a los documentos que sí tienes">Adapts to the documents you actually have</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="El error aparece antes de transmitir">The error shows up before you transmit</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="op-shot con-captura">
+          <img src="op_shot_audit.png" alt="InTake — dashboard de AUDIT" loading="lazy" decoding="async">
+        </div>
+      </article>
+      <article class="op">
+        <div class="op-head">
+          <div class="op-copy">
+            <span class="op-badge">Operator 03</span>
+            <h3 class="op-title">
+              <span class="n">SCOUT</span>
+              <span class="r" data-es="Clasificación arancelaria">Tariff classification</span>
+            </h3>
+            <p class="op-lead" data-es="Clasificar es un criterio, y un criterio necesita un argumento detrás. SCOUT propone la fracción con las Reglas Generales que aplicó escritas, qué tan seguro está, y el dossier regulatorio ya pegado — NOMs, permisos, cupos y PROSEC.">Classifying is a judgement call, and a judgement call needs an argument behind it. SCOUT proposes the tariff code with the General Rules it applied written out, how confident it is, and the regulatory dossier already attached — NOMs, permits, quotas and PROSEC.</p>
+          </div>
+          <a class="h7-cta h7-cta-dark" href="https://web-production-9447ae.up.railway.app/login?mode=register">
+            <span data-es="Ver SCOUT">See SCOUT</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+
+        <div class="op-compare">
+          <div class="op-side es-hoy">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="El proceso manual hoy">The manual process today</span></h4>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Buscar la fracción hojeando la TIGIE">Hunt for the code leafing through the TIGIE</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Preguntarle al agente aduanal y esperar respuesta">Ask the customs broker and wait for an answer</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Rastrear NOMs, permisos y cupos por separado">Track down NOMs, permits and quotas separately</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Decidir sin registro de por qué se decidió">Decide with no record of why it was decided</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg><span data-es="Y descubrir el error en el reconocimiento">And find the mistake at the review</span></li>
+            </ul>
+          </div>
+          <div class="op-side es-intake">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Con InTake">With InTake</span></h4>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Propone la fracción con las Reglas Generales aplicadas">Proposes the code with the General Rules it applied</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Trae el dossier regulatorio pegado">Brings the regulatory dossier attached</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Declara su nivel de confianza en cada propuesta">States its confidence on every proposal</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="Marca el hueco cuando no puede decidir">Flags the gap when it can’t decide</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg><span data-es="El razonamiento queda registrado">The reasoning stays on the record</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="op-shot con-captura">
+          <img src="op_shot_scout.png" alt="InTake — dashboard de SCOUT" loading="lazy" decoding="async">
+        </div>
+      </article>
+    </div>
+  </section>
 
   <section class="section-faq sec-reveal">
     <div class="faq-inner">
@@ -2453,10 +3606,11 @@
     </div>
   </section>
 
+  <!-- ═════════ CTA DE CIERRE ═════════ -->
   <section class="section-cta sec-reveal">
     <h2 class="cta-headline reveal" data-es='Simple para empezar,<br>hecho para crecer junto a ti'>Simple to start,<br>built to grow alongside you</h2>
     <div class="prompt-beam cta-beam reveal d1">
-      <a class="cta-pill" href="#">
+      <a class="cta-pill" href="https://web-production-9447ae.up.railway.app/login?mode=register">
         <span class="cta-pill-text" data-es="Pruébalo ahora">Try it now</span>
       </a>
     </div>
@@ -2482,7 +3636,6 @@
     </div>
     <div class="ft-wordmark reveal-fade d1" aria-hidden="true">InTake</div>
   </section>
-
 
   <script>
   (function () {
@@ -2597,6 +3750,52 @@
   </script>
 
   <script>
+  // Contador de la seccion de cifras: cuenta hacia arriba al entrar en pantalla.
+  // El valor final se LEE del propio texto (prefijo + numero + sufijo) en vez de
+  // duplicarlo en un data-*, que se desincronizaria al editar el HTML.
+  (function () {
+    var nums = [].slice.call(document.querySelectorAll('.stats-num'));
+    if (!nums.length) return;
+    // sin observer o con motion reducido: se quedan en su valor final, nunca en 0
+    var quieto = window.matchMedia &&
+                 window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (quieto || !('IntersectionObserver' in window)) return;
+
+    var partes = nums.map(function (el) {
+      var m = el.textContent.trim().match(/^(\D*?)([\d,]+)(\D*)$/);
+      if (!m) return null;
+      return { el: el, pre: m[1], suf: m[3],
+               val: parseInt(m[2].replace(/,/g, ''), 10),
+               miles: m[2].indexOf(',') !== -1 };
+    }).filter(Boolean);
+    if (!partes.length) return;
+
+    function conComas(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function pinta(p, v) { p.el.textContent = p.pre + (p.miles ? conComas(v) : v) + p.suf; }
+
+    partes.forEach(function (p) { pinta(p, 0); });
+
+    var DUR = 1400;
+    function correr() {
+      var t0 = null;
+      requestAnimationFrame(function paso(t) {
+        if (t0 === null) t0 = t;
+        var k = Math.min(1, (t - t0) / DUR);
+        var e = 1 - Math.pow(1 - k, 3);              // ease-out: frena al llegar
+        partes.forEach(function (p) { pinta(p, Math.round(p.val * e)); });
+        if (k < 1) requestAnimationFrame(paso);
+        else partes.forEach(function (p) { pinta(p, p.val); });   // aterriza exacto
+      });
+    }
+
+    var obs = new IntersectionObserver(function (ents) {
+      for (var i = 0; i < ents.length; i++) {
+        if (ents[i].isIntersecting) { obs.disconnect(); correr(); return; }
+      }
+    }, { threshold: 0.4 });
+    obs.observe(document.querySelector('.stats-grid'));
+  })();
+
   // i18n ES / EN — swap por atributo data-es (EN = default/fallback)
   (function () {
     window.__lang = 'en';
@@ -2651,57 +3850,6 @@
       })();
     };
   }
-  // manifiesto: las palabras pasan de gris claro a negro conforme entra la seccion
-  (function () {
-    const sec = document.querySelector('.rv');
-    if (!sec) return;
-    const paras = [].slice.call(sec.querySelectorAll('.rv-p'));
-    let words = [], lit = 0, ticking = false;
-
-    function wrap() {
-      words = [];
-      paras.forEach(function (el) {
-        const txt = (el.textContent || '').trim();
-        el.textContent = '';
-        const frag = document.createDocumentFragment();
-        txt.split(/\s+/).forEach(function (w) {
-          const sp = document.createElement('span');
-          sp.className = 'rv-w';
-          sp.textContent = w;
-          frag.appendChild(sp);
-          frag.appendChild(document.createTextNode(' '));
-          words.push(sp);
-        });
-        el.appendChild(frag);
-      });
-      sec.classList.add('is-armed');
-      lit = 0;
-      update();
-    }
-
-    function update() {
-      const r = sec.getBoundingClientRect(), vh = window.innerHeight;
-      // arranca cuando el bloque cruza el 80% del alto y cierra al llegar al 40%
-      const span = vh * 0.4 + r.height;
-      const prog = Math.max(0, Math.min(1, (vh * 0.8 - r.top) / span));
-      const n = Math.round(prog * words.length);
-      if (n === lit) return;
-      if (n > lit) { for (let i = lit; i < n; i++) words[i].classList.add('on'); }
-      else { for (let i = lit - 1; i >= n; i--) words[i].classList.remove('on'); }
-      lit = n;
-    }
-
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () { ticking = false; update(); });
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    (window.__typedRebuild = window.__typedRebuild || []).push(wrap);
-    wrap();
-  })();
 
 
   window.__onLangChange = function (lang) {
@@ -2753,6 +3901,32 @@
     barrer();
   })();
   </script>
+  <script>
+  /* Movimiento de las FIG 0.1-0.3 (pilares) y 0.4-0.6 (problema).
+     .viva es LA fuente unica de "esta figura se esta animando": el CSS no
+     asigna ninguna animacion sin ella. El observador la pone Y LA QUITA — a
+     diferencia del reveal de mas abajo, que solo prende una vez y suelta al
+     elemento — porque si no las tres figuras seguirian animandose durante toda
+     la pagina, muy por debajo del pliegue. */
+  (function () {
+    var figs = [].slice.call(document.querySelectorAll('.pillar-fig, .prob-fig'));
+    if (!figs.length) return;
+    // con movimiento reducido no se prende nunca: las figuras se quedan en su pose
+    if (window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!('IntersectionObserver' in window)) {
+      figs.forEach(function (f) { f.classList.add('viva'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        e.target.classList.toggle('viva', e.isIntersecting);
+      });
+    }, { threshold: 0.2 });
+    figs.forEach(function (f) { io.observe(f); });
+  })();
+  </script>
+
 <script>
   /* Los CTAs apuntan al Railway de produccion. Cuando la landing se abre en
      local (file:// o localhost) el destino se reescribe al server de dev, para
