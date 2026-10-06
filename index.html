@@ -162,6 +162,23 @@ html.intro-hold .hi{animation-play-state:paused !important}
 .tab[data-tab=copilot][aria-selected=true]{background:linear-gradient(rgba(14,10,30,.34),rgba(14,10,30,.34)),url(assets/bg-dusk.jpg) 30% 40%/cover;border-color:rgba(255,255,255,.18);color:#fff}
 .tab[data-tab=extraccion][aria-selected=true]{background:linear-gradient(rgba(255,255,255,.38),rgba(255,255,255,.38)),url(assets/bg-haze.jpg) 40% 50%/cover;border-color:rgba(0,0,0,.08);color:#1d2244}
 
+/* ───────── Proporciones de los dashboards ─────────
+   La demo del hero se dibuja en un lienzo de 780 de alto y mínimo 1040 de ancho: con una altura fija,
+   en pantallas angostas el lienzo se estiraba hacia abajo. La altura sale del ancho (1040:780) y la
+   de escritorio queda como tope. */
+#heroDemo{aspect-ratio:1040 / 780;max-height:clamp(520px,64vh,720px)}
+/* Tarjetas de Agentes / Copilot: dos ventanas de la app encimadas. La altura sigue al ancho (sin el
+   piso de 440px, que en teléfono dejaba ventanas angostas y largas); bajo 700px las ventanas crecen
+   y la tarjeta se hace más alta para que sigan leyéndose como pantallas. */
+.shots{height:min(700px,48vw)}
+.win-a{left:3%;top:9%;width:52%}
+.win-b{right:3%;top:5%;width:58%}
+@media (max-width:700px){
+  .shots{height:auto;aspect-ratio:1.42}
+  .win-a{left:4%;width:68%}
+  .win-b{right:4%;width:66%}
+}
+
 /* ───────── Rieles: 2 líneas verticales, línea inferior y marcadores en los cruces ───────── */
 .rails{position:absolute;inset:0;pointer-events:none;z-index:1}
 .rails i{position:absolute}
@@ -314,7 +331,7 @@ html.js [data-rv]:not(.in){--op:0;--y:var(--y0,24px);--bl:6px;--tf:var(--tf0,tra
         <button type="button" role="tab" class="tab" data-tab="copilot" aria-selected="false"><span data-i18n-tab="copilot">Axo · tu copiloto diario</span></button>
         <button type="button" role="tab" class="tab" data-tab="extraccion" aria-selected="false"><span data-i18n-tab="extraccion">Extracción documental</span></button>
       </div>
-      <div id="heroDemo" role="img" aria-label="Demostración animada de la plataforma InTake" style="position:relative;height:clamp(520px,64vh,720px);border-radius:22px;background:#f2f2f0;border:1px solid #e6e6e3;overflow:hidden"></div>
+      <div id="heroDemo" role="img" aria-label="Demostración animada de la plataforma InTake" style="position:relative;border-radius:22px;background:#f2f2f0;border:1px solid #e6e6e3;overflow:hidden"></div>
     </div>
   </div>
 </section>
@@ -339,9 +356,9 @@ html.js [data-rv]:not(.in){--op:0;--y:var(--y0,24px);--bl:6px;--tf:var(--tf0,tra
         </div>
       </div>
     </div>
-    <div style="position:relative;height:clamp(440px,48vw,700px);border-radius:28px;background:#ececea url(assets/bg-floral.jpg) center/cover no-repeat;border:1px solid #e3e3e1;overflow:hidden;opacity:var(--op,1);transform:translateY(var(--y,0px));filter:blur(var(--bl,0px));transition:opacity .9s cubic-bezier(.22,.8,.26,1) 0.3s,transform .9s cubic-bezier(.22,.8,.26,1) 0.3s,filter .9s ease 0.3s;">
-      <div style="position:absolute;left:3%;top:9%;width:52%;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 12px 40px rgba(0,0,0,.08)"><img src="assets/app-extraccion.webp" alt="Pantalla del agente de Extracción documental en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
-      <div style="position:absolute;right:3%;top:5%;width:58%;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 24px 60px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.05)"><img src="assets/app-mv.webp" alt="Pantalla del agente de Manifestación de valor en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
+    <div class="shots" style="position:relative;border-radius:28px;background:#ececea url(assets/bg-floral.jpg) center/cover no-repeat;border:1px solid #e3e3e1;overflow:hidden;opacity:var(--op,1);transform:translateY(var(--y,0px));filter:blur(var(--bl,0px));transition:opacity .9s cubic-bezier(.22,.8,.26,1) 0.3s,transform .9s cubic-bezier(.22,.8,.26,1) 0.3s,filter .9s ease 0.3s;">
+      <div class="win-a" style="position:absolute;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 12px 40px rgba(0,0,0,.08)"><img src="assets/app-extraccion.webp" alt="Pantalla del agente de Extracción documental en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
+      <div class="win-b" style="position:absolute;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 24px 60px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.05)"><img src="assets/app-mv.webp" alt="Pantalla del agente de Manifestación de valor en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
     </div>
   </div>
 </section>
@@ -566,9 +583,9 @@ html.js [data-rv]:not(.in){--op:0;--y:var(--y0,24px);--bl:6px;--tf:var(--tf0,tra
         </div>
       </div>
     </div>
-    <div style="position:relative;height:clamp(440px,48vw,700px);border-radius:28px;background:#ececea url(assets/bg-templates.jpg) center/cover no-repeat;border:1px solid #e3e3e1;overflow:hidden;opacity:var(--op,1);transform:translateY(var(--y,0px));filter:blur(var(--bl,0px));transition:opacity .9s cubic-bezier(.22,.8,.26,1) 0.3s,transform .9s cubic-bezier(.22,.8,.26,1) 0.3s,filter .9s ease 0.3s;">
-      <div style="position:absolute;left:3%;top:9%;width:52%;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 12px 40px rgba(0,0,0,.08)"><img src="assets/app-resumen.webp" alt="Pantalla de Resumen en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
-      <div style="position:absolute;right:3%;top:5%;width:58%;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 24px 60px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.05)"><img src="assets/app-copilot.webp" alt="Pantalla de Copilot en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
+    <div class="shots" style="position:relative;border-radius:28px;background:#ececea url(assets/bg-templates.jpg) center/cover no-repeat;border:1px solid #e3e3e1;overflow:hidden;opacity:var(--op,1);transform:translateY(var(--y,0px));filter:blur(var(--bl,0px));transition:opacity .9s cubic-bezier(.22,.8,.26,1) 0.3s,transform .9s cubic-bezier(.22,.8,.26,1) 0.3s,filter .9s ease 0.3s;">
+      <div class="win-a" style="position:absolute;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 12px 40px rgba(0,0,0,.08)"><img src="assets/app-resumen.webp" alt="Pantalla de Resumen en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
+      <div class="win-b" style="position:absolute;bottom:-8%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e3e3e1;box-shadow:0 24px 60px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.05)"><img src="assets/app-copilot.webp" alt="Pantalla de Copilot en InTake" width="2200" height="2400" loading="lazy" decoding="async" style="display:block;width:100%;height:auto"></div>
     </div>
   </div>
 </section>
